@@ -6,7 +6,7 @@
 
 - **Claimed:** Anne's Witness is not a clone, port or rehash of any Anne's Office app or of any Adobe app. None of them has evidence as its subject.
 - **Not claimed:** that nothing like any part of it exists anywhere. Each trade that does this work has its own tools for its own slice (listed in section 3). What was not found is one general tool that joins those slices. No exhaustive market search was done.
-- **How the review was done:** the eleven suite repositories were read directly. The Adobe lineup was written from product knowledge and from news search results in November 2026; Adobe's own catalog pages could not be opened from the planning environment, so that list should be re-checked (it is an open item in [ROADMAP.md](ROADMAP.md), M0).
+- **How the review was done:** the eleven suite repositories were read directly. The Adobe lineup was checked on 14 November 2026 against Wikipedia's *List of Adobe software* (active products, suites and discontinued products; about 230 entries). No entry there has evidence, citation checking or claim verification as its purpose. That page does not yet list Adobe's newest products (Firefly, Frame.io, Content Authenticity, Acrobat Studio, GenStudio); those were added from product knowledge and from news search results of the same month. Adobe's own catalog page refuses automated clients, so it was not read; a check of it by hand is an open item in [ROADMAP.md](ROADMAP.md), M0.
 
 ## 1. The Anne's Office suite
 
@@ -32,19 +32,19 @@ Grouped by job. None has evidence for written claims as its subject.
 
 | Group | Apps | Job |
 |---|---|---|
-| Photographs and painting | Photoshop, Lightroom, Lightroom Classic, Photoshop Elements, Fresco | Edit, organize and paint pictures |
+| Photographs and painting | Photoshop, Photoshop Express, Lightroom, Lightroom Classic, Photoshop Elements, Camera Raw, DNG Converter, Fresco, Project Indigo | Edit, develop, organize, paint and take pictures |
 | Drawing and layout | Illustrator, InDesign, InCopy, Express | Vector art, page layout, editorial copy, quick designs |
 | Video and motion | Premiere, Premiere Elements, After Effects, Media Encoder, Character Animator, Animate, Frame.io | Edit, composite, encode, animate and review video |
 | Sound | Audition, Podcast | Record and edit audio |
 | 3D | Substance 3D Painter, Designer, Sampler, Stager and Modeler; Dimension; Project Neo; Mixamo | Model, texture and render 3D |
 | Generative AI | Firefly (with Boards and, as reported at MAX 2026, Firefly Builder, Firefly Graph and the Firefly AI Assistant) | Generate and edit images, video, audio, designs and prototypes; automate creative workflows |
-| Documents | Acrobat Reader, Standard, Pro and Studio; Acrobat Sign; Scan; Fill & Sign; Digital Editions | View, edit, sign, scan and read PDFs and e-books |
+| Documents | Acrobat Reader, Standard, Pro and Studio; Acrobat Distiller; Acrobat Sign; Scan; Fill & Sign; Digital Editions; Content Server | View, edit, make, sign, scan and read PDFs and e-books; e-book rights management |
 | Web and interface design | Dreamweaver, XD | Build web pages; design interfaces |
-| Assets and services | Bridge, Fonts, Stock, Color, Capture, Behance, Portfolio | Browse files, license fonts and stock, pick colors, show work |
-| Technical and learning | FrameMaker, RoboHelp, Captivate, Connect, ColdFusion | Technical manuals, help systems, e-learning, web meetings, an application server |
+| Assets and services | Bridge, Fonts, Font Folio, Stock, Color, Capture, Behance, Portfolio, the Creative Cloud app, Authenticator | Browse files, license fonts and stock, pick colors, show work, install apps, sign in |
+| Technical and learning | FrameMaker, RoboHelp, Captivate, Presenter, Connect, ColdFusion | Technical manuals, help systems, e-learning, narrated slides, web meetings, an application server |
 | Provenance of media | Content Authenticity (and Content Authenticity for Enterprise) | Attach signed content credentials to a creative file saying who made it and how |
-| Marketing and enterprise | Experience Manager, Analytics, Target, Campaign, Marketo Engage, Journey Optimizer, Real-Time CDP, Commerce, Advertising, Workfront, GenStudio | Web content management, analytics, marketing automation, commerce, work management |
-| Retired or winding down | PageMaker, FreeHand, Fireworks, Flash Professional, Director, Authorware, GoLive, Muse, Contribute, Encore, Soundbooth, Prelude, SpeedGrade, Story, Spark, Premiere Rush, Aero, Comp, Photoshop Mix, Fix, Sketch and Camera, Illustrator Draw, the Edge tools, PhoneGap, Flash Builder | Earlier layout, drawing, web, multimedia authoring, video and mobile tools |
+| Marketing and enterprise | Experience Manager (Sites, Assets, Forms), Analytics, Audience Manager, Target, Campaign, Marketo Engage, Journey Optimizer, Real-Time CDP, Commerce, Advertising, Primetime, Workfront, GenStudio | Web content management, analytics, marketing automation, commerce, work management |
+| Retired or winding down | PageMaker, Persuasion, FreeHand, Streamline, Fireworks, ImageReady, PhotoDeluxe, Photoshop Album, Revel, LiveMotion, Flash Professional, Flash Player, Shockwave, Director, Authorware, GoLive, PageMill, HomeSite, Muse, Contribute, Brackets, the Edge tools, PhoneGap, Flash Builder, JRun, Encore, Soundbooth, OnLocation, Ultra, Prelude, SpeedGrade, Story, Spark, Premiere Rush, Premiere Clip, Aero, Atmosphere, Fuse, Comp, Proto, Photoshop Mix, Fix, Sketch and Camera, Illustrator Draw, Device Central, Type Manager, Version Cue, Acrobat Capture, Acrobat Approval | Earlier layout, presentation, drawing, photo, web, multimedia authoring, video, 3D, mobile, font, file-versioning, OCR and forms tools |
 
 ### The closest Adobe features, and how they differ
 
@@ -55,6 +55,8 @@ Grouped by job. None has evidence for written claims as its subject.
 | **Content Authenticity** | Records who made a media file and what tools touched it | Provenance of a *file*. Anne's Witness records the evidence for a *statement*. The two are complementary; reading content credentials as a property of a source is a stretch goal |
 | **Workfront** proofing | Routes a draft to reviewers for comments and approval | Review and approval of how a piece looks and reads. The name "Proof" was avoided for this app because of it |
 | **Bridge** metadata | Describes and finds asset files | Describes files, not the relation between files and claims |
+| **Version Cue** (retired) | Kept versions of design files and tracked them through file metadata | Versions of a file, not evidence for what a file says |
+| **Acrobat Capture** (retired) | Turned scans of paper into searchable PDFs by OCR | Makes text from a picture; does not check the text, or anything else, against a source |
 | **FrameMaker**, **RoboHelp**, **InCopy** | Author structured and editorial text, with cross-references | Authoring tools; cross-references point within the document set |
 
 ## 3. Nearest relatives elsewhere

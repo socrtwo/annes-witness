@@ -8,7 +8,8 @@
 - [x] Name, description, topics, keywords, app id and icon color ([AnnesWitness.meta.json](../AnnesWitness.meta.json), `package.json`).
 - [x] README, command inventory ([COMMANDS-PLAN.md](COMMANDS-PLAN.md), generated from [commands-plan.src.txt](commands-plan.src.txt)), AI plan ([AI-PLAN.md](AI-PLAN.md)), architecture ([ARCHITECTURE-PLAN.md](ARCHITECTURE-PLAN.md)), formats ([FORMATS-PLAN.md](FORMATS-PLAN.md)), legal notes, license, contributing guide, issue templates, icon.
 - [x] `scripts/gen-plan.py` validates ids, origin codes, shortcut conflicts, the required AI commands and the metadata file; planning-stage CI runs it on Linux and Windows.
-- [ ] Re-check the Adobe lineup against Adobe's own product catalog. The survey in ORIGINALITY.md was written from product knowledge and news search results; the catalog pages could not be opened from the planning environment.
+- [x] Adobe lineup checked against Wikipedia's *List of Adobe software* (14 November 2026): no product there has evidence or claim verification as its purpose.
+- [ ] Read Adobe's own product catalog by hand for anything newer than the Wikipedia list. The catalog page refuses automated clients, so the newest products in ORIGINALITY.md (Firefly, Frame.io, Content Authenticity, Acrobat Studio, GenStudio) rest on product knowledge and news search results.
 - [ ] Have each template's wording read by someone who does that work (a family historian, an accountant, an editor) and correct the vocabulary; confirm the app claims no conformance to any professional standard.
 - [ ] Write the anchor selector and fingerprint specification in full (ARCHITECTURE-PLAN.md has the outline) with test vectors.
 - [ ] Build a small openly licensed test corpus: made-up sources that disagree, a document that cites them, a rescanned copy of one source, a damaged case file.
