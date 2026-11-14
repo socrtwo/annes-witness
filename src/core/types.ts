@@ -287,6 +287,10 @@ export interface CaseSettings {
   /** Years after which a source is old for claims about the present. */
   recencyYears: number;
   statusPatterns: boolean;
+  /** Language of the case's text: spelling dictionary (en-US, en-GB, en-CA, en-AU) and OCR language (Tesseract code). */
+  language?: { spell: string; ocr: string };
+  /** Words added to the case's own spelling dictionary. */
+  dictionary?: string[];
 }
 
 export interface SavedView { id: Id; name: string; filter: Record<string, string> }

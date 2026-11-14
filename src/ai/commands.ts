@@ -6,7 +6,22 @@ import { Anchor, Claim, ClaimKind, Id, Source, Tie, AiHistoryEntry, CitationFiel
 import { newId, nowIso, truncate } from '../core/util';
 import { AiBackend, AiImage, CallInfo } from './backend';
 import { verifyQuote } from './gate';
-import { runAttribution, applyAttribution, eligibleSources, parseCitedAnswer } from './attribution';
+import { runAttribution, applyAttribution, eligibleSources, parseCitedAnswer, DocSlice, wholeSource } from './attribution';
+import { PassageIndex, selectPassages } from './retrieve';
+
+export type Scope = 'passages' | 'documents';
+
+/** Whole sources, or the passages chosen on the device for the given queries. */
+export function slicesFor(sources: Source[], scope: Scope, index?: PassageIndex) {
+  return (queries: string[]): DocSlice[] => {
+    if (scope === 'documents') return sources.map(wholeSource);
+    const ix = index ?? new PassageIndex(sources);
+    return selectPassages(ix, queries, 4, 60_000).map((c) => {
+      const src = ix.sources.get(c.sourceId)!;
+      return { source: src, offset: c.start, text: c.text, title: `${src.title} (${c.label || 'passage'})` };
+    });
+  };
+}
 
 export function recordHistory(store: CaseStore, command: string, info: CallInfo[], sent: string, received: string, proposals = 0, discarded = 0) {
   const h: AiHistoryEntry = {
@@ -25,23 +40,25 @@ export interface CaseAnswer {
   notInSources: boolean;
 }
 
-export async function askCase(store: CaseStore, be: AiBackend, question: string, signal?: AbortSignal): Promise<CaseAnswer> {
+export async function askCase(store: CaseStore, be: AiBackend, question: string, signal?: AbortSignal, scope: Scope = 'passages'): Promise<CaseAnswer> {
   const { use } = eligibleSources(store);
   if (!use.length) throw new Error('No sources with text in this case.');
+  const slices = slicesFor(use, scope)([question]);
+  if (!slices.length) return { sentences: [], droppedSentences: 0, notInSources: true };
   const system = `Answer only from the documents provided, citing the passage for every statement. If the documents do not answer the question, reply exactly: NOT IN THE SOURCES. Do not use outside knowledge.`;
   const ans: CaseAnswer = { sentences: [], droppedSentences: 0, notInSources: false };
   const infos: CallInfo[] = [];
   if (be.cited) {
-    const r = await be.cited({ system, documents: use.map((s) => ({ title: s.title, text: s.text })), prompt: question, signal });
+    const r = await be.cited({ system, documents: slices.map((d) => ({ title: d.title, text: d.text })), prompt: question, signal });
     infos.push(r.info);
     for (const b of r.blocks) {
       const t = b.text.trim();
       if (!t) continue;
       if (/NOT IN THE SOURCES/.test(t)) { ans.notInSources = true; continue; }
       const anchors = b.citations
-        .map((c) => ({ c, s: use[c.documentIndex] }))
-        .filter((x) => x.s)
-        .map(({ c, s }) => ({ s, g: verifyQuote(s, c.citedText, { start: c.start, end: c.end }) }))
+        .map((c) => ({ c, d: slices[c.documentIndex] }))
+        .filter((x) => x.d)
+        .map(({ c, d }) => ({ s: d.source, g: verifyQuote(d.source, c.citedText, c.start !== undefined && c.end !== undefined ? { start: d.offset + c.start, end: d.offset + c.end } : undefined) }))
         .filter((x) => x.g.ok)
         .map(({ s, g }) => ({ sourceId: s.id, start: g.start, end: g.end, exact: s.text.slice(g.start, g.end) }));
       // Connective text with no citation is kept only when it is short; a substantive sentence without an anchor is dropped.
@@ -49,7 +66,7 @@ export async function askCase(store: CaseStore, be: AiBackend, question: string,
       else ans.droppedSentences++;
     }
   } else {
-    const docs = use.map((s, i) => `<source number="${i + 1}" title="${s.title}">\n${s.text}\n</source>`).join('\n');
+    const docs = slices.map((d, i) => `<source number="${i + 1}" title="${d.title}">\n${d.text}\n</source>`).join('\n');
     const r = await be.json<{ statements: { text: string; source: number; quote: string }[]; not_in_sources: boolean }>({
       system: system + ' Return statements, each with the source number and the exact quote supporting it.',
       prompt: `${docs}\n\nQuestion: ${question}`,
@@ -65,7 +82,7 @@ export async function askCase(store: CaseStore, be: AiBackend, question: string,
     infos.push(r.info);
     ans.notInSources = r.data.not_in_sources;
     for (const st of r.data.statements) {
-      const s = use[st.source - 1];
+      const s = slices[st.source - 1]?.source;
       const g = s ? verifyQuote(s, st.quote) : null;
       if (s && g?.ok) ans.sentences.push({ text: st.text, anchors: [{ sourceId: s.id, start: g.start, end: g.end, exact: s.text.slice(g.start, g.end) }] });
       else ans.droppedSentences++;
@@ -76,13 +93,14 @@ export async function askCase(store: CaseStore, be: AiBackend, question: string,
 }
 
 // --- Find support / contradictions for one claim ------------------------------------
-export async function findForClaims(store: CaseStore, be: AiBackend, claimIds: Id[], focus: 'any' | 'contradicts', signal?: AbortSignal) {
+export async function findForClaims(store: CaseStore, be: AiBackend, claimIds: Id[], focus: 'any' | 'contradicts', signal?: AbortSignal, scope: Scope = 'passages') {
   const claims = claimIds.map((i) => store.data.claims[i]).filter(Boolean);
   const { use, skipped } = eligibleSources(store);
   if (!use.length) throw new Error('No sources with text in this case.');
   const result = { facts: [] as any[], discarded: [] as any[], calls: [] as CallInfo[], skippedSources: skipped };
   const { attributeClaims } = await import('./attributeClaims');
-  await attributeClaims(be, claims, use, result, focus, signal);
+  const pick = slicesFor(use, scope);
+  await attributeClaims(be, claims, (batch) => pick(batch.map((c) => c.text)), result, focus, signal);
   let ties = 0;
   store.transact(focus === 'contradicts' ? 'AI: find contradictions' : 'AI: find support', (tx) => {
     for (const f of result.facts) {

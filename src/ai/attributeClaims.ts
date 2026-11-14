@@ -1,7 +1,7 @@
 // Find support or contradictions for existing claims (Find group), reusing the attribution parser.
-import { Claim, Source } from '../core/types';
+import { Claim } from '../core/types';
 import { AiBackend, CallInfo } from './backend';
-import { parseCitedAnswer, DraftKind } from './attribution';
+import { parseCitedAnswer, DraftKind, DocSlice } from './attribution';
 import { verifyQuote } from './gate';
 
 export interface ClaimFinding {
@@ -15,20 +15,22 @@ ${focus === 'contradicts' ? 'Look especially for passages that state something i
 Use only the documents. If nothing bears on a claim, write NOT FOUND.`;
 
 export async function attributeClaims(
-  be: AiBackend, claims: Claim[], sources: Source[],
+  be: AiBackend, claims: Claim[], sourcesFor: (batch: Claim[]) => DocSlice[],
   result: { facts: ClaimFinding[]; discarded: any[]; calls: CallInfo[] },
   focus: 'any' | 'contradicts', signal?: AbortSignal,
 ) {
   for (let i = 0; i < claims.length; i += 12) {
     const batch = claims.slice(i, i + 12);
+    const sources = sourcesFor(batch);
+    if (!sources.length) continue;
     const prompt = batch.map((c, j) => `[F${j + 1}] ${c.text}`).join('\n');
     let parsed: ReturnType<typeof parseCitedAnswer>;
     if (be.cited) {
-      const r = await be.cited({ system: SYSTEM(focus), documents: sources.map((s) => ({ title: s.title, text: s.text })), prompt, signal });
+      const r = await be.cited({ system: SYSTEM(focus), documents: sources.map((d) => ({ title: d.title, text: d.text })), prompt, signal });
       result.calls.push(r.info);
       parsed = parseCitedAnswer(r.blocks, batch.length);
     } else {
-      const docs = sources.map((s, k) => `<source number="${k + 1}" title="${s.title}">\n${s.text}\n</source>`).join('\n');
+      const docs = sources.map((d, k) => `<source number="${k + 1}" title="${d.title}">\n${d.text}\n</source>`).join('\n');
       const r = await be.json<{ items: { fact: number; verdict: string; source: number; quote: string; why: string }[] }>({
         system: SYSTEM(focus) + '\nReturn JSON items; "quote" must be copied exactly.',
         prompt: `${docs}\n\n${prompt}`,
@@ -49,9 +51,10 @@ export async function attributeClaims(
       let f = result.facts.find((x) => x.claimId === c.id);
       if (!f) { f = { claimId: c.id, attributions: [] }; result.facts.push(f); }
       for (const ct of p.citations) {
-        const s = sources[ct.documentIndex];
-        if (!s) continue;
-        const g = verifyQuote(s, ct.citedText, { start: ct.start, end: ct.end });
+        const d = sources[ct.documentIndex];
+        if (!d) continue;
+        const s = d.source;
+        const g = verifyQuote(s, ct.citedText, ct.start !== undefined && ct.end !== undefined ? { start: d.offset + ct.start, end: d.offset + ct.end } : undefined);
         if (!g.ok) { result.discarded.push({ claimId: c.id, source: s.title, quote: ct.citedText, reason: g.reason }); continue; }
         f.attributions.push({ sourceId: s.id, start: g.start, end: g.end, kind: p.kind as DraftKind, rationale: p.rationale });
       }

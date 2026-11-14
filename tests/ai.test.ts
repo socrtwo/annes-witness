@@ -53,9 +53,9 @@ class StubBackend implements AiBackend {
   async text() { return { text: '', info: { service: 'Stub', model: 'stub-model', sentChars: 0 } }; }
   async cited(req: any): Promise<{ blocks: CitedBlock[]; info: any }> {
     this.calls.push(req);
-    const ci = req.documents.findIndex((d: any) => d.title === '1910 census');
-    const ri = req.documents.findIndex((d: any) => d.title === 'Parish register');
-    const at = (doc: string, s: string) => ({ start: doc.indexOf(s), end: doc.indexOf(s) + s.length });
+    const ci = req.documents.findIndex((d: any) => d.title.startsWith('1910 census'));
+    const ri = req.documents.findIndex((d: any) => d.title.startsWith('Parish register'));
+    const at = (doc: string, s: string) => { const d = req.documents.find((x: any) => doc.includes(x.source?.data ?? x.text ?? '') || (x.text ?? '').includes(s)); const text = d?.text ?? doc; return { start: text.indexOf(s), end: text.indexOf(s) + s.length }; };
     const blocks: CitedBlock[] = [
       { text: '[F1]\nSUPPORTS: the census gives ', citations: [] },
       { text: 'born about 1902', citations: [{ documentIndex: ci, citedText: 'born about 1902', ...at(census, 'born about 1902') }] },
@@ -190,5 +190,51 @@ describe('privacy screen and references', () => {
   it('finds reference lines', () => {
     const t = 'Body text.\n\nReferences\n\nSmith, J. (2001). A history of Ohio parishes. Ohio Press.\nDoe, A. (1999). Census methods. Journal of Records 4: 1-20. doi:10.1234/abc\n';
     expect(findReferenceLines(t)).toHaveLength(2);
+  });
+});
+
+import { PassageIndex, selectPassages, chunkSource } from '../src/ai/retrieve';
+
+describe('on-device passage selection', () => {
+  const filler = (n: number) => Array.from({ length: n }, (_, i) => `Line ${i} of the register lists ordinary parish business with no names of interest.`).join('\n');
+  const big = S('big', 'source', filler(200) + '\nBaptized 3 May 1903: Mary Ann, daughter of John Smith, born 20 April 1903.\n' + filler(200), 'Big register');
+  it('finds the passage that matters in a large source', () => {
+    const ix = new PassageIndex([big]);
+    expect(ix.chunks.length).toBeGreaterThan(20);
+    const top = ix.search('Mary Ann Smith was born in 1903', 1)[0];
+    expect(top.chunk.text).toContain('born 20 April 1903');
+    const sel = selectPassages(ix, ['Mary Ann Smith was born in 1903'], 2, 5000);
+    expect(sel.reduce((n, c) => n + c.text.length, 0)).toBeLessThan(big.text.length / 10);
+    for (const c of sel) expect(big.text.slice(c.start, c.end)).toBe(c.text);
+  });
+  it('chunks cover the whole text', () => {
+    const cs = chunkSource(big);
+    expect(cs[0].start).toBe(0);
+    expect(cs[cs.length - 1].end).toBe(big.text.length);
+  });
+  it('sends passages, maps citations back into the source, and applies agreement', async () => {
+    const st = new CaseStore();
+    st.transact('s', (tx) => { tx.put('sources', big); tx.put('sources', S('doc', 'document', 'Mary Ann Smith was born in 1903.', 'Draft')); });
+    const sent: any[] = [];
+    const mk = (model: string): AiBackend => ({
+      service: 'Stub', model, supportsCitations: true,
+      async json() { return { data: {} as any, info: { service: 'Stub', model, sentChars: 0 } }; },
+      async text() { return { text: '', info: { service: 'Stub', model, sentChars: 0 } }; },
+      async cited(req: any) {
+        sent.push(req);
+        const d = req.documents.findIndex((x: any) => x.text.includes('born 20 April 1903'));
+        const t = req.documents[d].text;
+        const q = 'born 20 April 1903';
+        return { blocks: [{ text: '[F1] SUPPORTS ', citations: [] }, { text: q, citations: [{ documentIndex: d, citedText: q, start: t.indexOf(q), end: t.indexOf(q) + q.length }] }], info: { service: 'Stub', model, sentChars: 1 } };
+      },
+    });
+    const r = await runAttribution(st, mk('a'), { documentId: 'doc', granularity: 'sentence', onlyUnclaimed: false, suggestLeads: false, extraBackends: [mk('b')], minAgreement: 2 });
+    expect(sent[0].documents.reduce((n: number, d: any) => n + d.text.length, 0)).toBeLessThan(big.text.length / 5);
+    const a = r.facts[0].attributions[0];
+    expect(big.text.slice(a.start, a.end)).toBe('born 20 April 1903');
+    expect(a.proposedBy).toEqual(['a', 'b']);
+    const r3 = await runAttribution(st, mk('a'), { documentId: 'doc', granularity: 'sentence', onlyUnclaimed: false, suggestLeads: false, minAgreement: 2, extraBackends: [] });
+    expect(r3.facts[0].attributions).toHaveLength(0);
+    expect(r3.belowAgreement).toBe(1);
   });
 });

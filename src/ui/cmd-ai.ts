@@ -123,6 +123,8 @@ async function setupWizard() {
   toast(`AI ready: ${cfg.label}, ${cfg.model}.`);
 }
 
+const scope = (): 'passages' | 'documents' => (app.data.settings.aiPrivacy === 'documents' ? 'documents' : 'passages');
+
 function privacyAllows(level: 'passages' | 'pages' | 'documents', what: string) {
   const order = { passages: 0, pages: 1, documents: 2 };
   if (order[app.data.settings.aiPrivacy] >= order[level]) return;
@@ -136,16 +138,16 @@ async function attributionWizard() {
   const { use, skipped } = eligibleSources(app.store);
   if (!use.length) throw new UserError('Add sources with text first. Scans need Recognize Text (OCR) or a transcription before they can be searched.');
   backend(); // fails early if AI is not set up
-  privacyAllows('documents', 'Draft Sources for Every Fact');
   const totalChars = use.reduce((n, s) => n + s.text.length, 0);
   const be = backend();
   const intro = h('div',
     h('p', 'For every sentence of the document, the wizard drafts where each fact comes from in your sources. Claude cites exact passages; the app then checks that every cited passage really is in the source, word for word, before showing it. Each draft arrives as a ', h('strong', 'proposed'), ' tie: nothing counts as evidence until you confirm it in Verify Drafts.'),
-    h('p.meta', `Will send: the document’s sentences and the text of ${use.length} sources (about ${Math.round(totalChars / 1000)}k characters) to ${be.service} (${be.model}). Repeated requests reuse a cache of the sources.`),
+    h('p.meta', `Will send to ${be.service} (${be.model}): the document’s sentences, and either the passages of your ${use.length} sources that this device picks as most relevant to each batch of facts (Passages), or the whole text of the sources (Whole documents, about ${Math.round(totalChars / 1000)}k characters; allowed only when AI and Privacy permits it). Whole documents finds more; passages send less.`),
     skipped.length ? h('p.meta', `Not sent: ${skipped.join('; ')}.`) : null);
   const r = await form<any>('Draft Sources for Every Fact — Source Attribution Wizard', [
     { key: 'doc', label: 'Document to check', type: 'select', value: app.document?.id ?? docs[0].id, options: docs.map((d) => ({ value: d.id, label: d.title })) },
     { key: 'sources', label: 'Sources to search', type: 'multiselect', value: use.map((s) => s.id), options: use.map((s) => ({ value: s.id, label: `${s.title} (${Math.round(s.text.length / 1000)}k chars)` })) },
+    { key: 'scope', label: 'Send from the sources', type: 'radio', value: scope(), options: [{ value: 'passages', label: 'Passages chosen on this device (default; works with “Passages only”)' }, { value: 'documents', label: 'Whole source texts (needs “Whole documents” in AI and Privacy)' }] },
     { key: 'granularity', label: 'Split sentences into', type: 'radio', value: 'fact', options: [{ value: 'fact', label: 'Separate facts (one extra request per 40 sentences; more precise)' }, { value: 'sentence', label: 'Whole sentences' }] },
     { key: 'onlyUnclaimed', label: 'Skip sentences that already have claims', type: 'checkbox', value: false },
     { key: 'includeMentions', label: 'Also keep “mentions” (relevant but not deciding)', type: 'checkbox', value: true },
@@ -153,9 +155,12 @@ async function attributionWizard() {
     { key: 'several', label: `Also ask the other AIs chosen in Several AIs (${app.ai.ensemble.members.length} chosen)`, type: 'checkbox', value: app.ai.ensemble.mode !== 'single' },
   ], 'Start', intro);
   if (!r) return;
+  if (r.scope === 'documents') privacyAllows('documents', 'Sending whole source texts');
+  const extras = r.several ? extraBackends() : [];
   const res = await withProgress('Drafting sources', (signal, update) => runAttribution(app.store, be, {
+    scope: r.scope, minAgreement: app.ai.ensemble.mode === 'consensus' && extras.length ? Math.ceil((extras.length + 1) / 2) : undefined,
     documentId: r.doc, sourceIds: r.sources, granularity: r.granularity as Granularity, onlyUnclaimed: r.onlyUnclaimed, suggestLeads: r.leads,
-    extraBackends: r.several ? extraBackends() : [], signal,
+    extraBackends: extras, signal,
     onProgress: (p) => update(`${p.phase}… ${p.total ? `${p.done} of ${p.total}` : ''}`, p.done, p.total),
   }));
   if (!res) return;
@@ -182,7 +187,7 @@ async function draftSummary(res: AttributionResult): Promise<boolean> {
       h('td', f.attributions.map((a) => `${a.kind} · ${app.data.sources[a.sourceId]?.title} ${locate(app.data.sources[a.sourceId], a.start, a.end)}`).join('\n') || f.error || f.leads.slice(0, 2).join('; '))))),
     ),
     res.discarded.length ? h('details', h('summary', `Discarded citations (${res.discarded.length})`), h('ul', res.discarded.map((d) => h('li', `${d.sourceTitle}: “${truncate(d.quote, 100)}” — ${d.reason}`)))) : null,
-    h('p.meta', `Requests: ${res.calls.length}. Model(s): ${[...new Set(res.calls.map((c) => c.model))].join(', ')}. Tokens: ${res.calls.reduce((n, c) => n + (c.inputTokens ?? 0), 0)} in, ${res.calls.reduce((n, c) => n + (c.outputTokens ?? 0), 0)} out.`),
+    h('p.meta', `${res.passagesSent ? `Passages sent: ${res.passagesSent}. ` : ''}${res.belowAgreement ? `Dropped for too little agreement among the AIs: ${res.belowAgreement}. ` : ''}Requests: ${res.calls.length}. Model(s): ${[...new Set(res.calls.map((c) => c.model))].join(', ')}. Tokens: ${res.calls.reduce((n, c) => n + (c.inputTokens ?? 0), 0)} in, ${res.calls.reduce((n, c) => n + (c.outputTokens ?? 0), 0)} out.`),
   );
   return !!(await modal('Drafts — add to the case?', body, [{ label: 'Discard', value: false }, { label: 'Add as proposals', primary: true, value: true }], { wide: true }));
 }
@@ -217,7 +222,7 @@ export function registerAiCommands() {
     if (r) { app.store.transact('AI privacy', () => { app.data.settings.aiPrivacy = r.level; }); app.store.touch(); }
   });
   register('ai.ensembleMode', async () => {
-    const m = await choose('Several AIs', [{ label: 'Single AI', value: 'single' }, { label: 'Several AIs propose; all proposals pass the check', value: 'master' }], 'With several AIs, each proposes passages separately; every proposal is checked against the source, and the drafts show which AIs proposed each one. Agreement among AIs is not corroboration.');
+    const m = await choose('Several AIs', [{ label: 'Single AI', value: 'single' }, { label: 'Several AIs propose; every checked proposal is kept', value: 'master' }, { label: 'Several AIs propose; keep a draft only when most of them proposed it', value: 'consensus' }], 'With several AIs, each proposes passages separately; every proposal is checked against the source, and the drafts show which AIs proposed each one. Agreement among AIs is not corroboration.');
     if (m) { app.ai = { ...app.ai, ensemble: { ...app.ai.ensemble, mode: m as any } }; saveAiSettings(app.ai); }
   });
   register('ai.ensembleMembers', async () => {
@@ -236,12 +241,11 @@ export function registerAiCommands() {
   register('ai.attributionWizard', attributionWizard);
 
   register('ai.ask', async () => {
-    privacyAllows('documents', 'Ask the Case');
     const prefill = (window as any).__askPrefill ?? '';
     (window as any).__askPrefill = undefined;
     const q = await form<{ q: string }>('Ask the Case', [{ key: 'q', label: 'Question', type: 'textarea', rows: 3, required: true, value: prefill }], 'Ask', 'The answer comes only from this case’s sources. Every sentence shows the passages it rests on; sentences the app cannot tie to a passage are dropped.');
     if (!q) return;
-    const ans = await withProgress('Asking', (signal) => ai.askCase(app.store, backend(), q.q, signal));
+    const ans = await withProgress('Asking', (signal) => ai.askCase(app.store, backend(), q.q, signal, scope()));
     if (!ans) return;
     const body = h('div.answer',
       ans.notInSources && !ans.sentences.length ? h('p', h('strong', 'The sources in this case do not answer that.')) : null,
@@ -262,7 +266,6 @@ export function registerAiCommands() {
   });
   register('ai.extractClaims', async () => {
     const d = needDoc();
-    privacyAllows('documents', 'Extract Claims');
     const facts = await withProgress('Finding checkable statements', (signal) => ai.extractClaims(app.store, backend(), d.id, signal));
     if (!facts) return;
     const r = await form<any>('Extract Claims', [{ key: 'ids', label: `${facts.length} proposed claims (uncheck to leave out)`, type: 'multiselect', value: facts.map((f) => f.key), options: facts.map((f) => ({ value: f.key, label: `${f.kind}: ${truncate(f.fact, 140)}` })) }], 'Add claims');
@@ -302,8 +305,7 @@ export function registerAiCommands() {
   });
   const find = (focus: 'any' | 'contradicts') => async () => {
     const claims = app.selectedClaims().length ? app.selectedClaims() : [needClaim()];
-    privacyAllows('documents', 'Find');
-    const r = await withProgress(focus === 'contradicts' ? 'Looking for contradictions' : 'Looking for support', (signal) => ai.findForClaims(app.store, backend(), claims.map((c) => c.id), focus, signal));
+    const r = await withProgress(focus === 'contradicts' ? 'Looking for contradictions' : 'Looking for support', (signal) => ai.findForClaims(app.store, backend(), claims.map((c) => c.id), focus, signal, scope()));
     if (r) toast(`${r.ties} proposed ties${r.discarded ? `; ${r.discarded} cited passages discarded (not found in the source)` : ''}. Review ▸ Verify Drafts.`);
   };
   register('ai.findSupport', find('any'));

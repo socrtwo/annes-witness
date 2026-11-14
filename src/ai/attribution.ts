@@ -7,6 +7,12 @@ import { newId, nowIso } from '../core/util';
 import { splitSentences } from '../text/sentences';
 import { AiBackend, CallInfo, CitedBlock } from './backend';
 import { verifyQuote } from './gate';
+import { PassageIndex, selectPassages } from './retrieve';
+
+/** A source, or one passage of it, as sent to the model. `offset` maps the passage back into the source's text. */
+export interface DocSlice { source: Source; offset: number; text: string; title: string }
+
+export const wholeSource = (s: Source): DocSlice => ({ source: s, offset: 0, text: s.text, title: s.title });
 
 export type Granularity = 'sentence' | 'fact';
 export type DraftKind = 'supports' | 'contradicts' | 'mentions';
@@ -24,8 +30,15 @@ export interface AttributionOptions {
   batchSize?: number;
   /** Characters of source text per request; larger sets are split into groups. */
   maxSourceChars?: number;
+  /**
+   * 'passages' (default): passages chosen on the device for each batch of facts are sent.
+   * 'documents': the whole text of every chosen source is sent (needs the Whole documents privacy level).
+   */
+  scope?: 'passages' | 'documents';
   /** Additional AIs; each one's proposals pass the gate separately (Several AIs). */
   extraBackends?: AiBackend[];
+  /** With several AIs: keep a draft only if at least this many AIs proposed it (agreement mode). */
+  minAgreement?: number;
   signal?: AbortSignal;
   onProgress?: (p: { phase: string; done: number; total: number; message?: string }) => void;
 }
@@ -60,6 +73,10 @@ export interface DraftFact {
 
 export interface AttributionResult {
   facts: DraftFact[];
+  /** Passages sent in passages scope. */
+  passagesSent?: number;
+  /** Drafts dropped because too few AIs proposed them (agreement mode). */
+  belowAgreement?: number;
   discarded: { factKey: string; sourceTitle: string; quote: string; reason: string }[];
   calls: CallInfo[];
   skippedSources: string[];
@@ -236,7 +253,7 @@ const QUOTE_SCHEMA = {
 async function attributeBatch(
   backend: AiBackend,
   facts: DraftFact[],
-  sources: Source[],
+  sources: DocSlice[],
   signal: AbortSignal | undefined,
   result: AttributionResult,
 ) {
@@ -247,14 +264,14 @@ async function attributeBatch(
   if (backend.cited) {
     const r = await backend.cited({
       system: ATTRIBUTE_SYSTEM,
-      documents: sources.map((s) => ({ title: s.title, text: s.text, context: sourceContext(s) })),
+      documents: sources.map((d) => ({ title: d.title, text: d.text, context: sourceContext(d.source) })),
       prompt,
       signal,
     });
     result.calls.push(r.info);
     parsed = parseCitedAnswer(r.blocks, facts.length);
   } else {
-    const docs = sources.map((s, i) => `<source number="${i + 1}" title="${s.title.replace(/"/g, "'")}">\n${s.text}\n</source>`).join('\n');
+    const docs = sources.map((d, i) => `<source number="${i + 1}" title="${d.title.replace(/"/g, "'")}">\n${d.text}\n</source>`).join('\n');
     const r = await backend.json<{ items: { fact: number; verdict: string; source: number; quote: string; why: string }[] }>({
       system: ATTRIBUTE_SYSTEM + '\nReturn JSON items instead of prose; "quote" must be copied exactly from the source.',
       prompt: `${docs}\n\n${prompt}`,
@@ -273,9 +290,10 @@ async function attributeBatch(
     const f = facts[p.fact - 1];
     if (!f || p.kind === 'none') continue;
     for (const c of p.citations) {
-      const s = sources[c.documentIndex];
-      if (!s) continue;
-      const g = verifyQuote(s, c.citedText, { start: c.start, end: c.end });
+      const d = sources[c.documentIndex];
+      if (!d) continue;
+      const s = d.source;
+      const g = verifyQuote(s, c.citedText, c.start !== undefined && c.end !== undefined ? { start: d.offset + c.start, end: d.offset + c.end } : undefined);
       if (!g.ok) {
         result.discarded.push({ factKey: f.key, sourceTitle: s.title, quote: c.citedText, reason: g.reason ?? 'not found' });
         continue;
@@ -349,9 +367,12 @@ export async function runAttribution(store: CaseStore, backend: AiBackend, opts:
   const facts = await draftFacts(store, backend, opts, result);
   result.facts = facts;
   const work = facts.filter((f) => f.outcome !== 'not-checkable');
-  const groups = groupSources(use, opts.maxSourceChars ?? 400_000);
   const B = opts.batchSize ?? 12;
   const backends = [backend, ...(opts.extraBackends ?? [])];
+  const scope = opts.scope ?? 'passages';
+  // Documents: whole sources, in groups that fit a request. Passages: chosen per batch on the device.
+  const groups: (DocSlice[] | null)[] = scope === 'documents' ? groupSources(use, opts.maxSourceChars ?? 400_000).map((g) => g.map(wholeSource)) : [null];
+  const index = scope === 'passages' ? new PassageIndex(use) : null;
   const total = Math.ceil(work.length / B) * groups.length * backends.length;
   let done = 0;
   for (const be of backends)
@@ -360,14 +381,28 @@ export async function runAttribution(store: CaseStore, backend: AiBackend, opts:
         opts.signal?.throwIfAborted();
         opts.onProgress?.({ phase: `Looking for sources (${be.model})`, done, total });
         const batch = work.slice(i, i + B);
+        let docs = g;
+        if (!docs) {
+          docs = selectPassages(index!, batch.map((f) => f.fact), 4, opts.maxSourceChars ?? 60_000).map((c) => {
+            const src = index!.sources.get(c.sourceId)!;
+            return { source: src, offset: c.start, text: c.text, title: `${src.title} (${c.label || 'passage'})` };
+          });
+          result.passagesSent = (result.passagesSent ?? 0) + docs.length;
+        }
         try {
-          await attributeBatch(be, batch, g, opts.signal, result);
+          if (docs.length) await attributeBatch(be, batch, docs, opts.signal, result);
         } catch (e: any) {
           if (e?.name === 'AbortError') throw e;
           for (const f of batch) { f.outcome = 'error'; f.error = String(e?.message ?? e); }
         }
         done++;
       }
+  if (opts.minAgreement && opts.minAgreement > 1)
+    for (const f of work) {
+      const kept = f.attributions.filter((a) => a.proposedBy.length >= opts.minAgreement!);
+      result.belowAgreement = (result.belowAgreement ?? 0) + f.attributions.length - kept.length;
+      f.attributions = kept;
+    }
   for (const f of work) if (f.outcome !== 'error') f.outcome = f.attributions.length ? 'found' : 'none';
   if (opts.suggestLeads) {
     const none = work.filter((f) => f.outcome === 'none');
