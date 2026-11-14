@@ -249,8 +249,23 @@ export function registerCheckCommands() {
     if (how === 'csl') download(f.toCslJson(srcs), `${title()}.json`, 'application/json');
   });
   register('report.style', async () => {
-    const s = await choose('Citation Style', [{ label: 'Author-date', value: 'author-date' }, { label: 'Notes and bibliography', value: 'notes' }]);
-    if (s) { app.store.transact('Citation style', () => { app.data.settings.citationStyle = s as any; }); app.store.touch(); }
+    const { cslInfo, parseCsl } = await import('../reports/csl');
+    const cur = app.data.settings.cslStyle ? cslInfo(parseCsl(app.data.settings.cslStyle)).title : app.data.settings.citationStyle;
+    const s = await choose('Citation Style', [
+      { label: 'Author-date (built in)', value: 'author-date' }, { label: 'Notes and bibliography (built in)', value: 'notes' },
+      { label: 'Load a CSL style file…', value: 'csl', detail: '.csl files from a style repository or your publisher; a practical subset of CSL 1.0.2 is supported' },
+    ], `Now: ${cur}`);
+    if (!s) return;
+    if (s === 'csl') {
+      const [f] = await pickFiles('.csl,.xml', false);
+      if (!f) return;
+      const xml = await f.text();
+      let title: string;
+      try { title = cslInfo(parseCsl(xml)).title; } catch (e: any) { throw new UserError(`This style cannot be used: ${e?.message ?? e}`); }
+      const mode = await choose('How the style is used', [{ label: 'Notes (citations in footnotes)', value: 'notes' }, { label: 'Author-date (bibliography entries)', value: 'author-date' }]);
+      app.store.transact(`Citation style: ${title}`, () => { app.data.settings.cslStyle = xml; app.data.settings.citationStyle = (mode ?? 'author-date') as any; });
+    } else app.store.transact('Citation style', () => { app.data.settings.citationStyle = s as any; app.data.settings.cslStyle = undefined; });
+    app.store.touch();
   });
   register('report.openItems', async () => {
     const { openItems } = await import('../reports/tables');

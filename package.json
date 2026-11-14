@@ -1,6 +1,6 @@
 {
   "name": "annes-witness",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Anne's Witness: an original open-source evidence workbench that ties every claim in your work to the exact spot in a source that backs it, checks that they still agree, and prints the proof. Part of the Anne's Office suite. Planning stage.",
   "keywords": [

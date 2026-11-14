@@ -10,6 +10,8 @@ import { registerCheckCommands } from './ui/cmd-check';
 import { registerAiCommands } from './ui/cmd-ai';
 import { registerPlatformCommands } from './ui/cmd-platform';
 import { registerExtraCommands } from './ui/cmd-extra';
+import { registerFormatCommands } from './ui/cmd-formats';
+import { setCslStyle } from './reports/citation';
 import { h } from './ui/dom';
 
 registerFileCommands();
@@ -18,6 +20,7 @@ registerCheckCommands();
 registerAiCommands();
 registerPlatformCommands();
 registerExtraCommands();
+registerFormatCommands();
 
 const theme = localStorage.getItem('annes-witness.theme');
 if (theme) document.documentElement.dataset.theme = theme;
@@ -30,6 +33,7 @@ document.getElementById('app')!.replaceChildren(top, main, bottom);
 mountShell(top, bottom);
 
 app.onRender(() => {
+  setCslStyle(app.data.settings.cslStyle);
   document.body.classList.toggle('patterns', app.data.settings.statusPatterns);
   renderShell();
   renderLayout(main);

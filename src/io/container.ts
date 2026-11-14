@@ -5,7 +5,7 @@ import { TABLES } from '../core/types';
 import { emptyCase, normalizeCase, type JournalEntry } from '../core/case';
 import { sha256 } from '../core/util';
 
-export const APP_NAME = "Anne's Witness 0.1.0";
+export const APP_NAME = "Anne's Witness 0.2.0";
 
 export interface Manifest {
   format: 'annes-witness';

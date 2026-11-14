@@ -289,6 +289,8 @@ export interface CaseSettings {
   statusPatterns: boolean;
   /** Language of the case's text: spelling dictionary (en-US, en-GB, en-CA, en-AU) and OCR language (Tesseract code). */
   language?: { spell: string; ocr: string };
+  /** A CSL style (XML) chosen with Report ▸ Citation Style; overrides citationStyle when set. */
+  cslStyle?: string;
   /** Words added to the case's own spelling dictionary. */
   dictionary?: string[];
 }

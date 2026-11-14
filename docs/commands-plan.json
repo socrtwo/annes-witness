@@ -2313,7 +2313,7 @@
               "origins": [
                 "REF"
               ],
-              "notes": "choose or import a CSL style",
+              "notes": "author-date, notes, or a CSL style file you load (a practical subset of CSL 1.0.2)",
               "inTabs": true
             }
           ]
@@ -2859,7 +2859,17 @@
               "origins": [
                 "GPS"
               ],
-              "notes": "reads the source citations in a family tree file as claims and sources; writes them back on export",
+              "notes": "reads the source citations in a family tree file as claims and sources",
+              "inTabs": true
+            },
+            {
+              "id": "tools.exportGedcom",
+              "label": "Export Citations as GEDCOM…",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "sources, claims and confirmed citations as a GEDCOM 5.5.1 file that family-tree programs can import",
               "inTabs": true
             }
           ]

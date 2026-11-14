@@ -1,6 +1,6 @@
 # Roadmap
 
-> **Version 0.1.0: first working version.** Milestones are ordered by dependency, not by date. Checked items are implemented and covered by tests; unchecked items are not done. Command ids refer to [COMMANDS-PLAN.md](COMMANDS-PLAN.md); [COMMANDS.md](COMMANDS.md) lists which commands are implemented (297 of 307).
+> **Version 0.2.0.** Milestones are ordered by dependency, not by date. Checked items are implemented and covered by tests; unchecked items are not done. Command ids refer to [COMMANDS-PLAN.md](COMMANDS-PLAN.md); [COMMANDS.md](COMMANDS.md) lists which commands are implemented (all 308).
 
 ## M0 — Planning
 
@@ -12,14 +12,15 @@
 - [x] Commands gathered from comparable tools (reference managers, family-history evidence tools, audit tie-out, editorial fact-checking, qualitative research, collation, open-source investigation, annotation, citation-context tools) and new ideas added to the plan: 257 → 307 commands.
 - [ ] Read Adobe's own product catalog by hand for anything newer than the Wikipedia list. The catalog page refuses automated clients.
 - [ ] Have each template's wording read by someone who does that work (a family historian, an accountant, an editor).
-- [ ] Write the anchor selector specification as a standalone document with test vectors (the behavior is defined by `src/core/anchor.ts` and its tests).
+- [x] Anchor selector specification with test vectors ([ANCHORS.md](ANCHORS.md), `tests/anchor-vectors.json`); writing it found and fixed an offset error after soft hyphens.
 - [ ] Build a larger openly licensed test corpus; today the corpus is the guided example and fixtures built inside the tests.
 
 ## M1 — Shell and the case file
 
 - [x] TypeScript, Vite, vitest; PWA manifest and service worker (offline after first load).
-- [x] Electron desktop shell (`electron/main.cjs`) and electron-builder configuration; Capacitor configuration. **Not yet built or run in CI:** see [BUILD.md](BUILD.md).
-- [ ] Release workflows producing Android, iOS, Windows, macOS and Linux packages, as in the sister apps.
+- [x] Electron desktop shell and electron-builder configuration; Capacitor configuration. See [BUILD.md](BUILD.md).
+- [x] Release workflows for Android, iOS, Windows, macOS and Linux, adapted from the sister apps (`release.yml`, `android.yml`). **Written and statically checked, not yet run on GitHub.**
+- [x] Android and iOS projects generated with Capacitor; Electron desktop API (dialogs, recent and pinned cases, Show in Folder, open with the system app, web capture, new windows). **Not compiled here:** the build environment cannot download the Android SDK or the Electron binary.
 - [x] Suite shell: command registry driven by the plan, ribbon with 14 tabs, classic menu bar (one menu per tab, including **AI**), Quick Access Bar with Add All Choices, your own ribbon tab, keyboard customization, command search (Alt+Q), File backstage, options, themes.
 - [x] Case engine: `.witness` container, journal with undo and redo, History with restore, named Versions, autosave to the browser and restore, Open and Repair (ZIP salvage and journal replay), password protection.
 - [x] Sources: PDF (pages drawn with pdf.js), images, text; fingerprints, Source Details, groups, Check Fingerprints, Relink.
@@ -41,9 +42,9 @@
 - [x] OCR through Tesseract.js (pictures and PDF pages); Transcribe pane with transcription marks and status; Compare Transcriptions.
 - [x] Capture Web Page (works where the site allows cross-site fetching; otherwise add a saved page); recordings with VTT/SRT transcripts (time-range segments); interviews and recollections; reference works; e-mail (.eml, .mbox); EPUB; GEDCOM.
 - [x] Replace with Better Copy and Re-Anchor; Find Duplicate Sources; picture metadata; page reading tools.
-- [ ] Repair Source File through the sister apps' recovery engines.
-- [ ] The built-in public-domain shelf (`source.addLibraryText`).
-- [ ] Old binary .doc and .xls files (read as "other" with no text today).
+- [x] Repair Source File: ZIP and XML salvage for Office/ODF/EPUB, PDF stream text recovery, tolerant legacy readers; the repaired text becomes a new derivative source (ported from Anne's Pen and Anne's Grid).
+- [x] Public-domain shelf: Project Gutenberg plain-text editions fetched on request, with the edition confirmed from the file's own title.
+- [x] Word 97–2003 (.doc), Excel 97–2003 (.xls) and Outlook .msg, with readers ported from Anne's Pen and Anne's Grid.
 
 ## M4 — Weighing evidence
 
@@ -60,7 +61,7 @@
 - [x] Exhibit Bundle PDF with index, marked regions and Bates numbering; Redact for Sharing.
 - [x] Evidence Map (SVG) and Matrix view.
 - [x] Seal Case and Verify Seal; Save Portable Case; Export Case as Text Folder and Open Text Folder.
-- [ ] Citation styles from CSL files (two built-in styles today: author-date, and notes with bibliography).
+- [x] CSL style files (a practical subset of CSL 1.0.2: no sorting or disambiguation) beside the two built-in styles.
 - [ ] Evidence Map in Anne's Chart's own format.
 
 ## M6 — Review and the rest of the suite
@@ -69,8 +70,9 @@
 - [x] Compare Cases, Merge Cases, Import Ties; New Period from This Case.
 - [x] GEDCOM citations read into sources, claims and proposed ties.
 - [x] Macros (record and run), Rules, Script Editor, Query Case (read-only SQL), command-line checks (`npm run witness`).
-- [ ] GEDCOM citations written back on export.
-- [ ] Open Claim in Its App (jumping into the sister apps).
+- [x] Export Citations as GEDCOM (5.5.1).
+- [x] Open in App opens the linked document or a source with the system's program (desktop) or downloads it (web).
+- [ ] Jumping to the exact sentence or cell inside the sister apps.
 
 ## M7 — AI
 
@@ -78,9 +80,10 @@
 - [x] The verification gate (`src/ai/gate.ts`): no proposal is shown unless the app finds the cited words in the source. Built and tested before the AI commands.
 - [x] **Source Attribution Wizard** (`ai.attributionWizard`): facts per sentence → Claude citations → gate → proposed ties → **Verify Drafts**.
 - [x] Find group (Extract Claims, Find Support, Find Contradictions, Suggest Where to Look, Check That Citations Exist with catalog lookup), Ask the Case, Read, Check and Write groups.
-- [ ] On-device models (passage embeddings to send only the best candidate passages; a small local model). Today the Find, Ask and Attribution commands send whole source texts, which needs the **Whole documents** privacy level.
-- [ ] Quaker-consensus deliberation between several AIs (today: union of independently checked proposals).
-- [ ] A test against the live Claude API in CI (tests mock the API; a live run needs a key).
+- [x] On-device passage selection (BM25, no model download): the wizard, Ask and Find work under **Passages only** and send only the best passages.
+- [ ] Neural embeddings or a small local model.
+- [x] Several AIs: union of independently checked proposals, or agreement mode (kept only when most AIs proposed it). Rounds of deliberation are not planned: every proposal must be checked against a source on its own.
+- [x] Opt-in live test (`tests/live.test.ts`), run by CI when an `ANTHROPIC_API_KEY` secret is set. **Not yet run:** no key was available while building.
 
 ## M8 — Stretch goals
 
@@ -88,10 +91,11 @@
 - [ ] A shared case over the suite relay.
 - [ ] Reading content credentials attached to a picture.
 - [ ] More linked-document formats (Markdown, LaTeX) and anchor types (map coordinates).
-- [ ] Spelling and interface languages.
+- [x] Spelling (English: US, UK, Canada, Australia) and a case language for spelling and OCR.
+- [ ] Interface languages other than English.
 
 ## Throughout
 
 - **Sources are never written.** Readers are tolerant; repairs write new files.
 - **Status rules are tested** (`tests/core.test.ts`), as are the gate and the wizard (`tests/ai.test.ts`).
-- **Accessibility:** status is shown by word and pattern as well as color; panes work by keyboard. A full screen-reader audit is still to do.
+- **Accessibility:** status is shown by word and pattern as well as color; panes work by keyboard; an automated axe-core audit runs in the browser test with no serious or critical findings. A manual screen-reader test is still to do.

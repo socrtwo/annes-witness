@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An original test style written for Anne's Witness (MIT). Not derived from any published style. -->
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0">
+  <info>
+    <title>Witness Test Author-Date</title>
+    <id>urn:annes-witness:test-author-date</id>
+  </info>
+  <macro name="who">
+    <names variable="author">
+      <name and="text" delimiter=", " initialize-with=". " name-as-sort-order="first"/>
+      <substitute><text variable="title" font-style="italic"/></substitute>
+    </names>
+  </macro>
+  <macro name="who-short">
+    <names variable="author">
+      <name form="short" and="symbol" delimiter=", " et-al-min="3" et-al-use-first="1"/>
+      <substitute><text variable="title" font-style="italic"/></substitute>
+    </names>
+  </macro>
+  <macro name="when">
+    <choose>
+      <if variable="issued"><date variable="issued" date-parts="year"><date-part name="year"/></date></if>
+      <else><text term="no date" form="short"/></else>
+    </choose>
+  </macro>
+  <macro name="where">
+    <choose>
+      <if type="article-journal">
+        <group delimiter=", ">
+          <text variable="container-title" font-style="italic"/>
+          <group>
+            <number variable="volume"/>
+            <number variable="issue" prefix="(" suffix=")"/>
+          </group>
+          <text variable="page"/>
+        </group>
+      </if>
+      <else-if type="webpage">
+        <group delimiter=". ">
+          <text variable="container-title"/>
+          <group delimiter=" ">
+            <text term="accessed" text-case="capitalize-first"/>
+            <date variable="accessed" form="text"/>
+          </group>
+          <text variable="URL"/>
+        </group>
+      </else-if>
+      <else-if type="manuscript">
+        <group delimiter=", ">
+          <text variable="archive"/>
+          <text variable="archive_location"/>
+        </group>
+      </else-if>
+      <else>
+        <group delimiter=": ">
+          <text variable="publisher-place"/>
+          <text variable="publisher"/>
+        </group>
+      </else>
+    </choose>
+  </macro>
+  <citation>
+    <layout prefix="(" suffix=")" delimiter="; ">
+      <group delimiter=", ">
+        <group delimiter=" ">
+          <text macro="who-short"/>
+          <text macro="when"/>
+        </group>
+        <group delimiter=" ">
+          <label variable="locator" form="short"/>
+          <text variable="locator"/>
+        </group>
+      </group>
+    </layout>
+  </citation>
+  <bibliography>
+    <layout suffix=".">
+      <group delimiter=". ">
+        <text macro="who"/>
+        <text macro="when" prefix="(" suffix=")"/>
+        <choose>
+          <if type="book manuscript" match="any"><text variable="title" font-style="italic"/></if>
+          <else><text variable="title"/></else>
+        </choose>
+        <text macro="where"/>
+        <text variable="DOI" prefix="https://doi.org/"/>
+      </group>
+    </layout>
+  </bibliography>
+</style>

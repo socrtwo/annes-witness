@@ -2,7 +2,7 @@
 
 > **Plan. Generated file:** edit [commands-plan.src.txt](commands-plan.src.txt) and run `python3 scripts/gen-plan.py`. This is the inventory the command registry is built from. A command is registered in the app only when it works; [COMMANDS.md](COMMANDS.md) lists which are implemented.
 
-**307 commands** on 14 tabs. Every command can go on the Quick Access Bar, on a custom tab, in the classic menu bar, on a keyboard shortcut or in a macro, and is found by command search (Alt+Q). The classic menu bar has one menu per tab, including an **AI** menu. Shortcuts are planned defaults and can all be rebound.
+**308 commands** on 14 tabs. Every command can go on the Quick Access Bar, on a custom tab, in the classic menu bar, on a keyboard shortcut or in a macro, and is found by command search (Alt+Q). The classic menu bar has one menu per tab, including an **AI** menu. Shortcuts are planned defaults and can all be rebound.
 
 ## Origins
 
@@ -36,7 +36,7 @@
 | [Report](#report) | 23 | Turn the case into something a reader can check: notes, tables, exhibits and a written proof |
 | [Review](#review) | 14 | Work on a case with other people: assign, comment, sign off |
 | [View](#view) | 25 | Panes, layouts and pictures of the case |
-| [Tools](#tools) | 12 | Macros, batch work and connections to the other apps |
+| [Tools](#tools) | 13 | Macros, batch work and connections to the other apps |
 | [AI](#ai) | 35 | Optional helpers that find, read and draft. They propose; they never decide. See AI-PLAN.md |
 | [Developer](#developer) | 7 | Scripting and the case's data, for people who want to build on it |
 | [Help](#help) | 9 | Help, examples and about |
@@ -426,7 +426,7 @@ Turn the case into something a reader can check: notes, tables, exhibits and a w
 | Build Exhibit Bundle… | `report.exhibits` |  | LAW, NEW | one PDF through Anne's Folio: each anchored page with its region outlined, numbered and indexed to the claims |
 | Number Exhibits… | `report.numberExhibits` |  | LAW |  |
 | Redact for Sharing… | `report.redact` |  | LAW, GPS | removes confidential sources and living persons' details from a report or bundle; the case itself is unchanged |
-| Citation Style… | `report.style` |  | REF | choose or import a CSL style |
+| Citation Style… | `report.style` |  | REF | author-date, notes, or a CSL style file you load (a practical subset of CSL 1.0.2) |
 
 ## Review
 
@@ -526,7 +526,8 @@ Macros, batch work and connections to the other apps.
 | Open Source in Its App | `tools.openSourceInApp` |  | SUITE |  |
 | Send Table to Anne's Grid | `tools.toGrid` |  | SUITE |  |
 | Send Case Data to Anne's Base | `tools.toBase` |  | SUITE |  |
-| Citations from GEDCOM… | `tools.gedcomCitations` |  | GPS | reads the source citations in a family tree file as claims and sources; writes them back on export |
+| Citations from GEDCOM… | `tools.gedcomCitations` |  | GPS | reads the source citations in a family tree file as claims and sources |
+| Export Citations as GEDCOM… | `tools.exportGedcom` |  | GPS | sources, claims and confirmed citations as a GEDCOM 5.5.1 file that family-tree programs can import |
 
 ### Data
 

@@ -1,6 +1,6 @@
 # Formats plan
 
-> **Implemented in 0.1.0 except where the Milestone column says otherwise** (see ROADMAP.md for what is still open: old binary .doc/.xls, the public-domain shelf, CSL style files, native formats of the sister apps). Anne's Witness reads many formats and edits none of them. A file is either a **source** (evidence), a **linked document** (the work being checked), or both. Readers come from the sister apps wherever one exists. Formats are recognized by content, not by extension.
+> **Implemented in 0.1.0 except where the Milestone column says otherwise** (still open: the native file formats of the sister apps; their Office, ODF and HTML exports work). Anne's Witness reads many formats and edits none of them. A file is either a **source** (evidence), a **linked document** (the work being checked), or both. Readers come from the sister apps wherever one exists. Formats are recognized by content, not by extension.
 
 ## The case
 
@@ -19,11 +19,11 @@ The extension is provisional until M1.
 | PDF | .pdf, including scanned and damaged files | page region, text run | Anne's Folio engine | M1 |
 | Pictures | JPEG, PNG, TIFF (multi-page), WebP, HEIC, GIF, BMP | region | Anne's Lens readers | M1 |
 | Plain text | .txt, .md, .csv, .tsv, .json, .xml | character range, row and field | built in | M1 |
-| Documents | Anne's Pen, .docx, .doc, .odt, .rtf | text run | Anne's Pen readers | M2 |
-| Workbooks | Anne's Grid, .xlsx, .xls, .ods | cell range | Anne's Grid readers | M2 |
+| Documents | Anne's Pen (via .docx export), .docx, .doc (Word 97–2003), .odt | text run | Anne's Pen readers | M2 |
+| Workbooks | Anne's Grid (via .xlsx export), .xlsx, .xls (Excel 97–2003), .ods | cell range | Anne's Grid readers | M2 |
 | Web captures | a saved page: text, full-page picture, address and time; also .mhtml, .html, WARC (read) | text run, region | built in | M3 |
 | Recordings | MP3, M4A, WAV, OGG, MP4, WebM, with optional transcript (.vtt, .srt) | time range | platform media | M3 |
-| Email | .eml, .msg, .mbox, messages from Anne's Post | text run | Anne's Post readers | M3 |
+| Email | .eml, .msg (Outlook: subject, sender, plain body), .mbox | text run | Anne's Post readers | M3 |
 | Interview or recollection | typed in the app | text run | built in | M3 |
 | Reference work | a citation with no file | page or section number, typed | built in | M3 |
 | Presentations | Anne's Stage, .pptx, .odp | slide and shape | Anne's Stage readers | M6 |
@@ -36,7 +36,7 @@ Files protected by DRM or by a password you do not have are not opened.
 
 ### The public-domain shelf
 
-For checking quotations (`source.addLibraryText`), a small set of public-domain texts can be added to a case as sources, each with its edition stated so that a quotation is checked against the wording of that edition and no other. Candidates, each to be confirmed as public domain and taken from a stated transcription before it ships: the King James Version, Young's Literal Translation, the Douay-Rheims Bible, the JPS 1917 Tanakh, the United States Constitution and its amendments. Copyrighted translations and editions are never bundled; a user who owns a copy can add it as an ordinary source.
+For checking quotations (`source.addLibraryText`), a small set of public-domain texts can be added to a case as sources, each with its edition stated so that a quotation is checked against the wording of that edition and no other. Implemented with Project Gutenberg plain-text editions fetched on request (King James Version, Douay-Rheims, the U.S. Constitution, Bill of Rights and Declaration of Independence, or any Gutenberg number), each confirmed against the title recorded in the file. Young's Literal Translation and the JPS 1917 Tanakh are not on the shelf yet; add a downloaded copy as an ordinary source. Copyrighted translations and editions are never bundled; a user who owns a copy can add it as an ordinary source.
 
 ## Linked documents (the work being checked)
 

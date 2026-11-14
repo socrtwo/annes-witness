@@ -16,6 +16,7 @@ export const OCR_LANGS: Record<string, string> = {
 export const caseLanguage = () => app.data.settings.language ?? { spell: 'en-US', ocr: 'eng' };
 
 export function registerExtraCommands() {
+  registerShelfCommand();
   register('tools.language', async () => {
     const { SPELL_LANGS } = await import('../text/spell');
     const cur = caseLanguage();
@@ -68,10 +69,69 @@ export function registerExtraCommands() {
     await showPanel(`Spelling (${hits.length})`, table);
   });
 
+  register('tools.exportGedcom', async () => {
+    const { exportGedcomCitations } = await import('../io/gedcom-export');
+    const { download } = await import('./dialogs');
+    const inc = app.store.evidence.some((s) => s.confidential) ? await confirmBox('Export Citations as GEDCOM', 'Include confidential sources?', 'Include') : false;
+    download(exportGedcomCitations(app.data, { includeConfidential: inc }), `${app.data.settings.title.replace(/[^\w.-]+/g, '-').slice(0, 60) || 'case'}.ged`, 'text/plain');
+  });
   register('ai.deleteModels', async () => {
     if (!(await confirmBox('Delete Downloaded Models', 'Remove the text-recognition (OCR) language models downloaded by Recognize Text? They are downloaded again when needed. Anne’s Witness downloads no AI language models: passage selection for AI commands runs on this device without a model.', 'Delete'))) return;
     if (typeof indexedDB === 'undefined') throw new UserError('No browser storage is available.');
     await new Promise<void>((res) => { const r = indexedDB.deleteDatabase('keyval-store'); r.onsuccess = r.onerror = r.onblocked = () => res(); });
     toast('Downloaded models removed.');
+  });
+}
+
+// --- The public-domain shelf ------------------------------------------------------------------
+// Texts are fetched from Project Gutenberg's plain-text files on request, never bundled. Catalog numbers can
+// change or point at another edition, so the title recorded inside the fetched file is shown for confirmation.
+export const SHELF = [
+  { n: 10, label: 'King James Version (Bible)' },
+  { n: 8300, label: 'Douay-Rheims Bible, Challoner revision' },
+  { n: 5, label: 'Constitution of the United States' },
+  { n: 2, label: 'United States Bill of Rights' },
+  { n: 1, label: 'Declaration of Independence' },
+];
+
+/** Strip Project Gutenberg's licence header and footer; return the title recorded in the file. */
+export function gutenbergBody(raw: string): { title: string; body: string } {
+  const title = raw.match(/^Title:\s*(.+)$/m)?.[1]?.trim() ?? '';
+  const start = raw.search(/\*\*\*\s*START OF (THE|THIS) PROJECT GUTENBERG EBOOK[^*]*\*\*\*/i);
+  const end = raw.search(/\*\*\*\s*END OF (THE|THIS) PROJECT GUTENBERG EBOOK/i);
+  let body = raw;
+  if (start >= 0) body = raw.slice(raw.indexOf('***', start + 3) + 3, end > start ? end : undefined);
+  return { title, body: body.replace(/^\s+/, '').replace(/\s+$/, '\n') };
+}
+
+export function registerShelfCommand() {
+  register('source.addLibraryText', async () => {
+    const r = await form<{ pick: string; other: string }>('Add Public-Domain Text', [
+      { key: 'pick', label: 'Text', type: 'radio', value: '10', options: [...SHELF.map((x) => ({ value: String(x.n), label: `${x.label} (Project Gutenberg #${x.n})` })), { value: 'other', label: 'Another Project Gutenberg book, by number' }] },
+      { key: 'other', label: 'Book number (for “another book”)', type: 'number', value: '' },
+    ], 'Fetch', 'The plain-text edition is downloaded from Project Gutenberg and added as a source, so quotations can be checked against that exact edition. A quotation from another edition or translation will not match.');
+    if (!r) return;
+    const n = r.pick === 'other' ? Number(r.other) : Number(r.pick);
+    if (!Number.isInteger(n) || n <= 0) throw new UserError('Give a Project Gutenberg book number.');
+    const url = `https://www.gutenberg.org/cache/epub/${n}/pg${n}.txt`;
+    const { platformFetch } = await import('../platform/index');
+    let raw: string;
+    const p = progress(`Fetching Project Gutenberg #${n}`);
+    try {
+      const res = await platformFetch()(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      raw = await res.text();
+    } catch (e: any) {
+      throw new UserError(`The text could not be fetched from here (${e?.message ?? e}). Browsers often block this; the desktop app does not. You can also download ${url} yourself and add it with Sources ▸ Add Files.`);
+    } finally { p.close(); }
+    const { title, body } = gutenbergBody(raw);
+    if (!(await confirmBox('Confirm the edition', `Project Gutenberg #${n} is:\n\n${title || '(no title recorded)'}\n\n${body.length.toLocaleString()} characters. Add it as a source?`, 'Add'))) return;
+    const s = await app.addFile(`gutenberg-${n}.txt`, new TextEncoder().encode(body), 'source', {
+      title: title || `Project Gutenberg #${n}`, classification: 'derivative', tags: ['public domain', 'Project Gutenberg'],
+      url: `https://www.gutenberg.org/ebooks/${n}`,
+      citation: { type: 'book', title: title || `Project Gutenberg #${n}`, publisher: 'Project Gutenberg', url: `https://www.gutenberg.org/ebooks/${n}`, accessed: new Date().toISOString().slice(0, 10), note: `Project Gutenberg plain-text edition #${n}` },
+      notes: `Fetched from ${url}. The Project Gutenberg licence header and footer were removed; the text itself is unchanged.`,
+    });
+    app.select({ sourceId: s.id });
   });
 }

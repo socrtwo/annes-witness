@@ -6,15 +6,15 @@
 
 You give it your work and the records behind it. It lists what your work claims (each statement, number, date, name and quotation), lets you tie each claim to the exact spot in a source that backs it or contradicts it, checks by itself that the words and numbers still agree, helps you settle the cases where sources disagree, and prints the proof. It shares the suite's goal, **no missing commands**: every feature is a command that can go on the Quick Access Bar, on your own tab, in the classic menu bar, on a keyboard shortcut or in a macro, and is found by command search. It has an **AI** tab and an **AI** menu, with one rule: the AI may point at evidence, but only a real passage in a real source counts, and only a person confirms it.
 
-> **Status: first working version (0.1.0).** A web app that also installs as a PWA, with configuration for desktop (Electron) and mobile (Capacitor) builds. **297 of the 307 planned commands** are implemented ([docs/COMMANDS.md](docs/COMMANDS.md)); 86 unit tests and a browser end-to-end test pass. What works:
+> **Status: version 0.2.0.** A web app that installs as a PWA, with the Android and iOS projects, the Electron desktop app and release workflows in place. **All 308 planned commands are implemented** ([docs/COMMANDS.md](docs/COMMANDS.md)); 152 unit tests, a browser end-to-end test and an automated accessibility audit pass. What works:
 >
-> - **Sources** from PDF (pages drawn, regions marked), pictures (regions, picture metadata, OCR), Word, Excel, PowerPoint, OpenDocument, text, CSV, HTML and saved web pages, e-mail, GEDCOM, EPUB, audio and video with VTT/SRT transcripts; references by DOI, ISBN or PubMed id; BibTeX, RIS and CSL-JSON import.
-> - **Claims** typed, captured from a linked document (one sentence, or all numbers, quotations, dates and names), split into facts, checked for staleness when the document changes.
-> - **Ties** to text passages and page regions, with supports, contradicts, mentions, absence, sum-of and claim-to-claim kinds, tick marks, confidence, and **status computed from confirmed ties**.
-> - **24 checks without AI**, Reckonings for conflicts, lineage and independence, reports (proof summary, claim table, coverage, chronology, reader verification kit, ClaimReview markup, exhibit bundle PDF with Bates numbers), notes written into .docx, tick sheets into .xlsx, sealed cases, review sign-offs and Second Reader Mode.
-> - **AI tab and AI menu** (35 commands) with the **Source Attribution Wizard** (*Draft Sources for Every Fact*): Claude drafts, with citations, where each fact in each sentence comes from; the app checks every cited passage word for word; a person verifies each draft in **Verify Drafts**.
+> - **Sources** from PDF (pages drawn, regions marked), pictures (regions, picture metadata, OCR in 25 languages), Word (.docx and 97–2003 .doc), Excel (.xlsx and 97–2003 .xls), PowerPoint, OpenDocument, Outlook .msg, e-mail, text, CSV, HTML and saved web pages, GEDCOM, EPUB, audio and video with transcripts; references by DOI, ISBN or PubMed id; public-domain texts from Project Gutenberg; **Repair Source File** for damaged files.
+> - **Claims** typed, captured from a linked document, split into facts, checked for staleness when the document changes; spelling.
+> - **Ties** to text passages and page regions, with **status computed from confirmed ties**; 24 checks without AI; Reckonings; lineage and independence.
+> - **Reports:** proof summary, claim table, coverage, chronology, reader verification kit, ClaimReview markup, exhibit bundle PDF with Bates numbers, GEDCOM export; notes written into .docx at the cited words; tick sheets in .xlsx; CSL citation styles.
+> - **AI tab and AI menu** with the **Source Attribution Wizard** (*Draft Sources for Every Fact*): Claude drafts, with citations, where each fact in each sentence comes from; this device picks the passages to send (Passages-only privacy works); the app checks every cited passage word for word; a person verifies each draft in **Verify Drafts**.
 >
-> Not yet: the built-in public-domain text shelf, Repair Source File through the sister apps' recovery engines, on-device AI models, spelling, and native Android/iOS/desktop builds produced by CI (the configuration is in place; see [docs/BUILD.md](docs/BUILD.md)). See [docs/ROADMAP.md](docs/ROADMAP.md).
+> Not yet verified: native installers (built only by the release workflow on GitHub, not yet run) and a run against the live Claude API (an opt-in test is ready). See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Why this app exists
 
@@ -101,6 +101,7 @@ As for the sister apps, each release will have builds for **Android** (APK and A
 | [docs/FORMATS-PLAN.md](docs/FORMATS-PLAN.md) | What can be a source, what can be a linked document, what is exported |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Milestones |
 | [docs/BUILD.md](docs/BUILD.md) | Building, testing, the command line, desktop and mobile builds |
+| [docs/ANCHORS.md](docs/ANCHORS.md) | How anchors point into sources and are found again |
 | [docs/LEGAL.md](docs/LEGAL.md) | Clean-room, trademark, privacy and licensing notes |
 | [AnnesWitness.meta.json](AnnesWitness.meta.json) | Repository description, topics, keywords, app id and icon color |
 

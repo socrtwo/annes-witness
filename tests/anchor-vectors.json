@@ -1,0 +1,307 @@
+{
+ "description": "Test vectors for findPassage (src/core/anchor.ts); see docs/ANCHORS.md. expect null = not found; 'contains' = the found range must contain this text.",
+ "vectors": [
+  {
+   "name": "unchanged offsets",
+   "text": "The parish register records that Mary Ann was baptized on 3 May 1903 at St. John's Church.",
+   "selector": {
+    "start": 46,
+    "end": 68,
+    "exact": "baptized on 3 May 1903",
+    "prefix": "ister records that Mary Ann was ",
+    "suffix": " at St. John's Church."
+   },
+   "expect": {
+    "start": 46,
+    "end": 68,
+    "how": "unchanged"
+   }
+  },
+  {
+   "name": "text inserted before the passage",
+   "text": "Page 2.\nThe parish register records that Mary Ann was baptized on 3 May 1903 at St. John's Church.",
+   "selector": {
+    "start": 46,
+    "end": 68,
+    "exact": "baptized on 3 May 1903",
+    "prefix": "ister records that Mary Ann was ",
+    "suffix": " at St. John's Church."
+   },
+   "expect": {
+    "start": 54,
+    "end": 76,
+    "how": "exact"
+   }
+  },
+  {
+   "name": "text removed before the passage",
+   "text": "Mary Ann was baptized on 3 May 1903 at St. John's Church.",
+   "selector": {
+    "start": 46,
+    "end": 68,
+    "exact": "baptized on 3 May 1903",
+    "prefix": "ister records that Mary Ann was ",
+    "suffix": " at St. John's Church."
+   },
+   "expect": {
+    "start": 13,
+    "end": 35,
+    "how": "exact"
+   }
+  },
+  {
+   "name": "exact text without offsets",
+   "text": "The parish register records that Mary Ann was baptized on 3 May 1903 at St. John's Church.",
+   "selector": {
+    "exact": "Mary Ann"
+   },
+   "expect": {
+    "start": 33,
+    "end": 41,
+    "how": "exact"
+   }
+  },
+  {
+   "name": "repeated passage: context picks the second occurrence",
+   "text": "Total 1,250. Total 1,250 was carried forward to the ledger.",
+   "selector": {
+    "exact": "Total 1,250",
+    "prefix": "Total 1,250. ",
+    "suffix": " was carried forward to the ledg"
+   },
+   "expect": {
+    "start": 13,
+    "end": 24,
+    "how": "exact"
+   }
+  },
+  {
+   "name": "repeated passage: context picks the first occurrence",
+   "text": "Total 1,250. Total 1,250 was carried forward to the ledger.",
+   "selector": {
+    "exact": "Total 1,250",
+    "prefix": "",
+    "suffix": ". Total 1,250 was carried forwar"
+   },
+   "expect": {
+    "start": 0,
+    "end": 11,
+    "how": "exact"
+   }
+  },
+  {
+   "name": "line break and spaces inside the passage",
+   "text": "The parish register records that Mary Ann was baptized\n   on 3 May 1903 at St. John's Church.",
+   "selector": {
+    "start": 46,
+    "end": 68,
+    "exact": "baptized on 3 May 1903",
+    "prefix": "ister records that Mary Ann was ",
+    "suffix": " at St. John's Church."
+   },
+   "expect": {
+    "start": 46,
+    "end": 71,
+    "how": "normalized"
+   }
+  },
+  {
+   "name": "curly quotes in the text, straight in the selector",
+   "text": "He wrote “the register is complete” in his report.",
+   "selector": {
+    "exact": "\"the register is complete\""
+   },
+   "expect": {
+    "start": 9,
+    "end": 35,
+    "how": "normalized"
+   }
+  },
+  {
+   "name": "straight quotes in the text, curly in the selector",
+   "text": "He wrote \"the register is complete\" in his report.",
+   "selector": {
+    "exact": "“the register is complete”"
+   },
+   "expect": {
+    "start": 9,
+    "end": 35,
+    "how": "normalized"
+   }
+  },
+  {
+   "name": "curly apostrophe matches straight",
+   "text": "St. John’s Church",
+   "selector": {
+    "exact": "St. John's Church"
+   },
+   "expect": {
+    "start": 0,
+    "end": 17,
+    "how": "normalized"
+   }
+  },
+  {
+   "name": "en dash matches hyphen",
+   "text": "pages 12–14 of the ledger",
+   "selector": {
+    "exact": "pages 12-14"
+   },
+   "expect": {
+    "start": 0,
+    "end": 11,
+    "how": "normalized"
+   }
+  },
+  {
+   "name": "em dash matches hyphen",
+   "text": "1903—the year of the fire",
+   "selector": {
+    "exact": "1903-the year"
+   },
+   "expect": {
+    "start": 0,
+    "end": 13,
+    "how": "normalized"
+   }
+  },
+  {
+   "name": "case differences",
+   "text": "MARY ANN SMITH, daughter",
+   "selector": {
+    "exact": "Mary Ann Smith"
+   },
+   "expect": {
+    "start": 0,
+    "end": 14,
+    "how": "normalized"
+   }
+  },
+  {
+   "name": "tabs count as whitespace",
+   "text": "Item\tAmount\tDue",
+   "selector": {
+    "exact": "Item Amount"
+   },
+   "expect": {
+    "start": 0,
+    "end": 11,
+    "how": "normalized"
+   }
+  },
+  {
+   "name": "OCR errors: fuzzy match",
+   "text": "The parish register records that Mary Ann was baptlzed on 3 Mav 1903 at St. John's Church.",
+   "selector": {
+    "start": 46,
+    "end": 68,
+    "exact": "baptized on 3 May 1903",
+    "prefix": "ister records that Mary Ann was ",
+    "suffix": " at St. John's Church."
+   },
+   "expect": {
+    "how": "fuzzy",
+    "contains": "1903"
+   }
+  },
+  {
+   "name": "OCR errors in two words: fuzzy match",
+   "text": "The parish register records that Mary Ann was baptizcd on 3 May 19O3 at St. John's Church.",
+   "selector": {
+    "exact": "Mary Ann was baptized on 3 May 1903 at St. John's"
+   },
+   "expect": {
+    "how": "fuzzy",
+    "contains": "Mary Ann was"
+   }
+  },
+  {
+   "name": "passage gone",
+   "text": "The parish register records that Mary Ann was baptized on 3 May 1903 at St. John's Church.",
+   "selector": {
+    "exact": "buried at the old cemetery on 9 June 1950"
+   },
+   "expect": null
+  },
+  {
+   "name": "empty exact",
+   "text": "The parish register records that Mary Ann was baptized on 3 May 1903 at St. John's Church.",
+   "selector": {
+    "exact": ""
+   },
+   "expect": null
+  },
+  {
+   "name": "short passage that does not occur",
+   "text": "The parish register records that Mary Ann was baptized on 3 May 1903 at St. John's Church.",
+   "selector": {
+    "exact": "zzz"
+   },
+   "expect": null
+  },
+  {
+   "name": "offsets point at different text: falls back to search",
+   "text": "The parish register records that Mary Ann was baptized on 3 May 1903 at St. John's Church.",
+   "selector": {
+    "start": 0,
+    "end": 8,
+    "exact": "Mary Ann"
+   },
+   "expect": {
+    "start": 33,
+    "end": 41,
+    "how": "exact"
+   }
+  },
+  {
+   "name": "non-Latin script, exact",
+   "text": "Ελληνικά κείμενα και Mary Ann",
+   "selector": {
+    "exact": "κείμενα"
+   },
+   "expect": {
+    "start": 9,
+    "end": 16,
+    "how": "exact"
+   }
+  },
+  {
+   "name": "a figure in workbook cell text",
+   "text": "Budget\nItem\tAmount\nPaper\t12.5\nInk\t40",
+   "selector": {
+    "exact": "12.5",
+    "prefix": "Paper\t",
+    "suffix": "\nInk"
+   },
+   "expect": {
+    "start": 25,
+    "end": 29,
+    "how": "exact"
+   }
+  },
+  {
+   "name": "non-breaking space matches a space",
+   "text": "Cash at bank 1 250 000",
+   "selector": {
+    "exact": "1 250 000"
+   },
+   "expect": {
+    "start": 13,
+    "end": 22,
+    "how": "normalized"
+   }
+  },
+  {
+   "name": "normalized match after a soft hyphen keeps exact offsets",
+   "text": "Bap­tism register. Mary Ann was baptized on 3 May 1903.",
+   "selector": {
+    "exact": "mary  ann WAS baptized"
+   },
+   "expect": {
+    "start": 19,
+    "end": 40,
+    "how": "normalized"
+   }
+  }
+ ]
+}

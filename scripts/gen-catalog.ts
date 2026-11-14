@@ -13,6 +13,7 @@ const reg = await import('../src/ui/registry');
 (await import('../src/ui/cmd-ai')).registerAiCommands();
 (await import('../src/ui/cmd-platform')).registerPlatformCommands();
 (await import('../src/ui/cmd-extra')).registerExtraCommands();
+(await import('../src/ui/cmd-formats')).registerFormatCommands();
 
 const all = reg.allCommands();
 const done = all.filter((c) => reg.isRegistered(c.id));

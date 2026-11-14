@@ -11,6 +11,7 @@ import { imageMime, readImage } from './image';
 import { readEml, readMbox } from './email';
 import { readGedcom } from './gedcom';
 import { readTranscript } from './transcript';
+import { readOle } from './ole';
 
 export interface ReadResult {
   kind: SourceKind;
@@ -80,6 +81,8 @@ export async function readFile(name: string, bytes: Uint8Array, mime?: string): 
     const z = await readZip(bytes, e);
     if (z) return z;
   }
+  const ole = readOle(bytes, e);
+  if (ole) return ole;
   const med = mediaMime(bytes, e);
   if (med && !looksText(bytes)) return { kind: 'recording', mime: med, text: '', segments: [] };
   if (!looksText(bytes)) {

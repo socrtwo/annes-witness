@@ -1,5 +1,14 @@
 // Citation formatting: an author-date style and a notes style, written for this app.
 import { CitationFields, Source } from '../core/types';
+import { parseCsl, cslBibliography, cslCitation, CslStyle } from './csl';
+
+// A CSL style loaded by the user (Report ▸ Citation Style) replaces the two built-in styles.
+let active: { xml: string; style: CslStyle } | null = null;
+export function setCslStyle(xml: string | undefined | null) {
+  if (!xml) { active = null; return; }
+  if (active?.xml === xml) return;
+  try { active = { xml, style: parseCsl(xml) }; } catch { active = null; }
+}
 
 function authorList(a: string[] | undefined, inverted: boolean): string {
   if (!a?.length) return '';
@@ -18,6 +27,10 @@ function authorList(a: string[] | undefined, inverted: boolean): string {
 const dot = (s: string) => (s && !/[.?!]$/.test(s) ? s + '.' : s);
 
 export function formatCitation(f: CitationFields, style: 'author-date' | 'notes', fallbackTitle = ''): string {
+  if (active) {
+    const ff = f.title ? f : { ...f, title: fallbackTitle || 'Untitled' };
+    try { return style === 'notes' ? cslCitation(active.style, ff) : cslBibliography(active.style, ff); } catch { /* fall back to the built-in style */ }
+  }
   const title = f.title || fallbackTitle || 'Untitled';
   const year = f.year || f.date?.match(/\d{4}/)?.[0] || 'n.d.';
   const quoted = ['article', 'chapter', 'web', 'record', 'letter', 'interview'].includes(f.type ?? '');

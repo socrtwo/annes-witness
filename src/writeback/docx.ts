@@ -1,6 +1,8 @@
-// Write notes into a copy of a .docx: footnotes, endnotes or comments, placed at the end of the paragraph that holds the claim.
+// Write notes into a copy of a .docx: footnotes, endnotes or comments, placed right after the claim's
+// words (splitting a run when the claim ends inside it), or at the end of the paragraph when the
+// words cross a structure that cannot be split.
 import JSZip from 'jszip';
-import { escapeXml } from '../readers/common';
+import { escapeXml, decodeEntities } from '../readers/common';
 import { paragraphText } from '../readers/ooxml';
 import { ensureOverride, ensureRel, NS_W, REL } from './ooxml-parts';
 
@@ -13,6 +15,84 @@ const PART: Record<Kind, { path: string; root: string; el: string; ct: string; r
 };
 
 const norm = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase();
+
+const MARK = '\u0000AW_MARK\u0000';
+
+/** Normalized text with a map from each normalized character back to its raw index. */
+function normMap(raw: string): { norm: string; map: number[] } {
+  let out = '';
+  const map: number[] = [];
+  let space = false;
+  for (let i = 0; i < raw.length; i++) {
+    if (/\s/.test(raw[i])) { if (!space && out) { out += ' '; map.push(i); } space = true; continue; }
+    space = false;
+    out += raw[i].toLowerCase();
+    map.push(i);
+  }
+  if (out.endsWith(' ')) { out = out.slice(0, -1); map.pop(); }
+  return { norm: out, map };
+}
+
+/** Raw [start, end) of the target words in the paragraph's text, or null. */
+function locateInParagraph(para: string, target: string): { start: number; end: number } | null {
+  const raw = paragraphText(para);
+  const { norm: n, map } = normMap(raw);
+  const i = n.indexOf(target);
+  if (i < 0) return null;
+  return { start: map[i], end: map[i + target.length - 1] + 1 };
+}
+
+const CHILD = /<w:t(?=[\s>])([^>]*)>([\s\S]*?)<\/w:t>|<w:t(?=[\s/])[^>]*\/>|<w:(tab|br|cr|noBreakHyphen|softHyphen)\b[^>]*\/>|<(w:[A-Za-z]+)\b[^>]*?(?:\/>|>[\s\S]*?<\/\4>)/g;
+const childLen = (m: RegExpExecArray) => (m[2] !== undefined ? decodeEntities(m[2]).length : m[3] ? (m[3] === 'softHyphen' ? 0 : 1) : 0);
+
+/**
+ * Put MARK into the paragraph so that it sits after `pos` characters of paragraph text, splitting the
+ * run there if needed. Returns null when `pos` is not inside a plain run (fields, text boxes…).
+ */
+function markAt(para: string, pos: number): string | null {
+  const runRe = /<w:r(?=[\s>])[^>]*>([\s\S]*?)<\/w:r>/g;
+  let consumed = 0;
+  let m: RegExpExecArray | null;
+  while ((m = runRe.exec(para))) {
+    const run = m[0];
+    const openTag = /^<w:r(?=[\s>])[^>]*>/.exec(run)![0];
+    let inner = m[1];
+    const rPr = /^\s*<w:rPr>[\s\S]*?<\/w:rPr>/.exec(inner)?.[0] ?? '';
+    inner = inner.slice(rPr.length);
+    // Text before this run that is outside runs would desynchronize counting; paragraphText counts only w:t etc.
+    const kids: { xml: string; len: number; t?: { attrs: string; text: string } }[] = [];
+    CHILD.lastIndex = 0;
+    let k: RegExpExecArray | null;
+    while ((k = CHILD.exec(inner))) kids.push({ xml: k[0], len: childLen(k), t: k[2] !== undefined ? { attrs: k[1], text: decodeEntities(k[2]) } : undefined });
+    const runLen = kids.reduce((a, c) => a + c.len, 0);
+    if (pos > consumed + runLen) { consumed += runLen; continue; }
+    if (pos === consumed && runLen > 0) {
+      // Starts exactly at the start of this run: mark before it.
+      return para.slice(0, m.index) + MARK + para.slice(m.index);
+    }
+    if (pos === consumed + runLen) {
+      // Ends exactly at the end of this run: mark after it.
+      return para.slice(0, m.index + run.length) + MARK + para.slice(m.index + run.length);
+    }
+    // Split inside this run.
+    let at = pos - consumed;
+    const first: string[] = [];
+    const second: string[] = [];
+    let split = false;
+    for (const c of kids) {
+      if (split) { second.push(c.xml); continue; }
+      if (at >= c.len) { first.push(c.xml); at -= c.len; if (at === 0) split = true; continue; }
+      if (!c.t) return null;
+      const a = c.t.text.slice(0, at), b = c.t.text.slice(at);
+      first.push(`<w:t xml:space="preserve">${escapeXml(a)}</w:t>`);
+      second.push(`<w:t xml:space="preserve">${escapeXml(b)}</w:t>`);
+      split = true;
+    }
+    const replacement = `${openTag}${rPr}${first.join('')}</w:r>${MARK}${openTag}${rPr}${second.join('')}</w:r>`;
+    return para.slice(0, m.index) + replacement + para.slice(m.index + run.length);
+  }
+  return null;
+}
 
 function emptyPart(kind: Kind): string {
   const p = PART[kind];
@@ -61,14 +141,23 @@ export async function insertNotesIntoDocx(
     while ((m = re.exec(doc))) {
       const para = m[0];
       if (!norm(paragraphText(para)).includes(target)) continue;
-      let out: string;
+      const loc = locateInParagraph(para, target);
+      let out: string | null = null;
       if (kind === 'comment') {
-        const afterPPr = /^<w:p(?:\s[^>]*)?>(?:\s*<w:pPr>[\s\S]*?<\/w:pPr>)?/.exec(para)![0];
-        out = afterPPr + `<w:commentRangeStart w:id="${id}"/>` + para.slice(afterPPr.length, -6) +
-          `<w:commentRangeEnd w:id="${id}"/><w:r><w:commentReference w:id="${id}"/></w:r></w:p>`;
+        const withEnd = loc ? markAt(para, loc.end) : null;
+        const endMarked = withEnd?.replace(MARK, `<w:commentRangeEnd w:id="${id}"/><w:r><w:commentReference w:id="${id}"/></w:r>`);
+        const withStart = endMarked && loc ? markAt(endMarked, loc.start) : null;
+        if (withStart) out = withStart.replace(MARK, `<w:commentRangeStart w:id="${id}"/>`);
+        if (!out) {
+          const afterPPr = /^<w:p(?:\s[^>]*)?>(?:\s*<w:pPr>[\s\S]*?<\/w:pPr>)?/.exec(para)![0];
+          out = afterPPr + `<w:commentRangeStart w:id="${id}"/>` + para.slice(afterPPr.length, -6) +
+            `<w:commentRangeEnd w:id="${id}"/><w:r><w:commentReference w:id="${id}"/></w:r></w:p>`;
+        }
       } else {
         const ref = kind === 'footnote' ? 'w:footnoteReference' : 'w:endnoteReference';
-        out = para.slice(0, -6) + `<w:r><w:rPr><w:vertAlign w:val="superscript"/></w:rPr><${ref} w:id="${id}"/></w:r></w:p>`;
+        const refRun = `<w:r><w:rPr><w:vertAlign w:val="superscript"/></w:rPr><${ref} w:id="${id}"/></w:r>`;
+        const marked = loc ? markAt(para, loc.end) : null;
+        out = marked ? marked.replace(MARK, refRun) : para.slice(0, -6) + refRun + '</w:p>';
       }
       doc = doc.slice(0, m.index) + out + doc.slice(m.index + para.length);
       part = part.replace(`</${p.root}>`, noteBody(kind, id, n.note) + `</${p.root}>`);

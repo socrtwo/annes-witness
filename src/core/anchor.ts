@@ -26,6 +26,7 @@ export function normalizeWithMap(s: string): { norm: string; map: number[] } {
       prevSpace = true;
     } else prevSpace = false;
     c = c.replace(/[‘’‛′]/, "'").replace(/[“”„″]/, '"').replace(/[‐‑‒–—―]/, '-').replace(/­/, '');
+    if (!c) continue; // a removed character (soft hyphen) must not add an entry to the offset map
     norm += c.toLowerCase();
     map.push(i);
   }

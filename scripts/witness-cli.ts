@@ -8,6 +8,7 @@ import { loadCase, verifySeal } from '../src/io/container';
 import { runChecks, quickTieTest } from '../src/checks/index';
 import { allStatuses, statusCounts } from '../src/core/status';
 import { proofSummary } from '../src/reports/proof';
+import { setCslStyle } from '../src/reports/citation';
 import { STATUS_LABEL, Status } from '../src/core/types';
 
 const [cmd, file, out, ...rest] = process.argv.slice(2).filter((a) => a !== '--');
@@ -26,6 +27,7 @@ if (cmd === 'verify') {
 
 const { data, report } = await loadCase(bytes);
 for (const r of report) console.error(`repair: ${r}`);
+setCslStyle(data.settings.cslStyle);
 const statuses = allStatuses(data, quickTieTest);
 
 if (cmd === 'check') {

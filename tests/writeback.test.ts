@@ -89,3 +89,38 @@ describe('xlsx write-back', () => {
     await expect(writeCellValue(wb, 'Nope', 'A1', 1)).rejects.toThrow();
   });
 });
+
+describe('docx notes at the claim', () => {
+  it('puts the reference right after the matched words, splitting the run', async () => {
+    const doc = await makeDocx(['Mary Ann Smith was born in 1902 in Ohio, the census says.']);
+    const r = await insertNotesIntoDocx(doc, [{ find: 'born in 1902 in Ohio', note: '[W1] 1910 census.' }]);
+    expect(r.placed).toBe(1);
+    const body = await (await JSZip.loadAsync(r.bytes)).file('word/document.xml')!.async('string');
+    const refAt = body.indexOf('<w:footnoteReference');
+    const before = body.slice(0, refAt).replace(/<[^>]+>/g, '');
+    const after = body.slice(refAt).replace(/<[^>]+>/g, '');
+    expect(before.endsWith('born in 1902 in Ohio')).toBe(true);
+    expect(after.startsWith(', the census says.')).toBe(true);
+  });
+  it('wraps exactly the matched words in a comment range', async () => {
+    const doc = await makeDocx(['Before. The claim words. After.']);
+    const r = await insertNotesIntoDocx(doc, [{ find: 'The claim words.', note: '[W2] c' }], 'comment');
+    const body = await (await JSZip.loadAsync(r.bytes)).file('word/document.xml')!.async('string');
+    const inside = body.slice(body.indexOf('<w:commentRangeStart'), body.indexOf('<w:commentRangeEnd')).replace(/<[^>]+>/g, '');
+    expect(inside).toBe('The claim words.');
+  });
+  it('matches across runs and whitespace differences', async () => {
+    const JSZipM = (await import('jszip')).default;
+    const z = await JSZipM.loadAsync(await makeDocx(['x']));
+    const xml = (await z.file('word/document.xml')!.async('string')).replace(/<w:body>[\s\S]*<w:sectPr/, '<w:body><w:p><w:r><w:rPr><w:b/></w:rPr><w:t>Total  revenue</w:t></w:r><w:r><w:t xml:space="preserve"> was $1.25 million</w:t></w:r><w:r><w:t> last year.</w:t></w:r></w:p><w:sectPr');
+    z.file('word/document.xml', xml);
+    const r = await insertNotesIntoDocx(await z.generateAsync({ type: 'uint8array' }), [{ find: 'total revenue was $1.25', note: '[W3] n' }]);
+    const body = await (await JSZip.loadAsync(r.bytes)).file('word/document.xml')!.async('string');
+    expect(body.slice(0, body.indexOf('<w:footnoteReference')).replace(/<[^>]+>/g, '')).toMatch(/was \$1\.25$/);
+    expect(body).toMatch(/<w:t xml:space="preserve"> was \$1\.25<\/w:t><\/w:r><w:r><w:rPr><w:vertAlign/);
+    // A run split in the middle keeps its formatting on both halves.
+    const r2 = await insertNotesIntoDocx(await z.generateAsync({ type: 'uint8array' }), [{ find: 'total', note: '[W4] n' }]);
+    const b2 = await (await JSZip.loadAsync(r2.bytes)).file('word/document.xml')!.async('string');
+    expect(b2).toMatch(/<w:r><w:rPr><w:b\/><\/w:rPr><w:t xml:space="preserve">Total<\/w:t><\/w:r><w:r><w:rPr><w:vertAlign w:val="superscript"\/><\/w:rPr><w:footnoteReference w:id="\d+"\/><\/w:r><w:r><w:rPr><w:b\/><\/w:rPr><w:t xml:space="preserve">  revenue<\/w:t>/);
+  });
+});

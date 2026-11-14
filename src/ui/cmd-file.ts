@@ -649,7 +649,7 @@ export function registerFileCommands() {
     const res = await fetch('third-party-notices.txt').catch(() => null);
     await alertBox('Third-Party Notices', res?.ok ? await res.text() : 'Anne’s Witness uses: Anthropic TypeScript SDK (MIT), JSZip (MIT or GPLv3, used under MIT), pdf.js (Apache 2.0), pdf-lib (MIT), sql.js (MIT), Tesseract.js (Apache 2.0), Material Symbols (Apache 2.0).');
   });
-  register('help.about', () => alertBox("About Anne's Witness", `Anne's Witness 0.1.0 — an evidence workbench. Part of the Anne's Office suite.\nMIT License. Copyright (c) 2026 Paul D Pruitt.\n${registeredIds().length} of ${allCommands().length} planned commands are available in this version.`));
+  register('help.about', () => alertBox("About Anne's Witness", `Anne's Witness 0.2.0 — an evidence workbench. Part of the Anne's Office suite.\nMIT License. Copyright (c) 2026 Paul D Pruitt.\n${registeredIds().length} of ${allCommands().length} planned commands are available in this version.`));
   void PLAN; void openBackstage; void findPassage;
 }
 

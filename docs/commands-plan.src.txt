@@ -289,7 +289,7 @@ Confidential Sources Log… | report.confidentialLog | | LAW | what was withheld
 Build Exhibit Bundle… | report.exhibits | | LAW,NEW | one PDF through Anne's Folio: each anchored page with its region outlined, numbered and indexed to the claims
 Number Exhibits… | report.numberExhibits | | LAW |
 Redact for Sharing… | report.redact | | LAW,GPS | removes confidential sources and living persons' details from a report or bundle; the case itself is unchanged
-Citation Style… | report.style | | REF | choose or import a CSL style
+Citation Style… | report.style | | REF | author-date, notes, or a CSL style file you load (a practical subset of CSL 1.0.2)
 
 @tab review | Review | Work on a case with other people: assign, comment, sign off
 
@@ -359,7 +359,8 @@ Open Claim in Its App | tools.openInApp | | SUITE | jumps to the sentence, cell,
 Open Source in Its App | tools.openSourceInApp | | SUITE |
 Send Table to Anne's Grid | tools.toGrid | | SUITE |
 Send Case Data to Anne's Base | tools.toBase | | SUITE |
-Citations from GEDCOM… | tools.gedcomCitations | | GPS | reads the source citations in a family tree file as claims and sources; writes them back on export
+Citations from GEDCOM… | tools.gedcomCitations | | GPS | reads the source citations in a family tree file as claims and sources
+Export Citations as GEDCOM… | tools.exportGedcom | | GPS | sources, claims and confirmed citations as a GEDCOM 5.5.1 file that family-tree programs can import
 
 ## Data
 Import… | tools.import | | SUITE | see FORMATS-PLAN.md

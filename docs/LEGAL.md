@@ -55,7 +55,11 @@ The documentation names other products (Adobe Acrobat, Photoshop, Illustrator, I
 | pdf-lib (exhibit bundles) | MIT |
 | Tesseract.js (OCR, as in Anne's Folio) | Apache 2.0 |
 | JSZip | MIT (dual-licensed MIT or GPLv3; used under MIT) |
-| Citation formatting | the app's own code (two built-in styles); a CSL processor is still to be chosen |
+| Citation formatting | the app's own code: two built-in styles and a clean-room interpreter for a subset of CSL 1.0.2. CSL style files are loaded by the user; none are bundled (most are CC BY-SA). |
+| nspell, English Hunspell dictionaries (dictionary-en and regional variants) | MIT; dictionaries under their own permissive SCOWL-derived licenses, listed in the notices |
+| Legacy .doc/.xls readers and recovery | ported from Anne's Pen and Anne's Grid (MIT, same author) |
+| Electron, electron-builder, Capacitor | MIT |
+| axe-core (tests only, not shipped) | MPL 2.0 |
 | CSL style files | each style's own license (most are CC BY-SA; styles are data loaded by the user, and a small permissively licensed set is bundled) |
 | ONNX Runtime Web, Transformers.js (not yet used) | MIT, Apache 2.0 |
 | Material Symbols | Apache 2.0 |
