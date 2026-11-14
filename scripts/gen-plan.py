@@ -35,6 +35,9 @@ ORIGINS = {
     "REF": "Reference managers (citation records and styles)",
     "QDA": "Qualitative research tools (coding passages, matrices)",
     "GENAI": "Generative AI assistants",
+    "OSINT": "Open-source investigation practice (web capture, archiving, picture metadata, hash logs)",
+    "SCI": "Citation-context tools for scholarly literature (supporting, contrasting, retracted)",
+    "ANNO": "Web and document annotation tools (passages anchored by quotation)",
 }
 
 ID_RE = re.compile(r"^[a-z][a-zA-Z0-9]*\.[a-z][a-zA-Z0-9]*$")
@@ -157,8 +160,8 @@ def render_md(tabs) -> str:
         "# Command plan",
         "",
         "> **Plan. Generated file:** edit [commands-plan.src.txt](commands-plan.src.txt) and run "
-        "`python3 scripts/gen-plan.py`. Anne's Witness has no code yet; this is the inventory the command "
-        "registry will be built from. A command is registered in the app only when it works.",
+        "`python3 scripts/gen-plan.py`. This is the inventory the command registry is built from. A command is "
+        "registered in the app only when it works; [COMMANDS.md](COMMANDS.md) lists which are implemented.",
         "",
         f"**{total} commands** on {len(tabs)} tabs. Every command can go on the Quick Access Bar, on a custom "
         "tab, in the classic menu bar, on a keyboard shortcut or in a macro, and is found by command search "

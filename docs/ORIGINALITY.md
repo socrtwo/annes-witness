@@ -73,6 +73,13 @@ These are named so that readers can judge the overlap themselves. Each does part
 | Case-analysis tools for lawyers | CaseMap | Facts linked to documents for litigation | Not built around litigation; checks; suite documents |
 | Web annotation | Hypothes.is | Notes anchored to passages of web pages | Anchors serve claims and statuses; all file types; offline |
 | AI research assistants with citations | NotebookLM and similar | Generated answers attributed to uploaded sources | See the Acrobat AI Assistant row above |
+| Citation-context tools | scite and similar | Whether later papers support, contrast or mention a cited work; retraction notices | The same three kinds, applied to your own claims and any source; retraction lookup |
+| Fact-checking aids | ClaimBuster-style check-worthiness ranking, published ClaimReview markup | Which sentences are worth checking; machine-readable verdicts | Check-Worthiness (rule-based) and ClaimReview export from a person's Editorial Verdict |
+| Open-source investigation tools | Hunchly, web archives, image-verification toolkits | Capturing pages with time and hash; archived copies; picture metadata; reverse image search | Capture Web Page, archive links, Picture Metadata, Reverse Image Search, Hash Report |
+| Document-matching add-ins for audit | DataSnipper and similar | Matching spreadsheet figures to source documents | Match Column to Sources and Snip Value to Cell, as proposals verified by a person |
+| Handwriting transcription platforms | Transkribus, FromThePage | Transcribing manuscript pages, review status | Transcribe, Transcription Status, Compare Transcriptions |
+
+In 0.1.0, commands drawn from these practices are marked in the command plan with the origin codes REF, GPS, AUD, FACT, QDA, TXT, LAW, OSINT, SCI and ANNO; no text, code or interface was copied from any of these products.
 
 ## 4. What is new in the combination
 

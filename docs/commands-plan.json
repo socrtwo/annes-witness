@@ -11,7 +11,10 @@
     "LAW": "Exhibit practice (numbered exhibits, sealed copies, redaction)",
     "REF": "Reference managers (citation records and styles)",
     "QDA": "Qualitative research tools (coding passages, matrices)",
-    "GENAI": "Generative AI assistants"
+    "GENAI": "Generative AI assistants",
+    "OSINT": "Open-source investigation practice (web capture, archiving, picture metadata, hash logs)",
+    "SCI": "Citation-context tools for scholarly literature (supporting, contrasting, retracted)",
+    "ANNO": "Web and document annotation tools (passages anchored by quotation)"
   },
   "tabs": [
     {
@@ -135,6 +138,17 @@
                 "SUITE"
               ],
               "notes": "two cases side by side",
+              "inTabs": true
+            },
+            {
+              "id": "file.importTextFolder",
+              "label": "Open Text Folder…",
+              "shortcut": "",
+              "origins": [
+                "SUITE",
+                "NEW"
+              ],
+              "notes": "a case exported with Export Case as Text Folder",
               "inTabs": true
             },
             {
@@ -653,6 +667,56 @@
               ],
               "notes": "a text from the built-in shelf (see FORMATS-PLAN.md) for checking quotations",
               "inTabs": true
+            },
+            {
+              "id": "source.addByIdentifier",
+              "label": "Add by Identifier…",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "a DOI, ISBN or PubMed id; details come from a public catalog (opt-in)",
+              "inTabs": true
+            },
+            {
+              "id": "source.importReferences",
+              "label": "Import References…",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "BibTeX, RIS or CSL-JSON; each reference becomes a reference-work source",
+              "inTabs": true
+            },
+            {
+              "id": "source.importAnnotations",
+              "label": "Import Web Annotations…",
+              "shortcut": "",
+              "origins": [
+                "ANNO"
+              ],
+              "notes": "W3C Web Annotation JSON (including annotation-service exports) as anchors on captured pages",
+              "inTabs": true
+            },
+            {
+              "id": "source.archivePublic",
+              "label": "Archive Page to Public Web Archive…",
+              "shortcut": "",
+              "origins": [
+                "OSINT"
+              ],
+              "notes": "asks a public web archive to save the page; sends the address only",
+              "inTabs": true
+            },
+            {
+              "id": "source.waybackLookup",
+              "label": "Find Archived Copies…",
+              "shortcut": "",
+              "origins": [
+                "OSINT"
+              ],
+              "notes": "earlier saved copies of a web source's address",
+              "inTabs": true
             }
           ]
         },
@@ -743,6 +807,46 @@
               ],
               "notes": "folders, tags and colors",
               "inTabs": true
+            },
+            {
+              "id": "source.template",
+              "label": "Source Template…",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "detail and citation fields by record type: census, register, deed, will, newspaper, ledger, bank statement, interview",
+              "inTabs": true
+            },
+            {
+              "id": "source.siglum",
+              "label": "Siglum…",
+              "shortcut": "",
+              "origins": [
+                "TXT"
+              ],
+              "notes": "a short label for each witness of a text, used in collations",
+              "inTabs": true
+            },
+            {
+              "id": "source.flagKey",
+              "label": "Mark as Key Document",
+              "shortcut": "",
+              "origins": [
+                "LAW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "source.exif",
+              "label": "Picture Metadata",
+              "shortcut": "",
+              "origins": [
+                "OSINT"
+              ],
+              "notes": "camera, date taken, place and software recorded inside a picture file",
+              "inTabs": true
             }
           ]
         },
@@ -799,6 +903,26 @@
                 "NEW"
               ],
               "notes": "rotate, zoom, contrast and invert for reading only; nothing is saved into the source",
+              "inTabs": true
+            },
+            {
+              "id": "source.transcriptionStatus",
+              "label": "Transcription Status…",
+              "shortcut": "",
+              "origins": [
+                "TXT"
+              ],
+              "notes": "none, started, done or reviewed, per source",
+              "inTabs": true
+            },
+            {
+              "id": "source.reverseImageSearch",
+              "label": "Reverse Image Search…",
+              "shortcut": "",
+              "origins": [
+                "OSINT"
+              ],
+              "notes": "opens public image search services for a web picture's address",
               "inTabs": true
             }
           ]
@@ -864,6 +988,16 @@
                 "NEW"
               ],
               "notes": "identical files, and near-identical scans of the same page",
+              "inTabs": true
+            },
+            {
+              "id": "source.retrieveMetadata",
+              "label": "Retrieve Citation Details",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "fills citation fields from a public catalog by DOI or title (opt-in)",
               "inTabs": true
             }
           ]
@@ -952,6 +1086,48 @@
               "inTabs": true
             },
             {
+              "id": "claim.fromPassage",
+              "label": "Make Claim from Source Passage",
+              "shortcut": "",
+              "origins": [
+                "REF",
+                "ANNO"
+              ],
+              "notes": "the selected passage of a source becomes a claim already tied to it",
+              "inTabs": true
+            },
+            {
+              "id": "claim.importCsv",
+              "label": "Import Claims from CSV…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "one claim per row: text, kind, group, tags",
+              "inTabs": true
+            },
+            {
+              "id": "claim.atomize",
+              "label": "Split into Facts",
+              "shortcut": "",
+              "origins": [
+                "FACT",
+                "NEW"
+              ],
+              "notes": "rule-based: a sentence that joins several assertions becomes one claim per assertion",
+              "inTabs": true
+            },
+            {
+              "id": "claim.checkWorthiness",
+              "label": "Check-Worthiness",
+              "shortcut": "",
+              "origins": [
+                "FACT"
+              ],
+              "notes": "ranks the linked document's sentences by how much they assert that can be checked; no AI",
+              "inTabs": true
+            },
+            {
               "id": "claim.refresh",
               "label": "Refresh from Document",
               "shortcut": "F5",
@@ -1028,6 +1204,26 @@
               "inTabs": true
             },
             {
+              "id": "claim.tags",
+              "label": "Tags…",
+              "shortcut": "",
+              "origins": [
+                "QDA"
+              ],
+              "notes": "your own labels for claims, like codes in a code book",
+              "inTabs": true
+            },
+            {
+              "id": "claim.savedViews",
+              "label": "Saved Views…",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "named filters, like saved searches",
+              "inTabs": true
+            },
+            {
               "id": "claim.renumber",
               "label": "Renumber Claims",
               "shortcut": "",
@@ -1061,6 +1257,16 @@
                 "NEW"
               ],
               "notes": "a statement that is not meant to be proven; the reason is recorded and shown in reports",
+              "inTabs": true
+            },
+            {
+              "id": "claim.verdict",
+              "label": "Editorial Verdict…",
+              "shortcut": "",
+              "origins": [
+                "FACT"
+              ],
+              "notes": "a rating a person chooses for publication (for example a fact-check scale); never computed, and separate from status",
               "inTabs": true
             },
             {
@@ -1262,6 +1468,16 @@
               ],
               "notes": "asks once, lists the count; never runs silently",
               "inTabs": true
+            },
+            {
+              "id": "tie.confidence",
+              "label": "Tie Confidence…",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "very low to very high, a person's judgment recorded with the tie",
+              "inTabs": true
             }
           ]
         },
@@ -1297,6 +1513,26 @@
                 "NEW"
               ],
               "notes": "proposes ties where a claim's number or quotation appears exactly once in the sources; proposals only",
+              "inTabs": true
+            },
+            {
+              "id": "tie.matchColumn",
+              "label": "Match Column to Sources…",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "each figure in a column of a linked workbook is matched to equal figures in the sources; proposals only",
+              "inTabs": true
+            },
+            {
+              "id": "tie.snipToCell",
+              "label": "Snip Value to Cell…",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "writes the anchored figure into a cell of a copy of the linked workbook and ties the cell's claim to it",
               "inTabs": true
             },
             {
@@ -1463,6 +1699,37 @@
               ],
               "notes": "conversions use a stated rate and date",
               "inTabs": true
+            },
+            {
+              "id": "check.numberConsistency",
+              "label": "Number Consistency",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "the same quantity stated with different values in one document",
+              "inTabs": true
+            },
+            {
+              "id": "check.precision",
+              "label": "Precision Check",
+              "shortcut": "",
+              "origins": [
+                "FACT",
+                "NEW"
+              ],
+              "notes": "a claim more precise than its source (1,234,567 where the source says about 1.2 million)",
+              "inTabs": true
+            },
+            {
+              "id": "check.materiality",
+              "label": "Materiality",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "number differences at or below the case's threshold are listed as trivial",
+              "inTabs": true
             }
           ]
         },
@@ -1568,6 +1835,59 @@
               ],
               "notes": "claims resting on one source, on derivative sources only, on second-hand information only, or on a source marked unreliable",
               "inTabs": true
+            },
+            {
+              "id": "check.selfContradiction",
+              "label": "Self-Contradiction",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "two claims about the same person or subject with conflicting dates or numbers",
+              "inTabs": true
+            },
+            {
+              "id": "check.hedging",
+              "label": "Hedging Check",
+              "shortcut": "",
+              "origins": [
+                "FACT",
+                "NEW"
+              ],
+              "notes": "the claim is certain where the tied passage hedges (may, possibly, about)",
+              "inTabs": true
+            },
+            {
+              "id": "check.recency",
+              "label": "Recency Check",
+              "shortcut": "",
+              "origins": [
+                "FACT",
+                "NEW"
+              ],
+              "notes": "a claim about the present tied only to old sources",
+              "inTabs": true
+            },
+            {
+              "id": "check.retractions",
+              "label": "Retraction Check",
+              "shortcut": "",
+              "origins": [
+                "REF",
+                "SCI"
+              ],
+              "notes": "cited works marked as retracted or corrected in a public catalog (opt-in)",
+              "inTabs": true
+            },
+            {
+              "id": "check.rules",
+              "label": "Run Rules",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "your own checks from Tools ▸ Rules",
+              "inTabs": true
             }
           ]
         }
@@ -1621,6 +1941,16 @@
                 "GPS"
               ],
               "notes": "when each record was made relative to the event",
+              "inTabs": true
+            },
+            {
+              "id": "resolve.variantHeatmap",
+              "label": "Variant Heat Map",
+              "shortcut": "",
+              "origins": [
+                "TXT"
+              ],
+              "notes": "where collated versions differ most",
               "inTabs": true
             }
           ]
@@ -1702,6 +2032,16 @@
                 "SUITE"
               ],
               "notes": "a record still to be found or a person to ask",
+              "inTabs": true
+            },
+            {
+              "id": "resolve.correspondence",
+              "label": "Correspondence Log…",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "letters and messages sent to archives and people, and the replies",
               "inTabs": true
             },
             {
@@ -1856,6 +2196,78 @@
               ],
               "notes": "what changed between two versions of the case",
               "inTabs": true
+            },
+            {
+              "id": "report.readerKit",
+              "label": "Reader Verification Kit…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "one web page: the document, with each claim opening its quoted passages and citations",
+              "inTabs": true
+            },
+            {
+              "id": "report.claimReview",
+              "label": "ClaimReview Markup…",
+              "shortcut": "",
+              "origins": [
+                "FACT"
+              ],
+              "notes": "schema.org markup for published fact checks, from editorial verdicts",
+              "inTabs": true
+            },
+            {
+              "id": "report.chronology",
+              "label": "Chronology…",
+              "shortcut": "",
+              "origins": [
+                "LAW",
+                "GPS"
+              ],
+              "notes": "claims and records in date order on one calendar",
+              "inTabs": true
+            },
+            {
+              "id": "report.citationContext",
+              "label": "Citation Context Report…",
+              "shortcut": "",
+              "origins": [
+                "SCI"
+              ],
+              "notes": "for each source, how many claims it supports, contradicts or mentions",
+              "inTabs": true
+            },
+            {
+              "id": "report.apparatus",
+              "label": "Variant Apparatus…",
+              "shortcut": "",
+              "origins": [
+                "TXT"
+              ],
+              "notes": "the variant readings of collated versions, by position",
+              "inTabs": true
+            },
+            {
+              "id": "report.hashes",
+              "label": "Hash Report…",
+              "shortcut": "",
+              "origins": [
+                "OSINT",
+                "LAW"
+              ],
+              "notes": "every source with its file and content fingerprints",
+              "inTabs": true
+            },
+            {
+              "id": "report.confidentialLog",
+              "label": "Confidential Sources Log…",
+              "shortcut": "",
+              "origins": [
+                "LAW"
+              ],
+              "notes": "what was withheld from a report or bundle, without its content",
+              "inTabs": true
             }
           ]
         },
@@ -1992,6 +2404,46 @@
               ],
               "notes": "hides the first person's ties so a reviewer finds the support independently, then compares",
               "inTabs": true
+            },
+            {
+              "id": "review.verifyDrafts",
+              "label": "Verify Drafts",
+              "shortcut": "Ctrl+Shift+V",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "step through every proposed tie with its passage: confirm, reject, change kind or skip",
+              "inTabs": true
+            },
+            {
+              "id": "review.progress",
+              "label": "Verification Progress",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "how many drafts are confirmed, rejected and waiting, by claim and by source",
+              "inTabs": true
+            },
+            {
+              "id": "review.agreement",
+              "label": "Reviewer Agreement…",
+              "shortcut": "",
+              "origins": [
+                "QDA"
+              ],
+              "notes": "how often two people's ties agree, corrected for chance (Cohen's kappa)",
+              "inTabs": true
+            },
+            {
+              "id": "review.sample",
+              "label": "Sample Claims for Review…",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "a random or amount-weighted sample of claims for a second look",
+              "inTabs": true
             }
           ]
         },
@@ -2111,6 +2563,36 @@
                 "GPS"
               ],
               "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.people",
+              "label": "People Index",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "every name in claims and sources, with variant spellings grouped",
+              "inTabs": true
+            },
+            {
+              "id": "view.chronology",
+              "label": "Chronology",
+              "shortcut": "",
+              "origins": [
+                "LAW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.wordFrequency",
+              "label": "Word Frequency",
+              "shortcut": "",
+              "origins": [
+                "QDA"
+              ],
+              "notes": "the commonest words of the selected sources",
               "inTabs": true
             },
             {
@@ -2457,6 +2939,16 @@
               ],
               "notes": "possible reasons two sources differ (copying error, calendar, different person, later correction); labeled as possibilities",
               "inTabs": true
+            },
+            {
+              "id": "ai.suggestQuestions",
+              "label": "Suggest Questions",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "questions the case's sources could answer, to start Ask the Case",
+              "inTabs": true
             }
           ]
         },
@@ -2472,6 +2964,28 @@
                 "NEW"
               ],
               "notes": "proposes the checkable statements in the linked document, including ones the pattern rules miss",
+              "inTabs": true
+            },
+            {
+              "id": "ai.attributionWizard",
+              "label": "Draft Sources for Every Fact…",
+              "shortcut": "Ctrl+Alt+W",
+              "origins": [
+                "GENAI",
+                "NEW"
+              ],
+              "notes": "the Source Attribution Wizard: splits each sentence of a document into facts and drafts, for each, the passages in the case's sources that support or contradict it, as proposed ties for Verify Drafts; uses Claude's citations, re-checked by the app",
+              "inTabs": true
+            },
+            {
+              "id": "ai.atomize",
+              "label": "Split into Facts with AI",
+              "shortcut": "",
+              "origins": [
+                "GENAI",
+                "FACT"
+              ],
+              "notes": "proposes the separate facts in the selected sentence claims",
               "inTabs": true
             },
             {

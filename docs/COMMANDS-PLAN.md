@@ -1,8 +1,8 @@
 # Command plan
 
-> **Plan. Generated file:** edit [commands-plan.src.txt](commands-plan.src.txt) and run `python3 scripts/gen-plan.py`. Anne's Witness has no code yet; this is the inventory the command registry will be built from. A command is registered in the app only when it works.
+> **Plan. Generated file:** edit [commands-plan.src.txt](commands-plan.src.txt) and run `python3 scripts/gen-plan.py`. This is the inventory the command registry is built from. A command is registered in the app only when it works; [COMMANDS.md](COMMANDS.md) lists which are implemented.
 
-**257 commands** on 14 tabs. Every command can go on the Quick Access Bar, on a custom tab, in the classic menu bar, on a keyboard shortcut or in a macro, and is found by command search (Alt+Q). The classic menu bar has one menu per tab, including an **AI** menu. Shortcuts are planned defaults and can all be rebound.
+**307 commands** on 14 tabs. Every command can go on the Quick Access Bar, on a custom tab, in the classic menu bar, on a keyboard shortcut or in a macro, and is found by command search (Alt+Q). The classic menu bar has one menu per tab, including an **AI** menu. Shortcuts are planned defaults and can all be rebound.
 
 ## Origins
 
@@ -18,23 +18,26 @@
 | REF | Reference managers (citation records and styles) |
 | QDA | Qualitative research tools (coding passages, matrices) |
 | GENAI | Generative AI assistants |
+| OSINT | Open-source investigation practice (web capture, archiving, picture metadata, hash logs) |
+| SCI | Citation-context tools for scholarly literature (supporting, contrasting, retracted) |
+| ANNO | Web and document annotation tools (passages anchored by quotation) |
 
 ## Tabs
 
 | Tab | Commands | What it is for |
 |---|---|---|
-| [File](#file) | 29 | Create, open, save, pack, seal, protect, print and close cases; options |
+| [File](#file) | 30 | Create, open, save, pack, seal, protect, print and close cases; options |
 | [Home](#home) | 19 | Editing basics and the everyday loop: capture a claim, tie it, move to the next open one |
-| [Sources](#sources) | 28 | Bring in the records, pictures, files and pages that the evidence comes from, and describe each one |
-| [Claims](#claims) | 21 | List what your work says: every statement, number, date, name, relationship and quotation that should be backed by something |
-| [Ties](#ties) | 20 | Connect a claim to the exact spot in a source that bears on it, and say how |
-| [Check](#check) | 20 | Tests the app computes itself, without AI: do the words, numbers, dates and files still agree? |
-| [Resolve](#resolve) | 12 | When sources disagree: lay them side by side, weigh them and write down the decision |
-| [Report](#report) | 16 | Turn the case into something a reader can check: notes, tables, exhibits and a written proof |
-| [Review](#review) | 10 | Work on a case with other people: assign, comment, sign off |
-| [View](#view) | 22 | Panes, layouts and pictures of the case |
+| [Sources](#sources) | 40 | Bring in the records, pictures, files and pages that the evidence comes from, and describe each one |
+| [Claims](#claims) | 28 | List what your work says: every statement, number, date, name, relationship and quotation that should be backed by something |
+| [Ties](#ties) | 23 | Connect a claim to the exact spot in a source that bears on it, and say how |
+| [Check](#check) | 28 | Tests the app computes itself, without AI: do the words, numbers, dates and files still agree? |
+| [Resolve](#resolve) | 14 | When sources disagree: lay them side by side, weigh them and write down the decision |
+| [Report](#report) | 23 | Turn the case into something a reader can check: notes, tables, exhibits and a written proof |
+| [Review](#review) | 14 | Work on a case with other people: assign, comment, sign off |
+| [View](#view) | 25 | Panes, layouts and pictures of the case |
 | [Tools](#tools) | 12 | Macros, batch work and connections to the other apps |
-| [AI](#ai) | 32 | Optional helpers that find, read and draft. They propose; they never decide. See AI-PLAN.md |
+| [AI](#ai) | 35 | Optional helpers that find, read and draft. They propose; they never decide. See AI-PLAN.md |
 | [Developer](#developer) | 7 | Scripting and the case's data, for people who want to build on it |
 | [Help](#help) | 9 | Help, examples and about |
 
@@ -62,6 +65,7 @@ Create, open, save, pack, seal, protect, print and close cases; options.
 | Recent Cases | `file.openRecent` |  | SUITE |  |
 | Pinned Cases | `file.pinned` |  | SUITE |  |
 | Open in New Window | `file.newWindow` | `Ctrl+Shift+N` | SUITE | two cases side by side |
+| Open Text Folder… | `file.importTextFolder` |  | SUITE, NEW | a case exported with Export Case as Text Folder |
 | Show in Folder | `file.revealInFolder` |  | SUITE |  |
 
 ### Save
@@ -156,6 +160,11 @@ Bring in the records, pictures, files and pages that the evidence comes from, an
 | Add Interview or Recollection… | `source.addTestimony` |  | GPS | a typed record of what a person said, who heard it and when |
 | Add Reference Work… | `source.addReference` |  | REF | a book, article or data set you cite but do not hold as a file |
 | Add Public-Domain Text… | `source.addLibraryText` |  | NEW | a text from the built-in shelf (see FORMATS-PLAN.md) for checking quotations |
+| Add by Identifier… | `source.addByIdentifier` |  | REF | a DOI, ISBN or PubMed id; details come from a public catalog (opt-in) |
+| Import References… | `source.importReferences` |  | REF | BibTeX, RIS or CSL-JSON; each reference becomes a reference-work source |
+| Import Web Annotations… | `source.importAnnotations` |  | ANNO | W3C Web Annotation JSON (including annotation-service exports) as anchors on captured pages |
+| Archive Page to Public Web Archive… | `source.archivePublic` |  | OSINT | asks a public web archive to save the page; sends the address only |
+| Find Archived Copies… | `source.waybackLookup` |  | OSINT | earlier saved copies of a web source's address |
 
 ### Describe
 
@@ -169,6 +178,10 @@ Bring in the records, pictures, files and pages that the evidence comes from, an
 | Reliability Notes… | `source.reliability` |  | GPS, FACT | free notes on bias, legibility, damage and known errors |
 | Mark as Confidential | `source.confidential` |  | NEW | left out of exports, exhibits and every AI request |
 | Group Sources… | `source.group` |  | NEW | folders, tags and colors |
+| Source Template… | `source.template` |  | GPS | detail and citation fields by record type: census, register, deed, will, newspaper, ledger, bank statement, interview |
+| Siglum… | `source.siglum` |  | TXT | a short label for each witness of a text, used in collations |
+| Mark as Key Document | `source.flagKey` |  | LAW |  |
+| Picture Metadata | `source.exif` |  | OSINT | camera, date taken, place and software recorded inside a picture file |
 
 ### Read
 
@@ -179,6 +192,8 @@ Bring in the records, pictures, files and pages that the evidence comes from, an
 | Compare Transcriptions | `source.compareTranscriptions` |  | TXT, NEW | two or more readings of the same page aligned word by word (two OCR engines, two people, OCR against typing) |
 | Translate Note… | `source.translationNote` |  | TXT | your own translation of a passage, kept beside the original |
 | Page and Region Tools | `source.regionTools` |  | NEW | rotate, zoom, contrast and invert for reading only; nothing is saved into the source |
+| Transcription Status… | `source.transcriptionStatus` |  | TXT | none, started, done or reviewed, per source |
+| Reverse Image Search… | `source.reverseImageSearch` |  | OSINT | opens public image search services for a web picture's address |
 
 ### Maintain
 
@@ -190,6 +205,7 @@ Bring in the records, pictures, files and pages that the evidence comes from, an
 | Repair Source File… | `source.repair` |  | SUITE | hands a damaged file to the suite recovery engine of its type (Folio, Pen, Grid, Lens, Base); the repaired copy is added as a derivative |
 | Remove Source… | `source.remove` |  | NEW | refused while ties use it, unless the ties are removed in the same step |
 | Find Duplicate Sources | `source.findDuplicates` |  | NEW | identical files, and near-identical scans of the same page |
+| Retrieve Citation Details | `source.retrieveMetadata` |  | REF | fills citation fields from a public catalog by DOI or title (opt-in) |
 
 ## Claims
 
@@ -206,6 +222,10 @@ List what your work says: every statement, number, date, name, relationship and 
 | Capture All Dates and Names | `claim.captureFacts` |  | GPS, FACT | by the app's own pattern rules, no AI needed |
 | Capture from Citations | `claim.fromCitations` |  | REF | each footnote or reference in the document becomes a claim tied to the work it names |
 | Link Document… | `claim.linkDocument` |  | NEW | attach an Anne's Pen, Grid, Stage, Press, Loom, Base or Chart file (or .docx, .xlsx, .pptx, .pdf, .ged) as the work being checked |
+| Make Claim from Source Passage | `claim.fromPassage` |  | REF, ANNO | the selected passage of a source becomes a claim already tied to it |
+| Import Claims from CSV… | `claim.importCsv` |  | NEW | one claim per row: text, kind, group, tags |
+| Split into Facts | `claim.atomize` |  | FACT, NEW | rule-based: a sentence that joins several assertions becomes one claim per assertion |
+| Check-Worthiness | `claim.checkWorthiness` |  | FACT | ranks the linked document's sentences by how much they assert that can be checked; no AI |
 | Refresh from Document | `claim.refresh` | `F5` | NEW | re-reads the linked documents; changed claims become Stale, deleted ones are listed |
 
 ### Organize
@@ -218,6 +238,8 @@ List what your work says: every statement, number, date, name, relationship and 
 | Depends On… | `claim.dependsOn` |  | NEW | this claim is a conclusion from other claims; it cannot be stronger than the weakest of them |
 | Group Claims… | `claim.group` |  | NEW | by chapter, statement line, person, topic or tag |
 | Sort and Filter… | `claim.filter` | `Ctrl+Shift+L` | SUITE | by status, kind, owner, source, importance or check result |
+| Tags… | `claim.tags` |  | QDA | your own labels for claims, like codes in a code book |
+| Saved Views… | `claim.savedViews` |  | REF | named filters, like saved searches |
 | Renumber Claims | `claim.renumber` |  | AUD |  |
 
 ### Status
@@ -226,6 +248,7 @@ List what your work says: every statement, number, date, name, relationship and 
 |---|---|---|---|---|
 | Set Status… | `claim.setStatus` |  | NEW | Open, Supported, Corroborated, Disputed, Settled, Stale or Set Aside; Supported and Corroborated can only be set while confirmed ties justify them |
 | Set Aside as Opinion or Assumption… | `claim.setAside` |  | FACT, NEW | a statement that is not meant to be proven; the reason is recorded and shown in reports |
+| Editorial Verdict… | `claim.verdict` |  | FACT | a rating a person chooses for publication (for example a fact-check scale); never computed, and separate from status |
 | Assign To… | `claim.assign` |  | SUITE |  |
 | Add Note… | `claim.note` |  | SUITE |  |
 | Flag for Follow-Up | `claim.flag` |  | SUITE |  |
@@ -258,6 +281,7 @@ Connect a claim to the exact spot in a source that bears on it, and say how.
 | Confirm Proposed Tie | `tie.confirm` | `Ctrl+Enter` | NEW | accept a tie proposed by AI or by Auto-Tie; records who confirmed it |
 | Reject Proposed Tie | `tie.reject` | `Ctrl+Backspace` | NEW |  |
 | Confirm All in Selection… | `tie.confirmAll` |  | NEW | asks once, lists the count; never runs silently |
+| Tie Confidence… | `tie.confidence` |  | GPS | very low to very high, a person's judgment recorded with the tie |
 
 ### Maintain
 
@@ -266,6 +290,8 @@ Connect a claim to the exact spot in a source that bears on it, and say how.
 | Move Anchor | `anchor.adjust` |  | NEW | redraw the region or reselect the text |
 | Re-Anchor Broken Ties | `anchor.reanchor` |  | NEW | after a source was replaced: finds each anchor's passage again by its text and neighborhood and lists every move for review |
 | Auto-Tie Exact Matches | `tie.auto` |  | AUD, NEW | proposes ties where a claim's number or quotation appears exactly once in the sources; proposals only |
+| Match Column to Sources… | `tie.matchColumn` |  | AUD | each figure in a column of a linked workbook is matched to equal figures in the sources; proposals only |
+| Snip Value to Cell… | `tie.snipToCell` |  | AUD | writes the anchored figure into a cell of a copy of the linked workbook and ties the cell's claim to it |
 | Remove Tie | `tie.remove` | `Delete` | NEW |  |
 | Show Ties of Source | `tie.ofSource` |  | NEW | every claim that leans on the selected source (what breaks if this source is wrong) |
 | Show Unused Anchors | `anchor.unused` |  | NEW |  |
@@ -299,6 +325,9 @@ Tests the app computes itself, without AI: do the words, numbers, dates and file
 | Sum Check | `check.sum` |  | AUD | totals equal their parts down and across (foot and cross-foot); percentages recompute |
 | Period Check | `check.period` |  | AUD | a figure tied to one period's document is not presented under another period |
 | Unit and Currency Check | `check.units` |  | NEW | conversions use a stated rate and date |
+| Number Consistency | `check.numberConsistency` |  | NEW | the same quantity stated with different values in one document |
+| Precision Check | `check.precision` |  | FACT, NEW | a claim more precise than its source (1,234,567 where the source says about 1.2 million) |
+| Materiality | `check.materiality` |  | AUD | number differences at or below the case's threshold are listed as trivial |
 
 ### Dates
 
@@ -318,6 +347,11 @@ Tests the app computes itself, without AI: do the words, numbers, dates and file
 | Coverage | `check.coverage` |  | NEW | which sentences and figures of the linked document have no claim, and which claims have no tie; opens the Coverage view |
 | Link Check | `check.links` |  | FACT | web sources still reachable; the saved capture is kept either way |
 | Weak Points | `check.weakPoints` |  | NEW | claims resting on one source, on derivative sources only, on second-hand information only, or on a source marked unreliable |
+| Self-Contradiction | `check.selfContradiction` |  | NEW | two claims about the same person or subject with conflicting dates or numbers |
+| Hedging Check | `check.hedging` |  | FACT, NEW | the claim is certain where the tied passage hedges (may, possibly, about) |
+| Recency Check | `check.recency` |  | FACT, NEW | a claim about the present tied only to old sources |
+| Retraction Check | `check.retractions` |  | REF, SCI | cited works marked as retracted or corrected in a public catalog (opt-in) |
+| Run Rules | `check.rules` |  | NEW | your own checks from Tools ▸ Rules |
 
 ## Resolve
 
@@ -331,6 +365,7 @@ When sources disagree: lay them side by side, weigh them and write down the deci
 | Compare Anchors Side by Side | `resolve.sideBySide` |  | TXT, NEW | the pictures and transcriptions of the conflicting passages together |
 | Collate Versions… | `resolve.collate` |  | TXT | align several versions of one text and list every variant reading |
 | Timeline of Sources | `resolve.timeline` |  | GPS | when each record was made relative to the event |
+| Variant Heat Map | `resolve.variantHeatmap` |  | TXT | where collated versions differ most |
 
 ### Decide
 
@@ -348,6 +383,7 @@ When sources disagree: lay them side by side, weigh them and write down the deci
 |---|---|---|---|---|
 | Research Log | `resolve.log` |  | GPS | searches made, where, for what, and what was or was not found |
 | Add To-Do… | `resolve.todo` |  | GPS, SUITE | a record still to be found or a person to ask |
+| Correspondence Log… | `resolve.correspondence` |  | GPS | letters and messages sent to archives and people, and the replies |
 | Search Checklist… | `resolve.checklist` |  | GPS, AUD | record types usually consulted for this kind of claim; your own lists can be saved |
 
 ## Report
@@ -375,6 +411,13 @@ Turn the case into something a reader can check: notes, tables, exhibits and a w
 | Coverage Report… | `report.coverage` |  | NEW | the document with each sentence shaded by the strength of its support |
 | Research Log Report… | `report.log` |  | GPS |  |
 | Change Report… | `report.changes` |  | AUD, NEW | what changed between two versions of the case |
+| Reader Verification Kit… | `report.readerKit` |  | NEW | one web page: the document, with each claim opening its quoted passages and citations |
+| ClaimReview Markup… | `report.claimReview` |  | FACT | schema.org markup for published fact checks, from editorial verdicts |
+| Chronology… | `report.chronology` |  | LAW, GPS | claims and records in date order on one calendar |
+| Citation Context Report… | `report.citationContext` |  | SCI | for each source, how many claims it supports, contradicts or mentions |
+| Variant Apparatus… | `report.apparatus` |  | TXT | the variant readings of collated versions, by position |
+| Hash Report… | `report.hashes` |  | OSINT, LAW | every source with its file and content fingerprints |
+| Confidential Sources Log… | `report.confidentialLog` |  | LAW | what was withheld from a report or bundle, without its content |
 
 ### Exhibits
 
@@ -405,6 +448,10 @@ Work on a case with other people: assign, comment, sign off.
 | Mark Reviewed | `review.reviewed` |  | AUD | a second person's sign-off; cleared automatically if the claim or its ties change afterward |
 | Review Queue | `review.queue` |  | AUD, FACT | claims waiting for your review |
 | Second Reader Mode | `review.blind` |  | FACT, NEW | hides the first person's ties so a reviewer finds the support independently, then compares |
+| Verify Drafts | `review.verifyDrafts` | `Ctrl+Shift+V` | NEW | step through every proposed tie with its passage: confirm, reject, change kind or skip |
+| Verification Progress | `review.progress` |  | NEW | how many drafts are confirmed, rejected and waiting, by claim and by source |
+| Reviewer Agreement… | `review.agreement` |  | QDA | how often two people's ties agree, corrected for chance (Cohen's kappa) |
+| Sample Claims for Review… | `review.sample` |  | AUD | a random or amount-weighted sample of claims for a second look |
 
 ### Combine
 
@@ -429,6 +476,9 @@ Panes, layouts and pictures of the case.
 | Coverage View | `view.coverage` | `Ctrl+5` | NEW |  |
 | Lineage View | `view.lineage` | `Ctrl+6` | TXT, NEW | which sources descend from which |
 | Timeline View | `view.timeline` | `Ctrl+7` | GPS |  |
+| People Index | `view.people` |  | GPS | every name in claims and sources, with variant spellings grouped |
+| Chronology | `view.chronology` |  | LAW |  |
+| Word Frequency | `view.wordFrequency` |  | QDA | the commonest words of the selected sources |
 | Split Source View | `view.split` |  | SUITE | two sources, or picture and transcription, side by side |
 
 ### Show
@@ -497,12 +547,15 @@ Optional helpers that find, read and draft. They propose; they never decide. See
 | Ask the Case… | `ai.ask` | `Ctrl+Alt+A` | GENAI, NEW | answers only from the case's sources; every sentence of the answer carries its anchors, and "not in the sources" is a normal answer |
 | Explain This Source | `ai.explainSource` |  | GENAI | what kind of record this appears to be, who usually made such records and why; labeled as opinion |
 | Explain Disagreement | `ai.explainConflict` |  | GENAI | possible reasons two sources differ (copying error, calendar, different person, later correction); labeled as possibilities |
+| Suggest Questions | `ai.suggestQuestions` |  | GENAI | questions the case's sources could answer, to start Ask the Case |
 
 ### Find
 
 | Command | Id | Shortcut | Origins | Notes |
 |---|---|---|---|---|
 | Extract Claims from Document | `ai.extractClaims` |  | GENAI, NEW | proposes the checkable statements in the linked document, including ones the pattern rules miss |
+| Draft Sources for Every Fact… | `ai.attributionWizard` | `Ctrl+Alt+W` | GENAI, NEW | the Source Attribution Wizard: splits each sentence of a document into facts and drafts, for each, the passages in the case's sources that support or contradict it, as proposed ties for Verify Drafts; uses Claude's citations, re-checked by the app |
+| Split into Facts with AI | `ai.atomize` |  | GENAI, FACT | proposes the separate facts in the selected sentence claims |
 | Find Support for Claim | `ai.findSupport` | `Ctrl+Alt+F` | GENAI, NEW | proposes anchors in the case's sources; the app confirms each quoted passage really is at that spot before showing it |
 | Find Contradictions | `ai.findContradictions` |  | GENAI, NEW | proposes passages that say otherwise |
 | Suggest Where to Look | `ai.suggestSources` |  | GENAI, GPS | the kinds of records that could settle an Open claim, as a to-do list; it suggests searches, not facts |
