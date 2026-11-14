@@ -30,6 +30,8 @@ jobs:
 
   web:
     runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -39,6 +41,11 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      - name: Live test against the Claude API (only when the ANTHROPIC_API_KEY secret is set)
+        if: ${{ env.ANTHROPIC_API_KEY != '' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npx vitest run tests/live.test.ts
       - run: npm run build
       - name: End-to-end test in Chromium (Claude API mocked)
         run: |

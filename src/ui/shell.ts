@@ -46,7 +46,7 @@ function ribbon() {
   const tabs = [...PLAN.tabs.filter((t) => t.key !== 'file'), ...(custom ? [{ key: 'custom', name: custom.name, description: 'Your tab', groups: [{ name: custom.name, commands: custom.ids.map((i) => commandMeta(i)!).filter(Boolean) }] }] : [])];
   const tab = tabs.find((t) => t.key === activeTab) ?? tabs[0];
   const strip = h('div.tabs', { role: 'tablist' },
-    h('button.tab.filetab', { onclick: () => run('file.backstage' as any).catch(() => {}) || openBackstage() }, 'File'),
+    h('button.tab.filetab', { role: 'tab', 'aria-selected': 'false', 'aria-haspopup': 'dialog', title: 'File: create, open, save, protect, print', onclick: () => run('file.backstage' as any).catch(() => {}) || openBackstage() }, 'File'),
     tabs.map((t) => h('button.tab', { role: 'tab', 'aria-selected': t.key === tab.key ? 'true' : 'false', class: t.key === tab.key ? 'tab active' : 'tab', title: t.description, onclick: () => setActiveTab(t.key) }, t.name)));
   strip.addEventListener('keydown', (e) => {
     const btns = [...strip.querySelectorAll('button.tab')] as HTMLButtonElement[];

@@ -116,11 +116,14 @@ export function registerCaseCommands() {
     const url = await promptBox('Capture Web Page', 'Address (https://…)');
     if (!url) return;
     const { captureWebPage } = await import('../readers/web');
+    const { platformFetch, desktop } = await import('../platform/index');
     let cap;
     try {
-      cap = await captureWebPage(url);
+      cap = await captureWebPage(url, platformFetch());
     } catch (e: any) {
-      throw new UserError(`The page could not be fetched from here (${e?.message ?? e}). Many sites block fetching from another site’s page; save the page in your browser (Save Page As, “Web page, complete” or .mhtml) and add the saved file instead.`);
+      throw new UserError(desktop()
+        ? `The page could not be fetched (${e?.message ?? e}).`
+        : `The page could not be fetched from here (${e?.message ?? e}). Many sites block fetching from another site’s page in a browser; the desktop app does not have this limit. Or save the page in your browser (Save Page As, “Web page, complete” or .mhtml) and add the saved file instead.`);
     }
     const bytes = new TextEncoder().encode(cap.html);
     await app.addFile(new URL(url).hostname + '.html', bytes, 'source', { url, capturedAt: cap.capturedAt, kind: 'web', citation: { ...(cap.result.citation ?? {}), url, accessed: cap.capturedAt.slice(0, 10) } });
@@ -338,7 +341,7 @@ export function registerCaseCommands() {
       let text = '';
       const segments: Source['segments'] = [];
       if (s.kind === 'image') {
-        text = (await ocrImage(b, 'eng', (x: any) => p.update(`Recognizing… ${Math.round((x?.progress ?? 0) * 100)}%`, x?.progress ?? 0, 1))).text;
+        text = (await ocrImage(b, (app.data.settings.language?.ocr ?? 'eng'), (x: any) => p.update(`Recognizing… ${Math.round((x?.progress ?? 0) * 100)}%`, x?.progress ?? 0, 1))).text;
         segments.push({ start: 0, end: text.length, label: 'p. 1', page: 1 });
       } else if (s.kind === 'pdf') {
         const { renderPdfPage } = await import('../readers/index');
@@ -348,7 +351,7 @@ export function registerCaseCommands() {
           const canvas = document.createElement('canvas');
           await renderPdfPage(b, pg, canvas, 2);
           const blob: Blob = await new Promise((res) => canvas.toBlob((x) => res(x!), 'image/png'));
-          const r = await ocrImage(new Uint8Array(await blob.arrayBuffer()));
+          const r = await ocrImage(new Uint8Array(await blob.arrayBuffer()), app.data.settings.language?.ocr ?? 'eng');
           const start = text.length;
           text += r.text + '\n';
           segments.push({ start, end: text.length, label: `p. ${pg}`, page: pg });

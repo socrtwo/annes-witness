@@ -8,6 +8,7 @@ import { readFile, ReadResult } from '../readers/index';
 import { saveCase, loadCase } from '../io/container';
 import { runChecks, quickTieTest, Finding } from '../checks/index';
 import { loadAiSettings, AiSettings } from '../ai/settings';
+import { storageKey } from '../platform/index';
 
 export type ViewName = 'workbench' | 'document' | 'source' | 'matrix' | 'coverage' | 'lineage' | 'timeline' | 'people' | 'chronology' | 'wordfreq';
 
@@ -40,6 +41,8 @@ class App {
   /** Reading aids for page pictures; never saved into the source. */
   pageFilter = { rotate: 0, contrast: 1, invert: false };
   fileHandle: any = null;
+  /** Path of the case file on the desktop build. */
+  filePath?: string;
   fileName = 'case.witness';
   ai: AiSettings = loadAiSettings();
   history: { claimId?: Id; sourceId?: Id; anchorId?: Id }[] = [];
@@ -269,16 +272,16 @@ class App {
     this.saveTimer = setTimeout(() => this.autosave().catch((e) => console.warn('autosave failed', e)), 1200);
   }
   async autosave() {
-    await this.put('current', { data: this.data, journal: this.store.journal, fileName: this.fileName });
+    await this.put(storageKey('current'), { data: this.data, journal: this.store.journal, fileName: this.fileName });
     const ids = new Set(Object.keys(this.data.sources));
     const blobs: Record<string, Uint8Array> = {};
     for (const [k, v] of this.blobs) if (ids.has(k)) blobs[k] = v;
-    await this.put('blobs', blobs);
+    await this.put(storageKey('blobs'), blobs);
   }
   async restore(): Promise<boolean> {
-    const cur = await this.get<{ data: CaseData; journal: JournalEntry[]; fileName?: string }>('current');
+    const cur = await this.get<{ data: CaseData; journal: JournalEntry[]; fileName?: string }>(storageKey('current'));
     if (!cur?.data) return false;
-    const blobs = (await this.get<Record<string, Uint8Array>>('blobs')) ?? {};
+    const blobs = (await this.get<Record<string, Uint8Array>>(storageKey('blobs'))) ?? {};
     this.blobs = new Map(Object.entries(blobs));
     this.fileName = cur.fileName ?? this.fileName;
     this.store.load(cur.data, cur.journal ?? []);
@@ -291,6 +294,7 @@ class App {
     this.sel = { claimIds: new Set() };
     this.findings = [];
     this.fileHandle = null;
+    this.filePath = undefined;
     this.fileName = 'case.witness';
     this.scheduleAutosave();
   }

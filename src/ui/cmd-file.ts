@@ -11,6 +11,7 @@ import { Claim, Source, Status, STATUS_LABEL } from '../core/types';
 import { newId, nowIso, truncate } from '../core/util';
 import { verifySeal, exportTextFolder, importTextFolder, importTextFolderJournal } from '../io/container';
 import { protect, unprotect, isProtected } from '../io/protect';
+import { desktop, saveBytes, openBytesDialog, rememberWebFile } from '../platform/index';
 import { findPassage } from '../core/anchor';
 import { statusCounts } from '../core/status';
 import { buildSample } from './sample';
@@ -19,6 +20,13 @@ let password: string | null = null;
 
 async function writeFile(bytes: Uint8Array, saveAs: boolean) {
   const data = password ? await protect(bytes, password) : bytes;
+  if (desktop()) {
+    const p = await saveBytes(data, app.fileName, saveAs ? null : app.filePath);
+    if (!p) throw Object.assign(new Error('cancelled'), { name: 'AbortError' });
+    app.filePath = p;
+    app.fileName = p.split(/[\\/]/).pop()!;
+    return;
+  }
   const w = window as any;
   if (w.showSaveFilePicker) {
     try {
@@ -28,6 +36,7 @@ async function writeFile(bytes: Uint8Array, saveAs: boolean) {
       await ws.write(data);
       await ws.close();
       app.fileName = app.fileHandle.name ?? app.fileName;
+      await rememberWebFile(app.fileName, app.fileHandle).catch(() => {});
       return;
     } catch (e: any) {
       if (e?.name === 'AbortError') throw e;
@@ -45,17 +54,41 @@ export async function saveNow(saveAs = false) {
 }
 
 async function openFromFile(repair = false) {
-  const [f] = await pickFiles('.witness,.zip,application/zip', false);
-  if (!f) return;
-  let bytes: Uint8Array = new Uint8Array(await f.arrayBuffer());
+  let bytes: Uint8Array;
+  let name: string;
+  let handle: any = null;
+  let path: string | undefined;
+  const w = window as any;
+  if (desktop()) {
+    const r = await openBytesDialog();
+    if (!r) return;
+    bytes = r.bytes; name = r.name; path = r.path;
+  } else if (w.showOpenFilePicker) {
+    try {
+      [handle] = await w.showOpenFilePicker({ types: [{ description: "Anne's Witness case", accept: { 'application/x-annes-witness': ['.witness'], 'application/zip': ['.zip'] } }] });
+    } catch (e: any) { if (e?.name === 'AbortError') return; throw e; }
+    const f = await handle.getFile();
+    bytes = new Uint8Array(await f.arrayBuffer()); name = f.name;
+  } else {
+    const [f] = await pickFiles('.witness,.zip,application/zip', false);
+    if (!f) return;
+    bytes = new Uint8Array(await f.arrayBuffer()); name = f.name;
+  }
+  await openCaseBytes(bytes, name, repair, handle, path);
+}
+
+/** Open a case from bytes (also used by Recent Cases). */
+export async function openCaseBytes(bytes: Uint8Array, name: string, repair = false, handle: any = null, path?: string) {
   if (isProtected(bytes)) {
     const p = await promptBox('Protected case', 'Password', '', 'password');
     if (p === null) return;
     bytes = await unprotect(bytes, p);
     password = p;
   } else password = null;
-  const r = await app.openBytes(bytes, f.name);
-  app.fileHandle = null;
+  const r = await app.openBytes(bytes, name);
+  app.fileHandle = handle;
+  app.filePath = path;
+  if (handle) await rememberWebFile(name, handle).catch(() => {});
   if (r.report.length || repair) await alertBox(r.report.length ? 'Repair report' : 'Opened', r.report.length ? r.report.join('\n') : 'The case opened without problems.');
   if (r.sealed) toast('This case is sealed. Use File ▸ Verify Seal to confirm nothing changed.');
 }

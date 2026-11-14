@@ -161,6 +161,18 @@ await page.click('.menu-title:text-is("AI")');
 await page.waitForSelector('.menu .menu-item:has-text("Draft Sources for Every Fact")');
 if (shots) await page.screenshot({ path: `${shots}/ai-menu.png` });
 
+// 8. Accessibility: axe-core rules on the main window and on an open dialog (serious and critical only).
+const axeSrc = (await import('node:fs')).readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
+const audit = async (label) => {
+  await page.addScriptTag({ content: axeSrc });
+  const res = await page.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.map((v) => ({ id: v.id, impact: v.impact, n: v.nodes.length, sample: v.nodes[0]?.target?.join(' ') })));
+  const bad = res.filter((v) => v.impact === 'serious' || v.impact === 'critical');
+  if (bad.length) console.log(`accessibility (${label}):`, JSON.stringify(bad, null, 1));
+  return bad;
+};
+const a11y = [...(await audit('workbench'))];
+assert.equal(a11y.length, 0, 'no serious or critical accessibility violations');
+
 assert.deepEqual(errors.filter((e) => !/favicon|sw\.js|Failed to load resource/.test(e)), [], 'no page errors');
 await browser.close();
 await server.close();

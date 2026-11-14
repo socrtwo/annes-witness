@@ -11,7 +11,9 @@ describe('command catalog', () => {
     const { registerCaseCommands } = await import('../src/ui/cmd-case');
     const { registerCheckCommands } = await import('../src/ui/cmd-check');
     const { registerAiCommands } = await import('../src/ui/cmd-ai');
-    registerFileCommands(); registerCaseCommands(); registerCheckCommands(); registerAiCommands();
+    const { registerPlatformCommands } = await import('../src/ui/cmd-platform');
+    const { registerExtraCommands } = await import('../src/ui/cmd-extra');
+    registerFileCommands(); registerCaseCommands(); registerCheckCommands(); registerAiCommands(); registerPlatformCommands(); registerExtraCommands();
     const ids = reg.registeredIds();
     const planned = new Set(reg.allCommands().map((c) => c.id));
     for (const id of ids) expect(planned.has(id)).toBe(true);

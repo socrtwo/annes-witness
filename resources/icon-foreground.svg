@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512"><g transform="translate(256 256) scale(.6) translate(-256 -256)"><!-- the source: a page with one passage marked -->
+  <rect x="76" y="118" width="188" height="248" rx="18" fill="#fff"/>
+  <path d="M104 166 H236 M104 198 H236 M104 294 H236 M104 326 H196" stroke="#9C6B0E" stroke-width="10" stroke-linecap="round" opacity=".45"/>
+  <rect x="98" y="226" width="144" height="40" rx="8" fill="#9C6B0E" opacity=".28" stroke="#6E4A06" stroke-width="6"/>
+  <!-- the claim: a card -->
+  <rect x="300" y="286" width="150" height="96" rx="16" fill="#fff"/>
+  <path d="M324 320 H426 M324 348 H392" stroke="#9C6B0E" stroke-width="10" stroke-linecap="round" opacity=".6"/>
+  <!-- the tie between them -->
+  <path d="M242 246 C 300 246 300 334 300 334" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="242" cy="246" r="13" fill="#6E4A06" stroke="#fff" stroke-width="6"/>
+  <circle cx="300" cy="334" r="13" fill="#6E4A06" stroke="#fff" stroke-width="6"/>
+  <!-- the suite quill -->
+  <g>
+    <path d="M436 70 C 376 84 316 140 290 214 C 274 260 268 300 270 338 C 300 300 330 280 360 262 C 330 262 312 262 300 258 C 336 240 368 218 392 188 C 368 190 350 190 336 186 C 378 160 410 120 436 70 Z" fill="#fff" stroke="#6E4A06" stroke-width="8" stroke-linejoin="round" transform="translate(42 -22) scale(.62) translate(190 40)"/>
+  </g></g></svg>

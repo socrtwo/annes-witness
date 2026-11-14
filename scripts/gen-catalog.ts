@@ -11,6 +11,8 @@ const reg = await import('../src/ui/registry');
 (await import('../src/ui/cmd-case')).registerCaseCommands();
 (await import('../src/ui/cmd-check')).registerCheckCommands();
 (await import('../src/ui/cmd-ai')).registerAiCommands();
+(await import('../src/ui/cmd-platform')).registerPlatformCommands();
+(await import('../src/ui/cmd-extra')).registerExtraCommands();
 
 const all = reg.allCommands();
 const done = all.filter((c) => reg.isRegistered(c.id));

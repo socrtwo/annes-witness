@@ -228,9 +228,10 @@ export function sourceView(src: Source, compact = false) {
 
 function sourceTabs() {
   const evid = app.store.evidence;
-  return h('div.sourcetabs', { role: 'tablist', 'aria-label': 'Sources' },
-    evid.map((s) => h('button', { role: 'tab', class: app.sel.sourceId === s.id ? 'on' : '', title: s.title, onclick: () => app.select({ sourceId: s.id, anchorId: undefined }) },
-      truncate(s.title, 28), h('span.count', ` ${app.store.anchorsOf(s.id).length}`))),
+  return h('div.sourcetabs',
+    h('div.tablist', { role: 'tablist', 'aria-label': 'Sources' },
+      evid.map((s) => h('button', { role: 'tab', 'aria-selected': app.sel.sourceId === s.id ? 'true' : 'false', class: app.sel.sourceId === s.id ? 'on' : '', title: s.title, onclick: () => app.select({ sourceId: s.id, anchorId: undefined }) },
+        truncate(s.title, 28), h('span.count', ` ${app.store.anchorsOf(s.id).length}`)))),
     h('button', { title: 'Add sources', onclick: () => run('source.addFiles') }, '+ Add'));
 }
 

@@ -33,25 +33,40 @@ npm run witness -- report case.witness proof.md   # proof summary
 npm run witness -- verify case.witness            # sealed case intact?
 ```
 
-## Desktop (Electron) — configured, not yet built in CI
+## Desktop (Electron)
+
+`electron/main.cjs` serves `dist/` over a private `app://` scheme with a sandboxed renderer. `electron/preload.cjs` gives the page a small API (`window.witnessDesktop`): open and save dialogs, a recent-files list with pinning (kept in the app's user-data folder as `recent.json`), Show in Folder, opening a stored source with its own program, capturing web pages from the main process (so other sites are not blocked by browser CORS rules), and new windows (each with its own autosave slot).
 
 ```bash
-npm install --save-dev electron electron-builder
-npm run desktop          # run
-npm run desktop:dist     # installers into release/ (Windows, macOS, Linux incl. Raspberry Pi)
+npm ci                   # electron and electron-builder are devDependencies
+npm run desktop          # build, stage build/desktop-app/, run
+npm run desktop:dist     # installers in release/: Windows (x64/arm64 installer, portable), macOS universal, Linux AppImage/.deb (x64, arm64, armv7l)
 ```
 
-`electron/main.cjs` serves `dist/` over a private `app://` scheme with the renderer sandboxed. This path has not been run in the development environment of this version.
+`.witness` files are associated with the app on all three systems.
 
-## Android and iOS (Capacitor) — configured, not yet built
+**Verified so far:** the scripts pass `node --check`, the staging script runs, and the builder configuration loads. Electron itself has not been run here, because the development environment cannot download the Electron binary. Installers are built by the Release workflow on GitHub Actions.
+
+## Android and iOS (Capacitor)
+
+The native projects are in the repository: `android/` (app id `io.github.socrtwo.anneswitness`, opens `.witness` files from file managers) and `ios/` (declares the `.witness` document type). Launcher icons come from `scripts/gen-android-icons.mjs` (`npm run icons:native`).
 
 ```bash
-npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/ios
-npx cap add android      # then: npm run cap:sync && open android/ in Android Studio
-npx cap add ios          # macOS with Xcode
+npm run android:build    # needs the Android SDK and JDK 21; APK in android/app/build/outputs/
+npm run ios:sync         # then open ios/App/App.xcodeproj in Xcode (macOS)
 ```
 
-`capacitor.config.json` is in place; the native projects are not yet in the repository.
+Release builds are signed with your key when `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD` are set, and with the debug key otherwise (fine for sideloading, not accepted by Google Play).
+
+**Verified so far:** the projects were generated with `npx cap add`. Neither has been compiled here, because the Android SDK and Xcode are not available in this environment.
+
+## Continuous integration and releases
+
+- `.github/workflows/validate.yml`: plan check on Linux and Windows; type-check, unit tests, build and the browser test.
+- `.github/workflows/android.yml`: APK and AAB on every push (manual runs can publish a prerelease). Repository secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD` enable real signing.
+- `.github/workflows/release.yml`: on a tag `v*`, a manual run, or a commit message containing `[release]`, builds web, Windows, macOS, Linux, iOS (unsigned `.ipa`) and Android, and publishes one GitHub release with checksums.
+
+These workflows are adapted from Anne's Stage and have not yet run for this repository.
 
 ## Icons and notices
 

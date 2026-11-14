@@ -8,12 +8,16 @@ import { registerFileCommands } from './ui/cmd-file';
 import { registerCaseCommands } from './ui/cmd-case';
 import { registerCheckCommands } from './ui/cmd-check';
 import { registerAiCommands } from './ui/cmd-ai';
+import { registerPlatformCommands } from './ui/cmd-platform';
+import { registerExtraCommands } from './ui/cmd-extra';
 import { h } from './ui/dom';
 
 registerFileCommands();
 registerCaseCommands();
 registerCheckCommands();
 registerAiCommands();
+registerPlatformCommands();
+registerExtraCommands();
 
 const theme = localStorage.getItem('annes-witness.theme');
 if (theme) document.documentElement.dataset.theme = theme;
