@@ -1,0 +1,592 @@
+# Command plan
+
+> **Plan. Generated file:** edit [commands-plan.src.txt](commands-plan.src.txt) and run `python3 scripts/gen-plan.py`. Anne's Witness has no code yet; this is the inventory the command registry will be built from. A command is registered in the app only when it works.
+
+**257 commands** on 14 tabs. Every command can go on the Quick Access Bar, on a custom tab, in the classic menu bar, on a keyboard shortcut or in a macro, and is found by command search (Alt+Q). The classic menu bar has one menu per tab, including an **AI** menu. Shortcuts are planned defaults and can all be rebound.
+
+## Origins
+
+| Code | Meaning |
+|---|---|
+| NEW | An Anne's Witness idea |
+| SUITE | Shared with the other Anne's Office apps (shell, files, AI providers, recovery) |
+| GPS | Family-history evidence practice (source, information and evidence analysis; written conclusions) |
+| AUD | Audit working-paper practice (tick marks, tie-out, footing, prepared/reviewed sign-off, roll-forward) |
+| FACT | Editorial fact-checking practice (checking copy line by line against sources) |
+| TXT | Textual scholarship (transcription, collation of versions, lines of descent between copies) |
+| LAW | Exhibit practice (numbered exhibits, sealed copies, redaction) |
+| REF | Reference managers (citation records and styles) |
+| QDA | Qualitative research tools (coding passages, matrices) |
+| GENAI | Generative AI assistants |
+
+## Tabs
+
+| Tab | Commands | What it is for |
+|---|---|---|
+| [File](#file) | 29 | Create, open, save, pack, seal, protect, print and close cases; options |
+| [Home](#home) | 19 | Editing basics and the everyday loop: capture a claim, tie it, move to the next open one |
+| [Sources](#sources) | 28 | Bring in the records, pictures, files and pages that the evidence comes from, and describe each one |
+| [Claims](#claims) | 21 | List what your work says: every statement, number, date, name, relationship and quotation that should be backed by something |
+| [Ties](#ties) | 20 | Connect a claim to the exact spot in a source that bears on it, and say how |
+| [Check](#check) | 20 | Tests the app computes itself, without AI: do the words, numbers, dates and files still agree? |
+| [Resolve](#resolve) | 12 | When sources disagree: lay them side by side, weigh them and write down the decision |
+| [Report](#report) | 16 | Turn the case into something a reader can check: notes, tables, exhibits and a written proof |
+| [Review](#review) | 10 | Work on a case with other people: assign, comment, sign off |
+| [View](#view) | 22 | Panes, layouts and pictures of the case |
+| [Tools](#tools) | 12 | Macros, batch work and connections to the other apps |
+| [AI](#ai) | 32 | Optional helpers that find, read and draft. They propose; they never decide. See AI-PLAN.md |
+| [Developer](#developer) | 7 | Scripting and the case's data, for people who want to build on it |
+| [Help](#help) | 9 | Help, examples and about |
+
+## File
+
+Create, open, save, pack, seal, protect, print and close cases; options.
+
+### New
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| New Case… | `file.new` | `Ctrl+N` | SUITE | an empty case: no sources, no claims |
+| New Case from Document… | `file.newFromDocument` |  | NEW | opens a document, lists its sentences, numbers, dates and quotations as candidate claims, and starts a case around it |
+| New Case from Folder… | `file.newFromFolder` |  | NEW | every readable file in a folder becomes a source; subfolders become source groups |
+| New Case from Template… | `file.newFromTemplate` |  | NEW | family-history proof, financial report tie-out, article fact check, book manuscript, research paper, OCR verification, translation check |
+| New Period from This Case… | `file.rollForward` |  | AUD | copies the claims and tie pattern to a new case for next year's or next edition's documents; every tie starts as Stale until re-confirmed |
+
+### Open
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Open… | `file.open` | `Ctrl+O` | SUITE | recognizes the format by content |
+| Open and Repair… | `file.openRepair` |  | SUITE | rebuilds a damaged case from its journal and source fingerprints; see ARCHITECTURE-PLAN.md |
+| Open Read-Only… | `file.openReadOnly` |  | SUITE |  |
+| Recent Cases | `file.openRecent` |  | SUITE |  |
+| Pinned Cases | `file.pinned` |  | SUITE |  |
+| Open in New Window | `file.newWindow` | `Ctrl+Shift+N` | SUITE | two cases side by side |
+| Show in Folder | `file.revealInFolder` |  | SUITE |  |
+
+### Save
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Save | `file.save` | `Ctrl+S` | SUITE | every change is journaled as it is made; Save writes the file |
+| Save As… | `file.saveAs` | `F12` | SUITE |  |
+| Save a Copy… | `file.saveCopy` |  | SUITE |  |
+| Save Portable Case… | `file.savePortable` |  | NEW | packs a copy of every source file inside the case so it can move to another device |
+| Versions… | `file.versions` |  | SUITE | named snapshots; compare or restore |
+| Seal Case… | `file.seal` |  | NEW, LAW | writes a read-only copy with a hash list of every source and every tie, so a reader can confirm nothing changed afterward |
+| Verify Seal… | `file.verifySeal` |  | NEW, LAW | recomputes the hashes of a sealed case and reports any difference |
+
+### Print and send
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Print… | `file.print` | `Ctrl+P` | SUITE |  |
+| Print Preview | `file.printPreview` | `Ctrl+F2` | SUITE |  |
+| Export… | `file.export` |  | SUITE | see FORMATS-PLAN.md |
+| Send… | `file.send` |  | SUITE | through Anne's Post or the system share sheet |
+
+### Case
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Case Properties… | `file.properties` |  | SUITE | title, question being answered, author, standard of proof in use |
+| Case Statistics | `file.statistics` |  | NEW | sources, anchors, claims by status, ties by kind, coverage |
+| Protect Case… | `file.protect` |  | SUITE | password encryption of the case file |
+| Options… | `file.options` |  | SUITE |  |
+| Close | `file.close` | `Ctrl+W` | SUITE |  |
+| Exit | `file.exit` |  | SUITE |  |
+
+## Home
+
+Editing basics and the everyday loop: capture a claim, tie it, move to the next open one.
+
+### Clipboard
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Cut | `edit.cut` | `Ctrl+X` | SUITE |  |
+| Copy | `edit.copy` | `Ctrl+C` | SUITE |  |
+| Paste | `edit.paste` | `Ctrl+V` | SUITE |  |
+| Copy as Citation | `edit.copyCitation` | `Ctrl+Shift+C` | REF | the selected source or anchor as a formatted citation in the case's citation style |
+| Copy Anchor Link | `edit.copyAnchorLink` |  | NEW | a link that reopens this exact spot in this source from any suite app |
+
+### Undo
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Undo | `edit.undo` | `Ctrl+Z` | SUITE |  |
+| Redo | `edit.redo` | `Ctrl+Y` | SUITE |  |
+| History… | `edit.history` |  | SUITE | the journal: who changed what and when; restore any earlier state |
+
+### Find
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Find… | `edit.find` | `Ctrl+F` | SUITE | in the active pane |
+| Find in Whole Case… | `edit.findAll` | `Ctrl+Shift+F` | NEW | claims, source text, transcriptions, notes and citations at once |
+| Replace… | `edit.replace` | `Ctrl+H` | SUITE | in claims and notes only; source text is never changed |
+| Go To… | `edit.goTo` | `Ctrl+G` | SUITE | a claim number, a source, a page, a cell |
+
+### Work queue
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Next Open Claim | `nav.nextOpen` | `F8` | NEW | the next claim with no tie |
+| Previous Open Claim | `nav.prevOpen` | `Shift+F8` | NEW |  |
+| Next Problem | `nav.nextProblem` | `Ctrl+F8` | NEW | the next Disputed or Stale claim, failed check or broken anchor |
+| Previous Problem | `nav.prevProblem` | `Ctrl+Shift+F8` | NEW |  |
+| Follow Tie | `nav.followTie` | `Ctrl+J` | NEW | from a claim to its anchor, or from an anchor back to its claims |
+| Back | `nav.back` | `Alt+Left` | SUITE |  |
+| Forward | `nav.forward` | `Alt+Right` | SUITE |  |
+
+## Sources
+
+Bring in the records, pictures, files and pages that the evidence comes from, and describe each one.
+
+### Add
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Add Files… | `source.addFiles` | `Ctrl+Shift+O` | NEW | any format in FORMATS-PLAN.md; the file is fingerprinted, never altered |
+| Add Folder… | `source.addFolder` |  | NEW |  |
+| Add from Scanner or Camera… | `source.scan` |  | SUITE | through Anne's Lens; deskew and crop offered, the original image is kept |
+| Capture Web Page… | `source.captureWeb` |  | FACT, NEW | saves the page as it is now (text, picture and time), so the evidence does not change when the site does |
+| Add from Clipboard | `source.fromClipboard` |  | NEW | pasted text or picture becomes a source with a note of where it came from |
+| Add Recording… | `source.addRecording` |  | QDA | audio or video; anchors are time ranges |
+| Add Interview or Recollection… | `source.addTestimony` |  | GPS | a typed record of what a person said, who heard it and when |
+| Add Reference Work… | `source.addReference` |  | REF | a book, article or data set you cite but do not hold as a file |
+| Add Public-Domain Text… | `source.addLibraryText` |  | NEW | a text from the built-in shelf (see FORMATS-PLAN.md) for checking quotations |
+
+### Describe
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Source Details… | `source.details` | `Alt+Enter` | REF, GPS | title, author or informant, date made, place, repository, call number, how you got it |
+| Citation… | `source.citation` |  | REF | the formatted citation; styles are CSL files |
+| Classify Source… | `source.classify` |  | GPS | original or derivative or authored; the informant's knowledge (first-hand, second-hand, unknown) is recorded per anchor |
+| Derived From… | `source.derivedFrom` |  | GPS, TXT, NEW | records that this source was copied, indexed, abstracted or translated from another; used by the Independence check |
+| Source Lineage | `source.lineage` |  | NEW, TXT | a diagram of which sources descend from which (opens in the Lineage view) |
+| Reliability Notes… | `source.reliability` |  | GPS, FACT | free notes on bias, legibility, damage and known errors |
+| Mark as Confidential | `source.confidential` |  | NEW | left out of exports, exhibits and every AI request |
+| Group Sources… | `source.group` |  | NEW | folders, tags and colors |
+
+### Read
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Recognize Text (OCR) | `source.ocr` |  | SUITE | the suite OCR engine; the picture stays the evidence, the text is an aid for search |
+| Transcribe… | `source.transcribe` | `Ctrl+T` | GPS, TXT | type what the source says beside its picture, line by line, with marks for unclear, struck-out and supplied text |
+| Compare Transcriptions | `source.compareTranscriptions` |  | TXT, NEW | two or more readings of the same page aligned word by word (two OCR engines, two people, OCR against typing) |
+| Translate Note… | `source.translationNote` |  | TXT | your own translation of a passage, kept beside the original |
+| Page and Region Tools | `source.regionTools` |  | NEW | rotate, zoom, contrast and invert for reading only; nothing is saved into the source |
+
+### Maintain
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Check Fingerprints | `source.verify` |  | NEW | re-hashes every source file and reports those that changed, moved or are missing |
+| Relink Source… | `source.relink` |  | NEW | point a moved or renamed file back to its source entry; the fingerprint must match or the difference is shown |
+| Replace with Better Copy… | `source.replace` |  | NEW | a rescan or a new edition; anchors are re-found by their text and position and listed for review |
+| Repair Source File… | `source.repair` |  | SUITE | hands a damaged file to the suite recovery engine of its type (Folio, Pen, Grid, Lens, Base); the repaired copy is added as a derivative |
+| Remove Source… | `source.remove` |  | NEW | refused while ties use it, unless the ties are removed in the same step |
+| Find Duplicate Sources | `source.findDuplicates` |  | NEW | identical files, and near-identical scans of the same page |
+
+## Claims
+
+List what your work says: every statement, number, date, name, relationship and quotation that should be backed by something.
+
+### Capture
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| New Claim… | `claim.new` | `Ctrl+Shift+K` | NEW | type a claim that is not (or not yet) in any document |
+| Capture Claim from Selection | `claim.capture` | `Ctrl+K` | NEW | the selected sentence, cell, record field or chart person in a linked document becomes a claim that remembers where it sits |
+| Capture All Numbers | `claim.captureNumbers` |  | AUD, NEW | every figure in the selection or the document |
+| Capture All Quotations | `claim.captureQuotes` |  | FACT, NEW | every quoted passage, with its attributed speaker or work |
+| Capture All Dates and Names | `claim.captureFacts` |  | GPS, FACT | by the app's own pattern rules, no AI needed |
+| Capture from Citations | `claim.fromCitations` |  | REF | each footnote or reference in the document becomes a claim tied to the work it names |
+| Link Document… | `claim.linkDocument` |  | NEW | attach an Anne's Pen, Grid, Stage, Press, Loom, Base or Chart file (or .docx, .xlsx, .pptx, .pdf, .ged) as the work being checked |
+| Refresh from Document | `claim.refresh` | `F5` | NEW | re-reads the linked documents; changed claims become Stale, deleted ones are listed |
+
+### Organize
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Claim Details… | `claim.details` |  | NEW | text, kind (fact, number, date, identity, relationship, quotation, opinion), importance, owner, due date |
+| Split Claim | `claim.split` |  | GPS, NEW | one sentence that asserts two things becomes two claims |
+| Merge Claims… | `claim.merge` |  | NEW | the same assertion made in two places |
+| Depends On… | `claim.dependsOn` |  | NEW | this claim is a conclusion from other claims; it cannot be stronger than the weakest of them |
+| Group Claims… | `claim.group` |  | NEW | by chapter, statement line, person, topic or tag |
+| Sort and Filter… | `claim.filter` | `Ctrl+Shift+L` | SUITE | by status, kind, owner, source, importance or check result |
+| Renumber Claims | `claim.renumber` |  | AUD |  |
+
+### Status
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Set Status… | `claim.setStatus` |  | NEW | Open, Supported, Corroborated, Disputed, Settled, Stale or Set Aside; Supported and Corroborated can only be set while confirmed ties justify them |
+| Set Aside as Opinion or Assumption… | `claim.setAside` |  | FACT, NEW | a statement that is not meant to be proven; the reason is recorded and shown in reports |
+| Assign To… | `claim.assign` |  | SUITE |  |
+| Add Note… | `claim.note` |  | SUITE |  |
+| Flag for Follow-Up | `claim.flag` |  | SUITE |  |
+| Claim History | `claim.history` |  | NEW | every status, tie and wording change of this claim |
+
+## Ties
+
+Connect a claim to the exact spot in a source that bears on it, and say how.
+
+### Make
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Tie Selection to Claim | `tie.create` | `Ctrl+L` | NEW | the selected region, text, cell range or time range becomes an anchor and is tied to the active claim |
+| Tie as Support | `tie.support` | `Ctrl+Shift+S` | NEW | the anchor says what the claim says |
+| Tie as Contradiction | `tie.contradict` | `Ctrl+Shift+X` | NEW | the anchor says otherwise |
+| Tie as Mention | `tie.mention` | `Ctrl+Shift+M` | QDA, NEW | relevant, proves nothing yet |
+| Tie as Absence… | `tie.absence` |  | GPS, NEW | you searched a source where the fact should appear and it does not; the search itself is recorded (negative evidence) |
+| Tie Total to Parts… | `tie.sumOf` |  | AUD | a number claim equals the sum (or other formula) of other anchored numbers; rechecked by Sum Check |
+| Tie to Another Claim… | `tie.toClaim` |  | NEW | one claim rests on another |
+| New Anchor Only | `anchor.new` | `Ctrl+Shift+A` | NEW | mark a spot now, tie it later |
+
+### Describe
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Tie Details… | `tie.details` |  | GPS, NEW | kind, direct or indirect, who the informant was and how they knew, your note |
+| Mark Tick… | `tie.tick` |  | AUD | a tick mark from the case's legend (agreed to ledger, recomputed, traced to bank statement, or your own marks) |
+| Tick Mark Legend… | `tie.tickLegend` |  | AUD | define the marks used in this case and their meanings |
+| Confirm Proposed Tie | `tie.confirm` | `Ctrl+Enter` | NEW | accept a tie proposed by AI or by Auto-Tie; records who confirmed it |
+| Reject Proposed Tie | `tie.reject` | `Ctrl+Backspace` | NEW |  |
+| Confirm All in Selection… | `tie.confirmAll` |  | NEW | asks once, lists the count; never runs silently |
+
+### Maintain
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Move Anchor | `anchor.adjust` |  | NEW | redraw the region or reselect the text |
+| Re-Anchor Broken Ties | `anchor.reanchor` |  | NEW | after a source was replaced: finds each anchor's passage again by its text and neighborhood and lists every move for review |
+| Auto-Tie Exact Matches | `tie.auto` |  | AUD, NEW | proposes ties where a claim's number or quotation appears exactly once in the sources; proposals only |
+| Remove Tie | `tie.remove` | `Delete` | NEW |  |
+| Show Ties of Source | `tie.ofSource` |  | NEW | every claim that leans on the selected source (what breaks if this source is wrong) |
+| Show Unused Anchors | `anchor.unused` |  | NEW |  |
+
+## Check
+
+Tests the app computes itself, without AI: do the words, numbers, dates and files still agree?.
+
+### Run
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Run All Checks | `check.all` | `F9` | NEW | every check below, results in the Problems pane |
+| Run Checks on Selection | `check.selection` | `Shift+F9` | NEW |  |
+| Check on Save | `check.onSave` |  | NEW | toggle; default on |
+
+### Words
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Quote Check | `check.quote` |  | FACT, TXT, NEW | a quotation must match its anchor letter for letter, allowing marked omissions and bracketed insertions; differences are shown word by word |
+| Paraphrase Reminder | `check.paraphrase` |  | FACT | lists claims tied to passages with no words in common, for a human look |
+| Name Check | `check.names` |  | GPS | the same person or organization spelled different ways across claims; variants in sources are kept, not corrected |
+| Citation Check | `check.citations` |  | REF | every citation has the fields its style needs; every cited work is a source in the case |
+
+### Numbers
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Number Check | `check.number` |  | AUD, NEW | a number claim equals its anchored figure under the stated rounding, unit and sign rules |
+| Sum Check | `check.sum` |  | AUD | totals equal their parts down and across (foot and cross-foot); percentages recompute |
+| Period Check | `check.period` |  | AUD | a figure tied to one period's document is not presented under another period |
+| Unit and Currency Check | `check.units` |  | NEW | conversions use a stated rate and date |
+
+### Dates
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Date Check | `check.dates` |  | GPS, NEW | impossible and unlikely sequences (died before born, child before parent, document dated before the event it reports) |
+| Calendar Check | `check.calendar` |  | GPS | Julian and Gregorian, dual-dated years, regnal and church calendars converted and compared on one scale |
+| Age Check | `check.ages` |  | GPS | ages stated in sources against the dates claimed |
+
+### Evidence
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Independence Check | `check.independence` |  | GPS, TXT, NEW | sources that descend from a common original count once; a claim is Corroborated only by independent sources |
+| Circular Citation Check | `check.circular` |  | FACT, NEW | A cites B and B cites A, or both cite a source that cites them |
+| Staleness Check | `check.stale` |  | AUD, NEW | sources whose files changed and claims whose wording changed since they were tied |
+| Coverage | `check.coverage` |  | NEW | which sentences and figures of the linked document have no claim, and which claims have no tie; opens the Coverage view |
+| Link Check | `check.links` |  | FACT | web sources still reachable; the saved capture is kept either way |
+| Weak Points | `check.weakPoints` |  | NEW | claims resting on one source, on derivative sources only, on second-hand information only, or on a source marked unreliable |
+
+## Resolve
+
+When sources disagree: lay them side by side, weigh them and write down the decision.
+
+### Compare
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Open Reckoning | `resolve.open` | `Ctrl+R` | GPS, NEW | a table for one disputed claim: each source, what it says, who said it, how they knew, when, original or copy |
+| Compare Anchors Side by Side | `resolve.sideBySide` |  | TXT, NEW | the pictures and transcriptions of the conflicting passages together |
+| Collate Versions… | `resolve.collate` |  | TXT | align several versions of one text and list every variant reading |
+| Timeline of Sources | `resolve.timeline` |  | GPS | when each record was made relative to the event |
+
+### Decide
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Prefer Source… | `resolve.prefer` |  | GPS | choose the reading you accept and record why |
+| Write Conclusion… | `resolve.conclusion` |  | GPS | the written reasoning; required before a Disputed claim can become Settled |
+| Leave Unresolved… | `resolve.leaveOpen` |  | NEW | records that the evidence does not decide the question, and what would |
+| Reopen | `resolve.reopen` |  | NEW | new evidence arrived; the earlier conclusion is kept in history |
+| Apply Correction to Document… | `resolve.applyCorrection` |  | NEW | sends the corrected wording or figure back to the linked document as a tracked change or comment; never edits it silently |
+
+### Plan
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Research Log | `resolve.log` |  | GPS | searches made, where, for what, and what was or was not found |
+| Add To-Do… | `resolve.todo` |  | GPS, SUITE | a record still to be found or a person to ask |
+| Search Checklist… | `resolve.checklist` |  | GPS, AUD | record types usually consulted for this kind of claim; your own lists can be saved |
+
+## Report
+
+Turn the case into something a reader can check: notes, tables, exhibits and a written proof.
+
+### Into the document
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Insert Notes into Document… | `report.insertNotes` |  | REF, NEW | footnotes or endnotes for every tied claim, written into the linked Anne's Pen or .docx document |
+| Insert Tick Marks and References… | `report.insertTicks` |  | AUD | cross-reference marks and a legend written into the linked workbook or statement |
+| Update Notes | `report.updateNotes` |  | REF | after claims or ties changed |
+| Remove Notes… | `report.removeNotes` |  | REF |  |
+
+### Reports
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Proof Summary… | `report.proof` |  | GPS, NEW | the question, the evidence for each claim, the conflicts and how they were settled, and the conclusion |
+| Claim Table… | `report.claimTable` |  | AUD, FACT | every claim with status, sources, ticks and owner; to Anne's Grid, PDF or print |
+| Source List… | `report.sourceList` |  | REF | bibliography or source list in the case's citation style |
+| Open Items… | `report.openItems` |  | AUD, FACT | what is still Open, Disputed, Stale or failing a check |
+| Evidence Map… | `report.map` |  | NEW | a diagram of claims, sources and ties, sent to Anne's Chart |
+| Coverage Report… | `report.coverage` |  | NEW | the document with each sentence shaded by the strength of its support |
+| Research Log Report… | `report.log` |  | GPS |  |
+| Change Report… | `report.changes` |  | AUD, NEW | what changed between two versions of the case |
+
+### Exhibits
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Build Exhibit Bundle… | `report.exhibits` |  | LAW, NEW | one PDF through Anne's Folio: each anchored page with its region outlined, numbered and indexed to the claims |
+| Number Exhibits… | `report.numberExhibits` |  | LAW |  |
+| Redact for Sharing… | `report.redact` |  | LAW, GPS | removes confidential sources and living persons' details from a report or bundle; the case itself is unchanged |
+| Citation Style… | `report.style` |  | REF | choose or import a CSL style |
+
+## Review
+
+Work on a case with other people: assign, comment, sign off.
+
+### Comments
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| New Comment | `review.comment` | `Ctrl+Alt+M` | SUITE | on a claim, a tie, an anchor or a source |
+| Show Comments | `review.showComments` |  | SUITE |  |
+| Resolve Comment | `review.resolveComment` |  | SUITE |  |
+
+### Sign-off
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Mark Prepared | `review.prepared` |  | AUD | records who assembled the evidence for a claim or a group |
+| Mark Reviewed | `review.reviewed` |  | AUD | a second person's sign-off; cleared automatically if the claim or its ties change afterward |
+| Review Queue | `review.queue` |  | AUD, FACT | claims waiting for your review |
+| Second Reader Mode | `review.blind` |  | FACT, NEW | hides the first person's ties so a reviewer finds the support independently, then compares |
+
+### Combine
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Compare Cases… | `review.compare` |  | SUITE, NEW | differences between two copies of a case |
+| Merge Cases… | `review.merge` |  | NEW | bring in another person's sources, claims and ties, with conflicts listed |
+| Import Ties from Case… | `review.importTies` |  | NEW |  |
+
+## View
+
+Panes, layouts and pictures of the case.
+
+### Views
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Workbench | `view.workbench` | `Ctrl+1` | NEW | claims on the left, the source in the middle, ties and details on the right |
+| Document View | `view.document` | `Ctrl+2` | NEW | the linked document with every claim underlined in its status color |
+| Source View | `view.source` | `Ctrl+3` | NEW | one source full size with its anchors |
+| Matrix | `view.matrix` | `Ctrl+4` | QDA, NEW | claims down, sources across, a mark in each cell where they are tied |
+| Coverage View | `view.coverage` | `Ctrl+5` | NEW |  |
+| Lineage View | `view.lineage` | `Ctrl+6` | TXT, NEW | which sources descend from which |
+| Timeline View | `view.timeline` | `Ctrl+7` | GPS |  |
+| Split Source View | `view.split` |  | SUITE | two sources, or picture and transcription, side by side |
+
+### Show
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Problems Pane | `view.problems` |  | NEW |  |
+| Details Pane | `view.details` | `F4` | SUITE |  |
+| Status Colors… | `view.statusColors` |  | NEW | colors and patterns for each status; patterns are on by default so color is not the only signal |
+| Zoom In | `view.zoomIn` | `Ctrl+=` | SUITE |  |
+| Zoom Out | `view.zoomOut` | `Ctrl+-` | SUITE |  |
+| Fit Page | `view.fitPage` | `Ctrl+0` | SUITE |  |
+| Full Screen | `view.fullScreen` | `F11` | SUITE |  |
+
+### Shell
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Menus | `view.menus` |  | SUITE | ribbon, classic menu bar, or both |
+| Customize Quick Access Bar… | `view.customizeQat` |  | SUITE |  |
+| Add All Choices to Quick Access Bar | `view.qatAddAll` |  | SUITE |  |
+| Customize Ribbon… | `view.customizeRibbon` |  | SUITE |  |
+| Customize Keyboard… | `view.customizeKeyboard` |  | SUITE |  |
+| Search Commands | `view.commandSearch` | `Alt+Q` | SUITE |  |
+| Theme | `view.theme` |  | SUITE | light, dark, high contrast, system |
+
+## Tools
+
+Macros, batch work and connections to the other apps.
+
+### Automate
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Record Macro… | `tools.recordMacro` |  | SUITE |  |
+| Macros… | `tools.macros` | `Alt+F8` | SUITE |  |
+| Batch Add and OCR… | `tools.batchOcr` |  | SUITE |  |
+| Rules… | `tools.rules` |  | NEW | your own checks: a pattern, a comparison and a message (for example, every dollar figure over a threshold needs two ties) |
+
+### Suite
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Open Claim in Its App | `tools.openInApp` |  | SUITE | jumps to the sentence, cell, record or person in Pen, Grid, Base or Chart |
+| Open Source in Its App | `tools.openSourceInApp` |  | SUITE |  |
+| Send Table to Anne's Grid | `tools.toGrid` |  | SUITE |  |
+| Send Case Data to Anne's Base | `tools.toBase` |  | SUITE |  |
+| Citations from GEDCOM… | `tools.gedcomCitations` |  | GPS | reads the source citations in a family tree file as claims and sources; writes them back on export |
+
+### Data
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Import… | `tools.import` |  | SUITE | see FORMATS-PLAN.md |
+| Spelling… | `tools.spelling` | `F7` | SUITE | in claims, notes and transcriptions |
+| Language… | `tools.language` |  | SUITE |  |
+
+## AI
+
+Optional helpers that find, read and draft. They propose; they never decide. See AI-PLAN.md.
+
+### Ask
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Ask the Case… | `ai.ask` | `Ctrl+Alt+A` | GENAI, NEW | answers only from the case's sources; every sentence of the answer carries its anchors, and "not in the sources" is a normal answer |
+| Explain This Source | `ai.explainSource` |  | GENAI | what kind of record this appears to be, who usually made such records and why; labeled as opinion |
+| Explain Disagreement | `ai.explainConflict` |  | GENAI | possible reasons two sources differ (copying error, calendar, different person, later correction); labeled as possibilities |
+
+### Find
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Extract Claims from Document | `ai.extractClaims` |  | GENAI, NEW | proposes the checkable statements in the linked document, including ones the pattern rules miss |
+| Find Support for Claim | `ai.findSupport` | `Ctrl+Alt+F` | GENAI, NEW | proposes anchors in the case's sources; the app confirms each quoted passage really is at that spot before showing it |
+| Find Contradictions | `ai.findContradictions` |  | GENAI, NEW | proposes passages that say otherwise |
+| Suggest Where to Look | `ai.suggestSources` |  | GENAI, GPS | the kinds of records that could settle an Open claim, as a to-do list; it suggests searches, not facts |
+| Check That Citations Exist | `ai.checkCitations` |  | GENAI, NEW | lists cited works that are not in the case or cannot be found in a public catalog; catches invented references |
+
+### Read
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Transcribe Source | `ai.transcribe` |  | GENAI | handwriting and faded or damaged pages; uncertain words are marked and the result is labeled as an AI reading |
+| Translate Passage | `ai.translate` |  | GENAI | labeled as an AI translation and kept beside the original |
+| Extract Fields from Record | `ai.extractFields` |  | GENAI | names, dates, places and amounts from a form, certificate, register or statement, as proposed claims with anchors |
+| Summarize Source | `ai.summarize` |  | GENAI | for finding your way; a summary can never be tied to a claim |
+| Describe Picture | `ai.describeImage` |  | GENAI | what is visible in a photograph or drawing; labeled as description |
+
+### Check
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Check Paraphrase | `ai.checkParaphrase` |  | GENAI, FACT | does the claim say more than the tied passage does? |
+| Suggest Tie Kind | `ai.classifyTie` |  | GENAI | support, contradiction or mention; direct or indirect |
+| Assess Independence | `ai.assessIndependence` |  | GENAI, TXT | shared wording and shared errors that suggest one source was copied from another; proposals for Derived From |
+| Screen for Private Information | `ai.screenPrivacy` |  | GENAI | runs on the device only; finds details of living people, account numbers and health information before sharing |
+
+### Write
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Draft Proof Summary | `ai.draftProof` |  | GENAI, GPS | from confirmed ties and written conclusions only; each paragraph cites its claims |
+| Draft Citation | `ai.draftCitation` |  | GENAI, REF | fills the citation fields from the source's title page or heading, for your correction |
+| Draft Conclusion | `ai.draftConclusion` |  | GENAI | a first wording of the reasoning in a Reckoning, from the table you filled in |
+| Draft Research Plan | `ai.draftPlan` |  | GENAI, GPS |  |
+| Run on Selection… | `ai.runOnSelection` |  | GENAI | your own instruction over the selected claims or sources; results are proposals |
+
+### Providers
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Set Up AI… | `ai.setup` |  | SUITE | the suite wizard: on-device, your own computer, free tiers and paid services |
+| Providers and Models… | `ai.providers` |  | SUITE |  |
+| Active AI | `ai.active` |  | SUITE |  |
+| AI and Privacy… | `ai.privacy` |  | SUITE | what each command may send; per case and per source |
+| Several AIs | `ai.ensembleMode` |  | SUITE | single, master combines answers, or Quaker consensus |
+| Choose AIs… | `ai.ensembleMembers` |  | SUITE |  |
+| Show AI Discussion | `ai.showDeliberation` |  | SUITE |  |
+| AI History | `ai.history` |  | SUITE | what was sent, where, and what came back |
+| Stop AI | `ai.stop` | `Ctrl+Alt+.` | SUITE |  |
+| Delete Downloaded Models | `ai.deleteModels` |  | SUITE |  |
+
+## Developer
+
+Scripting and the case's data, for people who want to build on it.
+
+### Script
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Script Editor | `dev.scriptEditor` | `Alt+F11` | SUITE | JavaScript macros against the case object model |
+| Run Script… | `dev.runScript` |  | SUITE |  |
+| Command Line Options | `dev.commandLine` |  | SUITE | check a case and exit with a result code, for build pipelines |
+
+### Data
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Query Case… | `dev.query` |  | NEW | read-only SQL over sources, anchors, claims and ties |
+| Export Case as Text Folder… | `dev.exportText` |  | SUITE, NEW | JSON and Markdown files that read well in version control |
+| Show Anchor Data | `dev.anchorData` |  | NEW | the stored selector and fingerprint of the selected anchor |
+| Validate Case File | `dev.validate` |  | SUITE |  |
+
+## Help
+
+Help, examples and about.
+
+### Help
+
+| Command | Id | Shortcut | Origins | Notes |
+|---|---|---|---|---|
+| Help | `help.contents` | `F1` | SUITE |  |
+| Guided Example… | `help.tutorial` |  | NEW | a small made-up case: three sources that disagree about a birth year |
+| Keyboard Shortcuts | `help.shortcuts` |  | SUITE |  |
+| What Each Status Means | `help.statuses` |  | NEW |  |
+| Standards of Proof… | `help.standards` |  | GPS, AUD, FACT | plain descriptions of the practices the templates follow |
+| Report a Problem… | `help.report` |  | SUITE |  |
+| Check for Updates | `help.updates` |  | SUITE |  |
+| Third-Party Notices | `help.notices` |  | SUITE |  |
+| About Anne's Witness | `help.about` |  | SUITE |  |

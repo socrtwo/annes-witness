@@ -1,0 +1,2983 @@
+{
+  "app": "Anne's Witness",
+  "generatedFrom": "docs/commands-plan.src.txt",
+  "origins": {
+    "NEW": "An Anne's Witness idea",
+    "SUITE": "Shared with the other Anne's Office apps (shell, files, AI providers, recovery)",
+    "GPS": "Family-history evidence practice (source, information and evidence analysis; written conclusions)",
+    "AUD": "Audit working-paper practice (tick marks, tie-out, footing, prepared/reviewed sign-off, roll-forward)",
+    "FACT": "Editorial fact-checking practice (checking copy line by line against sources)",
+    "TXT": "Textual scholarship (transcription, collation of versions, lines of descent between copies)",
+    "LAW": "Exhibit practice (numbered exhibits, sealed copies, redaction)",
+    "REF": "Reference managers (citation records and styles)",
+    "QDA": "Qualitative research tools (coding passages, matrices)",
+    "GENAI": "Generative AI assistants"
+  },
+  "tabs": [
+    {
+      "key": "file",
+      "name": "File",
+      "description": "Create, open, save, pack, seal, protect, print and close cases; options",
+      "groups": [
+        {
+          "name": "New",
+          "commands": [
+            {
+              "id": "file.new",
+              "label": "New Case…",
+              "shortcut": "Ctrl+N",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "an empty case: no sources, no claims",
+              "inTabs": true
+            },
+            {
+              "id": "file.newFromDocument",
+              "label": "New Case from Document…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "opens a document, lists its sentences, numbers, dates and quotations as candidate claims, and starts a case around it",
+              "inTabs": true
+            },
+            {
+              "id": "file.newFromFolder",
+              "label": "New Case from Folder…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "every readable file in a folder becomes a source; subfolders become source groups",
+              "inTabs": true
+            },
+            {
+              "id": "file.newFromTemplate",
+              "label": "New Case from Template…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "family-history proof, financial report tie-out, article fact check, book manuscript, research paper, OCR verification, translation check",
+              "inTabs": true
+            },
+            {
+              "id": "file.rollForward",
+              "label": "New Period from This Case…",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "copies the claims and tie pattern to a new case for next year's or next edition's documents; every tie starts as Stale until re-confirmed",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Open",
+          "commands": [
+            {
+              "id": "file.open",
+              "label": "Open…",
+              "shortcut": "Ctrl+O",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "recognizes the format by content",
+              "inTabs": true
+            },
+            {
+              "id": "file.openRepair",
+              "label": "Open and Repair…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "rebuilds a damaged case from its journal and source fingerprints; see ARCHITECTURE-PLAN.md",
+              "inTabs": true
+            },
+            {
+              "id": "file.openReadOnly",
+              "label": "Open Read-Only…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "file.openRecent",
+              "label": "Recent Cases",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "file.pinned",
+              "label": "Pinned Cases",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "file.newWindow",
+              "label": "Open in New Window",
+              "shortcut": "Ctrl+Shift+N",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "two cases side by side",
+              "inTabs": true
+            },
+            {
+              "id": "file.revealInFolder",
+              "label": "Show in Folder",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Save",
+          "commands": [
+            {
+              "id": "file.save",
+              "label": "Save",
+              "shortcut": "Ctrl+S",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "every change is journaled as it is made; Save writes the file",
+              "inTabs": true
+            },
+            {
+              "id": "file.saveAs",
+              "label": "Save As…",
+              "shortcut": "F12",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "file.saveCopy",
+              "label": "Save a Copy…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "file.savePortable",
+              "label": "Save Portable Case…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "packs a copy of every source file inside the case so it can move to another device",
+              "inTabs": true
+            },
+            {
+              "id": "file.versions",
+              "label": "Versions…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "named snapshots; compare or restore",
+              "inTabs": true
+            },
+            {
+              "id": "file.seal",
+              "label": "Seal Case…",
+              "shortcut": "",
+              "origins": [
+                "NEW",
+                "LAW"
+              ],
+              "notes": "writes a read-only copy with a hash list of every source and every tie, so a reader can confirm nothing changed afterward",
+              "inTabs": true
+            },
+            {
+              "id": "file.verifySeal",
+              "label": "Verify Seal…",
+              "shortcut": "",
+              "origins": [
+                "NEW",
+                "LAW"
+              ],
+              "notes": "recomputes the hashes of a sealed case and reports any difference",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Print and send",
+          "commands": [
+            {
+              "id": "file.print",
+              "label": "Print…",
+              "shortcut": "Ctrl+P",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "file.printPreview",
+              "label": "Print Preview",
+              "shortcut": "Ctrl+F2",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "file.export",
+              "label": "Export…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "see FORMATS-PLAN.md",
+              "inTabs": true
+            },
+            {
+              "id": "file.send",
+              "label": "Send…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "through Anne's Post or the system share sheet",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Case",
+          "commands": [
+            {
+              "id": "file.properties",
+              "label": "Case Properties…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "title, question being answered, author, standard of proof in use",
+              "inTabs": true
+            },
+            {
+              "id": "file.statistics",
+              "label": "Case Statistics",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "sources, anchors, claims by status, ties by kind, coverage",
+              "inTabs": true
+            },
+            {
+              "id": "file.protect",
+              "label": "Protect Case…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "password encryption of the case file",
+              "inTabs": true
+            },
+            {
+              "id": "file.options",
+              "label": "Options…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "file.close",
+              "label": "Close",
+              "shortcut": "Ctrl+W",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "file.exit",
+              "label": "Exit",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "home",
+      "name": "Home",
+      "description": "Editing basics and the everyday loop: capture a claim, tie it, move to the next open one",
+      "groups": [
+        {
+          "name": "Clipboard",
+          "commands": [
+            {
+              "id": "edit.cut",
+              "label": "Cut",
+              "shortcut": "Ctrl+X",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "edit.copy",
+              "label": "Copy",
+              "shortcut": "Ctrl+C",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "edit.paste",
+              "label": "Paste",
+              "shortcut": "Ctrl+V",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "edit.copyCitation",
+              "label": "Copy as Citation",
+              "shortcut": "Ctrl+Shift+C",
+              "origins": [
+                "REF"
+              ],
+              "notes": "the selected source or anchor as a formatted citation in the case's citation style",
+              "inTabs": true
+            },
+            {
+              "id": "edit.copyAnchorLink",
+              "label": "Copy Anchor Link",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "a link that reopens this exact spot in this source from any suite app",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Undo",
+          "commands": [
+            {
+              "id": "edit.undo",
+              "label": "Undo",
+              "shortcut": "Ctrl+Z",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "edit.redo",
+              "label": "Redo",
+              "shortcut": "Ctrl+Y",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "edit.history",
+              "label": "History…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "the journal: who changed what and when; restore any earlier state",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Find",
+          "commands": [
+            {
+              "id": "edit.find",
+              "label": "Find…",
+              "shortcut": "Ctrl+F",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "in the active pane",
+              "inTabs": true
+            },
+            {
+              "id": "edit.findAll",
+              "label": "Find in Whole Case…",
+              "shortcut": "Ctrl+Shift+F",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "claims, source text, transcriptions, notes and citations at once",
+              "inTabs": true
+            },
+            {
+              "id": "edit.replace",
+              "label": "Replace…",
+              "shortcut": "Ctrl+H",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "in claims and notes only; source text is never changed",
+              "inTabs": true
+            },
+            {
+              "id": "edit.goTo",
+              "label": "Go To…",
+              "shortcut": "Ctrl+G",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "a claim number, a source, a page, a cell",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Work queue",
+          "commands": [
+            {
+              "id": "nav.nextOpen",
+              "label": "Next Open Claim",
+              "shortcut": "F8",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "the next claim with no tie",
+              "inTabs": true
+            },
+            {
+              "id": "nav.prevOpen",
+              "label": "Previous Open Claim",
+              "shortcut": "Shift+F8",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "nav.nextProblem",
+              "label": "Next Problem",
+              "shortcut": "Ctrl+F8",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "the next Disputed or Stale claim, failed check or broken anchor",
+              "inTabs": true
+            },
+            {
+              "id": "nav.prevProblem",
+              "label": "Previous Problem",
+              "shortcut": "Ctrl+Shift+F8",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "nav.followTie",
+              "label": "Follow Tie",
+              "shortcut": "Ctrl+J",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "from a claim to its anchor, or from an anchor back to its claims",
+              "inTabs": true
+            },
+            {
+              "id": "nav.back",
+              "label": "Back",
+              "shortcut": "Alt+Left",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "nav.forward",
+              "label": "Forward",
+              "shortcut": "Alt+Right",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "source",
+      "name": "Sources",
+      "description": "Bring in the records, pictures, files and pages that the evidence comes from, and describe each one",
+      "groups": [
+        {
+          "name": "Add",
+          "commands": [
+            {
+              "id": "source.addFiles",
+              "label": "Add Files…",
+              "shortcut": "Ctrl+Shift+O",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "any format in FORMATS-PLAN.md; the file is fingerprinted, never altered",
+              "inTabs": true
+            },
+            {
+              "id": "source.addFolder",
+              "label": "Add Folder…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "source.scan",
+              "label": "Add from Scanner or Camera…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "through Anne's Lens; deskew and crop offered, the original image is kept",
+              "inTabs": true
+            },
+            {
+              "id": "source.captureWeb",
+              "label": "Capture Web Page…",
+              "shortcut": "",
+              "origins": [
+                "FACT",
+                "NEW"
+              ],
+              "notes": "saves the page as it is now (text, picture and time), so the evidence does not change when the site does",
+              "inTabs": true
+            },
+            {
+              "id": "source.fromClipboard",
+              "label": "Add from Clipboard",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "pasted text or picture becomes a source with a note of where it came from",
+              "inTabs": true
+            },
+            {
+              "id": "source.addRecording",
+              "label": "Add Recording…",
+              "shortcut": "",
+              "origins": [
+                "QDA"
+              ],
+              "notes": "audio or video; anchors are time ranges",
+              "inTabs": true
+            },
+            {
+              "id": "source.addTestimony",
+              "label": "Add Interview or Recollection…",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "a typed record of what a person said, who heard it and when",
+              "inTabs": true
+            },
+            {
+              "id": "source.addReference",
+              "label": "Add Reference Work…",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "a book, article or data set you cite but do not hold as a file",
+              "inTabs": true
+            },
+            {
+              "id": "source.addLibraryText",
+              "label": "Add Public-Domain Text…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "a text from the built-in shelf (see FORMATS-PLAN.md) for checking quotations",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Describe",
+          "commands": [
+            {
+              "id": "source.details",
+              "label": "Source Details…",
+              "shortcut": "Alt+Enter",
+              "origins": [
+                "REF",
+                "GPS"
+              ],
+              "notes": "title, author or informant, date made, place, repository, call number, how you got it",
+              "inTabs": true
+            },
+            {
+              "id": "source.citation",
+              "label": "Citation…",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "the formatted citation; styles are CSL files",
+              "inTabs": true
+            },
+            {
+              "id": "source.classify",
+              "label": "Classify Source…",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "original or derivative or authored; the informant's knowledge (first-hand, second-hand, unknown) is recorded per anchor",
+              "inTabs": true
+            },
+            {
+              "id": "source.derivedFrom",
+              "label": "Derived From…",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "TXT",
+                "NEW"
+              ],
+              "notes": "records that this source was copied, indexed, abstracted or translated from another; used by the Independence check",
+              "inTabs": true
+            },
+            {
+              "id": "source.lineage",
+              "label": "Source Lineage",
+              "shortcut": "",
+              "origins": [
+                "NEW",
+                "TXT"
+              ],
+              "notes": "a diagram of which sources descend from which (opens in the Lineage view)",
+              "inTabs": true
+            },
+            {
+              "id": "source.reliability",
+              "label": "Reliability Notes…",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "FACT"
+              ],
+              "notes": "free notes on bias, legibility, damage and known errors",
+              "inTabs": true
+            },
+            {
+              "id": "source.confidential",
+              "label": "Mark as Confidential",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "left out of exports, exhibits and every AI request",
+              "inTabs": true
+            },
+            {
+              "id": "source.group",
+              "label": "Group Sources…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "folders, tags and colors",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Read",
+          "commands": [
+            {
+              "id": "source.ocr",
+              "label": "Recognize Text (OCR)",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "the suite OCR engine; the picture stays the evidence, the text is an aid for search",
+              "inTabs": true
+            },
+            {
+              "id": "source.transcribe",
+              "label": "Transcribe…",
+              "shortcut": "Ctrl+T",
+              "origins": [
+                "GPS",
+                "TXT"
+              ],
+              "notes": "type what the source says beside its picture, line by line, with marks for unclear, struck-out and supplied text",
+              "inTabs": true
+            },
+            {
+              "id": "source.compareTranscriptions",
+              "label": "Compare Transcriptions",
+              "shortcut": "",
+              "origins": [
+                "TXT",
+                "NEW"
+              ],
+              "notes": "two or more readings of the same page aligned word by word (two OCR engines, two people, OCR against typing)",
+              "inTabs": true
+            },
+            {
+              "id": "source.translationNote",
+              "label": "Translate Note…",
+              "shortcut": "",
+              "origins": [
+                "TXT"
+              ],
+              "notes": "your own translation of a passage, kept beside the original",
+              "inTabs": true
+            },
+            {
+              "id": "source.regionTools",
+              "label": "Page and Region Tools",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "rotate, zoom, contrast and invert for reading only; nothing is saved into the source",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Maintain",
+          "commands": [
+            {
+              "id": "source.verify",
+              "label": "Check Fingerprints",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "re-hashes every source file and reports those that changed, moved or are missing",
+              "inTabs": true
+            },
+            {
+              "id": "source.relink",
+              "label": "Relink Source…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "point a moved or renamed file back to its source entry; the fingerprint must match or the difference is shown",
+              "inTabs": true
+            },
+            {
+              "id": "source.replace",
+              "label": "Replace with Better Copy…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "a rescan or a new edition; anchors are re-found by their text and position and listed for review",
+              "inTabs": true
+            },
+            {
+              "id": "source.repair",
+              "label": "Repair Source File…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "hands a damaged file to the suite recovery engine of its type (Folio, Pen, Grid, Lens, Base); the repaired copy is added as a derivative",
+              "inTabs": true
+            },
+            {
+              "id": "source.remove",
+              "label": "Remove Source…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "refused while ties use it, unless the ties are removed in the same step",
+              "inTabs": true
+            },
+            {
+              "id": "source.findDuplicates",
+              "label": "Find Duplicate Sources",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "identical files, and near-identical scans of the same page",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "claim",
+      "name": "Claims",
+      "description": "List what your work says: every statement, number, date, name, relationship and quotation that should be backed by something",
+      "groups": [
+        {
+          "name": "Capture",
+          "commands": [
+            {
+              "id": "claim.new",
+              "label": "New Claim…",
+              "shortcut": "Ctrl+Shift+K",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "type a claim that is not (or not yet) in any document",
+              "inTabs": true
+            },
+            {
+              "id": "claim.capture",
+              "label": "Capture Claim from Selection",
+              "shortcut": "Ctrl+K",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "the selected sentence, cell, record field or chart person in a linked document becomes a claim that remembers where it sits",
+              "inTabs": true
+            },
+            {
+              "id": "claim.captureNumbers",
+              "label": "Capture All Numbers",
+              "shortcut": "",
+              "origins": [
+                "AUD",
+                "NEW"
+              ],
+              "notes": "every figure in the selection or the document",
+              "inTabs": true
+            },
+            {
+              "id": "claim.captureQuotes",
+              "label": "Capture All Quotations",
+              "shortcut": "",
+              "origins": [
+                "FACT",
+                "NEW"
+              ],
+              "notes": "every quoted passage, with its attributed speaker or work",
+              "inTabs": true
+            },
+            {
+              "id": "claim.captureFacts",
+              "label": "Capture All Dates and Names",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "FACT"
+              ],
+              "notes": "by the app's own pattern rules, no AI needed",
+              "inTabs": true
+            },
+            {
+              "id": "claim.fromCitations",
+              "label": "Capture from Citations",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "each footnote or reference in the document becomes a claim tied to the work it names",
+              "inTabs": true
+            },
+            {
+              "id": "claim.linkDocument",
+              "label": "Link Document…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "attach an Anne's Pen, Grid, Stage, Press, Loom, Base or Chart file (or .docx, .xlsx, .pptx, .pdf, .ged) as the work being checked",
+              "inTabs": true
+            },
+            {
+              "id": "claim.refresh",
+              "label": "Refresh from Document",
+              "shortcut": "F5",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "re-reads the linked documents; changed claims become Stale, deleted ones are listed",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Organize",
+          "commands": [
+            {
+              "id": "claim.details",
+              "label": "Claim Details…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "text, kind (fact, number, date, identity, relationship, quotation, opinion), importance, owner, due date",
+              "inTabs": true
+            },
+            {
+              "id": "claim.split",
+              "label": "Split Claim",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "NEW"
+              ],
+              "notes": "one sentence that asserts two things becomes two claims",
+              "inTabs": true
+            },
+            {
+              "id": "claim.merge",
+              "label": "Merge Claims…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "the same assertion made in two places",
+              "inTabs": true
+            },
+            {
+              "id": "claim.dependsOn",
+              "label": "Depends On…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "this claim is a conclusion from other claims; it cannot be stronger than the weakest of them",
+              "inTabs": true
+            },
+            {
+              "id": "claim.group",
+              "label": "Group Claims…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "by chapter, statement line, person, topic or tag",
+              "inTabs": true
+            },
+            {
+              "id": "claim.filter",
+              "label": "Sort and Filter…",
+              "shortcut": "Ctrl+Shift+L",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "by status, kind, owner, source, importance or check result",
+              "inTabs": true
+            },
+            {
+              "id": "claim.renumber",
+              "label": "Renumber Claims",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Status",
+          "commands": [
+            {
+              "id": "claim.setStatus",
+              "label": "Set Status…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "Open, Supported, Corroborated, Disputed, Settled, Stale or Set Aside; Supported and Corroborated can only be set while confirmed ties justify them",
+              "inTabs": true
+            },
+            {
+              "id": "claim.setAside",
+              "label": "Set Aside as Opinion or Assumption…",
+              "shortcut": "",
+              "origins": [
+                "FACT",
+                "NEW"
+              ],
+              "notes": "a statement that is not meant to be proven; the reason is recorded and shown in reports",
+              "inTabs": true
+            },
+            {
+              "id": "claim.assign",
+              "label": "Assign To…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "claim.note",
+              "label": "Add Note…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "claim.flag",
+              "label": "Flag for Follow-Up",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "claim.history",
+              "label": "Claim History",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "every status, tie and wording change of this claim",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "tie",
+      "name": "Ties",
+      "description": "Connect a claim to the exact spot in a source that bears on it, and say how",
+      "groups": [
+        {
+          "name": "Make",
+          "commands": [
+            {
+              "id": "tie.create",
+              "label": "Tie Selection to Claim",
+              "shortcut": "Ctrl+L",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "the selected region, text, cell range or time range becomes an anchor and is tied to the active claim",
+              "inTabs": true
+            },
+            {
+              "id": "tie.support",
+              "label": "Tie as Support",
+              "shortcut": "Ctrl+Shift+S",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "the anchor says what the claim says",
+              "inTabs": true
+            },
+            {
+              "id": "tie.contradict",
+              "label": "Tie as Contradiction",
+              "shortcut": "Ctrl+Shift+X",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "the anchor says otherwise",
+              "inTabs": true
+            },
+            {
+              "id": "tie.mention",
+              "label": "Tie as Mention",
+              "shortcut": "Ctrl+Shift+M",
+              "origins": [
+                "QDA",
+                "NEW"
+              ],
+              "notes": "relevant, proves nothing yet",
+              "inTabs": true
+            },
+            {
+              "id": "tie.absence",
+              "label": "Tie as Absence…",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "NEW"
+              ],
+              "notes": "you searched a source where the fact should appear and it does not; the search itself is recorded (negative evidence)",
+              "inTabs": true
+            },
+            {
+              "id": "tie.sumOf",
+              "label": "Tie Total to Parts…",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "a number claim equals the sum (or other formula) of other anchored numbers; rechecked by Sum Check",
+              "inTabs": true
+            },
+            {
+              "id": "tie.toClaim",
+              "label": "Tie to Another Claim…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "one claim rests on another",
+              "inTabs": true
+            },
+            {
+              "id": "anchor.new",
+              "label": "New Anchor Only",
+              "shortcut": "Ctrl+Shift+A",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "mark a spot now, tie it later",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Describe",
+          "commands": [
+            {
+              "id": "tie.details",
+              "label": "Tie Details…",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "NEW"
+              ],
+              "notes": "kind, direct or indirect, who the informant was and how they knew, your note",
+              "inTabs": true
+            },
+            {
+              "id": "tie.tick",
+              "label": "Mark Tick…",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "a tick mark from the case's legend (agreed to ledger, recomputed, traced to bank statement, or your own marks)",
+              "inTabs": true
+            },
+            {
+              "id": "tie.tickLegend",
+              "label": "Tick Mark Legend…",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "define the marks used in this case and their meanings",
+              "inTabs": true
+            },
+            {
+              "id": "tie.confirm",
+              "label": "Confirm Proposed Tie",
+              "shortcut": "Ctrl+Enter",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "accept a tie proposed by AI or by Auto-Tie; records who confirmed it",
+              "inTabs": true
+            },
+            {
+              "id": "tie.reject",
+              "label": "Reject Proposed Tie",
+              "shortcut": "Ctrl+Backspace",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "tie.confirmAll",
+              "label": "Confirm All in Selection…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "asks once, lists the count; never runs silently",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Maintain",
+          "commands": [
+            {
+              "id": "anchor.adjust",
+              "label": "Move Anchor",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "redraw the region or reselect the text",
+              "inTabs": true
+            },
+            {
+              "id": "anchor.reanchor",
+              "label": "Re-Anchor Broken Ties",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "after a source was replaced: finds each anchor's passage again by its text and neighborhood and lists every move for review",
+              "inTabs": true
+            },
+            {
+              "id": "tie.auto",
+              "label": "Auto-Tie Exact Matches",
+              "shortcut": "",
+              "origins": [
+                "AUD",
+                "NEW"
+              ],
+              "notes": "proposes ties where a claim's number or quotation appears exactly once in the sources; proposals only",
+              "inTabs": true
+            },
+            {
+              "id": "tie.remove",
+              "label": "Remove Tie",
+              "shortcut": "Delete",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "tie.ofSource",
+              "label": "Show Ties of Source",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "every claim that leans on the selected source (what breaks if this source is wrong)",
+              "inTabs": true
+            },
+            {
+              "id": "anchor.unused",
+              "label": "Show Unused Anchors",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "check",
+      "name": "Check",
+      "description": "Tests the app computes itself, without AI: do the words, numbers, dates and files still agree?",
+      "groups": [
+        {
+          "name": "Run",
+          "commands": [
+            {
+              "id": "check.all",
+              "label": "Run All Checks",
+              "shortcut": "F9",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "every check below, results in the Problems pane",
+              "inTabs": true
+            },
+            {
+              "id": "check.selection",
+              "label": "Run Checks on Selection",
+              "shortcut": "Shift+F9",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "check.onSave",
+              "label": "Check on Save",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "toggle; default on",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Words",
+          "commands": [
+            {
+              "id": "check.quote",
+              "label": "Quote Check",
+              "shortcut": "",
+              "origins": [
+                "FACT",
+                "TXT",
+                "NEW"
+              ],
+              "notes": "a quotation must match its anchor letter for letter, allowing marked omissions and bracketed insertions; differences are shown word by word",
+              "inTabs": true
+            },
+            {
+              "id": "check.paraphrase",
+              "label": "Paraphrase Reminder",
+              "shortcut": "",
+              "origins": [
+                "FACT"
+              ],
+              "notes": "lists claims tied to passages with no words in common, for a human look",
+              "inTabs": true
+            },
+            {
+              "id": "check.names",
+              "label": "Name Check",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "the same person or organization spelled different ways across claims; variants in sources are kept, not corrected",
+              "inTabs": true
+            },
+            {
+              "id": "check.citations",
+              "label": "Citation Check",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "every citation has the fields its style needs; every cited work is a source in the case",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Numbers",
+          "commands": [
+            {
+              "id": "check.number",
+              "label": "Number Check",
+              "shortcut": "",
+              "origins": [
+                "AUD",
+                "NEW"
+              ],
+              "notes": "a number claim equals its anchored figure under the stated rounding, unit and sign rules",
+              "inTabs": true
+            },
+            {
+              "id": "check.sum",
+              "label": "Sum Check",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "totals equal their parts down and across (foot and cross-foot); percentages recompute",
+              "inTabs": true
+            },
+            {
+              "id": "check.period",
+              "label": "Period Check",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "a figure tied to one period's document is not presented under another period",
+              "inTabs": true
+            },
+            {
+              "id": "check.units",
+              "label": "Unit and Currency Check",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "conversions use a stated rate and date",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Dates",
+          "commands": [
+            {
+              "id": "check.dates",
+              "label": "Date Check",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "NEW"
+              ],
+              "notes": "impossible and unlikely sequences (died before born, child before parent, document dated before the event it reports)",
+              "inTabs": true
+            },
+            {
+              "id": "check.calendar",
+              "label": "Calendar Check",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "Julian and Gregorian, dual-dated years, regnal and church calendars converted and compared on one scale",
+              "inTabs": true
+            },
+            {
+              "id": "check.ages",
+              "label": "Age Check",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "ages stated in sources against the dates claimed",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Evidence",
+          "commands": [
+            {
+              "id": "check.independence",
+              "label": "Independence Check",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "TXT",
+                "NEW"
+              ],
+              "notes": "sources that descend from a common original count once; a claim is Corroborated only by independent sources",
+              "inTabs": true
+            },
+            {
+              "id": "check.circular",
+              "label": "Circular Citation Check",
+              "shortcut": "",
+              "origins": [
+                "FACT",
+                "NEW"
+              ],
+              "notes": "A cites B and B cites A, or both cite a source that cites them",
+              "inTabs": true
+            },
+            {
+              "id": "check.stale",
+              "label": "Staleness Check",
+              "shortcut": "",
+              "origins": [
+                "AUD",
+                "NEW"
+              ],
+              "notes": "sources whose files changed and claims whose wording changed since they were tied",
+              "inTabs": true
+            },
+            {
+              "id": "check.coverage",
+              "label": "Coverage",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "which sentences and figures of the linked document have no claim, and which claims have no tie; opens the Coverage view",
+              "inTabs": true
+            },
+            {
+              "id": "check.links",
+              "label": "Link Check",
+              "shortcut": "",
+              "origins": [
+                "FACT"
+              ],
+              "notes": "web sources still reachable; the saved capture is kept either way",
+              "inTabs": true
+            },
+            {
+              "id": "check.weakPoints",
+              "label": "Weak Points",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "claims resting on one source, on derivative sources only, on second-hand information only, or on a source marked unreliable",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "resolve",
+      "name": "Resolve",
+      "description": "When sources disagree: lay them side by side, weigh them and write down the decision",
+      "groups": [
+        {
+          "name": "Compare",
+          "commands": [
+            {
+              "id": "resolve.open",
+              "label": "Open Reckoning",
+              "shortcut": "Ctrl+R",
+              "origins": [
+                "GPS",
+                "NEW"
+              ],
+              "notes": "a table for one disputed claim: each source, what it says, who said it, how they knew, when, original or copy",
+              "inTabs": true
+            },
+            {
+              "id": "resolve.sideBySide",
+              "label": "Compare Anchors Side by Side",
+              "shortcut": "",
+              "origins": [
+                "TXT",
+                "NEW"
+              ],
+              "notes": "the pictures and transcriptions of the conflicting passages together",
+              "inTabs": true
+            },
+            {
+              "id": "resolve.collate",
+              "label": "Collate Versions…",
+              "shortcut": "",
+              "origins": [
+                "TXT"
+              ],
+              "notes": "align several versions of one text and list every variant reading",
+              "inTabs": true
+            },
+            {
+              "id": "resolve.timeline",
+              "label": "Timeline of Sources",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "when each record was made relative to the event",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Decide",
+          "commands": [
+            {
+              "id": "resolve.prefer",
+              "label": "Prefer Source…",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "choose the reading you accept and record why",
+              "inTabs": true
+            },
+            {
+              "id": "resolve.conclusion",
+              "label": "Write Conclusion…",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "the written reasoning; required before a Disputed claim can become Settled",
+              "inTabs": true
+            },
+            {
+              "id": "resolve.leaveOpen",
+              "label": "Leave Unresolved…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "records that the evidence does not decide the question, and what would",
+              "inTabs": true
+            },
+            {
+              "id": "resolve.reopen",
+              "label": "Reopen",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "new evidence arrived; the earlier conclusion is kept in history",
+              "inTabs": true
+            },
+            {
+              "id": "resolve.applyCorrection",
+              "label": "Apply Correction to Document…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "sends the corrected wording or figure back to the linked document as a tracked change or comment; never edits it silently",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Plan",
+          "commands": [
+            {
+              "id": "resolve.log",
+              "label": "Research Log",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "searches made, where, for what, and what was or was not found",
+              "inTabs": true
+            },
+            {
+              "id": "resolve.todo",
+              "label": "Add To-Do…",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "SUITE"
+              ],
+              "notes": "a record still to be found or a person to ask",
+              "inTabs": true
+            },
+            {
+              "id": "resolve.checklist",
+              "label": "Search Checklist…",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "AUD"
+              ],
+              "notes": "record types usually consulted for this kind of claim; your own lists can be saved",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "report",
+      "name": "Report",
+      "description": "Turn the case into something a reader can check: notes, tables, exhibits and a written proof",
+      "groups": [
+        {
+          "name": "Into the document",
+          "commands": [
+            {
+              "id": "report.insertNotes",
+              "label": "Insert Notes into Document…",
+              "shortcut": "",
+              "origins": [
+                "REF",
+                "NEW"
+              ],
+              "notes": "footnotes or endnotes for every tied claim, written into the linked Anne's Pen or .docx document",
+              "inTabs": true
+            },
+            {
+              "id": "report.insertTicks",
+              "label": "Insert Tick Marks and References…",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "cross-reference marks and a legend written into the linked workbook or statement",
+              "inTabs": true
+            },
+            {
+              "id": "report.updateNotes",
+              "label": "Update Notes",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "after claims or ties changed",
+              "inTabs": true
+            },
+            {
+              "id": "report.removeNotes",
+              "label": "Remove Notes…",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Reports",
+          "commands": [
+            {
+              "id": "report.proof",
+              "label": "Proof Summary…",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "NEW"
+              ],
+              "notes": "the question, the evidence for each claim, the conflicts and how they were settled, and the conclusion",
+              "inTabs": true
+            },
+            {
+              "id": "report.claimTable",
+              "label": "Claim Table…",
+              "shortcut": "",
+              "origins": [
+                "AUD",
+                "FACT"
+              ],
+              "notes": "every claim with status, sources, ticks and owner; to Anne's Grid, PDF or print",
+              "inTabs": true
+            },
+            {
+              "id": "report.sourceList",
+              "label": "Source List…",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "bibliography or source list in the case's citation style",
+              "inTabs": true
+            },
+            {
+              "id": "report.openItems",
+              "label": "Open Items…",
+              "shortcut": "",
+              "origins": [
+                "AUD",
+                "FACT"
+              ],
+              "notes": "what is still Open, Disputed, Stale or failing a check",
+              "inTabs": true
+            },
+            {
+              "id": "report.map",
+              "label": "Evidence Map…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "a diagram of claims, sources and ties, sent to Anne's Chart",
+              "inTabs": true
+            },
+            {
+              "id": "report.coverage",
+              "label": "Coverage Report…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "the document with each sentence shaded by the strength of its support",
+              "inTabs": true
+            },
+            {
+              "id": "report.log",
+              "label": "Research Log Report…",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "report.changes",
+              "label": "Change Report…",
+              "shortcut": "",
+              "origins": [
+                "AUD",
+                "NEW"
+              ],
+              "notes": "what changed between two versions of the case",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Exhibits",
+          "commands": [
+            {
+              "id": "report.exhibits",
+              "label": "Build Exhibit Bundle…",
+              "shortcut": "",
+              "origins": [
+                "LAW",
+                "NEW"
+              ],
+              "notes": "one PDF through Anne's Folio: each anchored page with its region outlined, numbered and indexed to the claims",
+              "inTabs": true
+            },
+            {
+              "id": "report.numberExhibits",
+              "label": "Number Exhibits…",
+              "shortcut": "",
+              "origins": [
+                "LAW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "report.redact",
+              "label": "Redact for Sharing…",
+              "shortcut": "",
+              "origins": [
+                "LAW",
+                "GPS"
+              ],
+              "notes": "removes confidential sources and living persons' details from a report or bundle; the case itself is unchanged",
+              "inTabs": true
+            },
+            {
+              "id": "report.style",
+              "label": "Citation Style…",
+              "shortcut": "",
+              "origins": [
+                "REF"
+              ],
+              "notes": "choose or import a CSL style",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "review",
+      "name": "Review",
+      "description": "Work on a case with other people: assign, comment, sign off",
+      "groups": [
+        {
+          "name": "Comments",
+          "commands": [
+            {
+              "id": "review.comment",
+              "label": "New Comment",
+              "shortcut": "Ctrl+Alt+M",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "on a claim, a tie, an anchor or a source",
+              "inTabs": true
+            },
+            {
+              "id": "review.showComments",
+              "label": "Show Comments",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "review.resolveComment",
+              "label": "Resolve Comment",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Sign-off",
+          "commands": [
+            {
+              "id": "review.prepared",
+              "label": "Mark Prepared",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "records who assembled the evidence for a claim or a group",
+              "inTabs": true
+            },
+            {
+              "id": "review.reviewed",
+              "label": "Mark Reviewed",
+              "shortcut": "",
+              "origins": [
+                "AUD"
+              ],
+              "notes": "a second person's sign-off; cleared automatically if the claim or its ties change afterward",
+              "inTabs": true
+            },
+            {
+              "id": "review.queue",
+              "label": "Review Queue",
+              "shortcut": "",
+              "origins": [
+                "AUD",
+                "FACT"
+              ],
+              "notes": "claims waiting for your review",
+              "inTabs": true
+            },
+            {
+              "id": "review.blind",
+              "label": "Second Reader Mode",
+              "shortcut": "",
+              "origins": [
+                "FACT",
+                "NEW"
+              ],
+              "notes": "hides the first person's ties so a reviewer finds the support independently, then compares",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Combine",
+          "commands": [
+            {
+              "id": "review.compare",
+              "label": "Compare Cases…",
+              "shortcut": "",
+              "origins": [
+                "SUITE",
+                "NEW"
+              ],
+              "notes": "differences between two copies of a case",
+              "inTabs": true
+            },
+            {
+              "id": "review.merge",
+              "label": "Merge Cases…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "bring in another person's sources, claims and ties, with conflicts listed",
+              "inTabs": true
+            },
+            {
+              "id": "review.importTies",
+              "label": "Import Ties from Case…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "view",
+      "name": "View",
+      "description": "Panes, layouts and pictures of the case",
+      "groups": [
+        {
+          "name": "Views",
+          "commands": [
+            {
+              "id": "view.workbench",
+              "label": "Workbench",
+              "shortcut": "Ctrl+1",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "claims on the left, the source in the middle, ties and details on the right",
+              "inTabs": true
+            },
+            {
+              "id": "view.document",
+              "label": "Document View",
+              "shortcut": "Ctrl+2",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "the linked document with every claim underlined in its status color",
+              "inTabs": true
+            },
+            {
+              "id": "view.source",
+              "label": "Source View",
+              "shortcut": "Ctrl+3",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "one source full size with its anchors",
+              "inTabs": true
+            },
+            {
+              "id": "view.matrix",
+              "label": "Matrix",
+              "shortcut": "Ctrl+4",
+              "origins": [
+                "QDA",
+                "NEW"
+              ],
+              "notes": "claims down, sources across, a mark in each cell where they are tied",
+              "inTabs": true
+            },
+            {
+              "id": "view.coverage",
+              "label": "Coverage View",
+              "shortcut": "Ctrl+5",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.lineage",
+              "label": "Lineage View",
+              "shortcut": "Ctrl+6",
+              "origins": [
+                "TXT",
+                "NEW"
+              ],
+              "notes": "which sources descend from which",
+              "inTabs": true
+            },
+            {
+              "id": "view.timeline",
+              "label": "Timeline View",
+              "shortcut": "Ctrl+7",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.split",
+              "label": "Split Source View",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "two sources, or picture and transcription, side by side",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Show",
+          "commands": [
+            {
+              "id": "view.problems",
+              "label": "Problems Pane",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.details",
+              "label": "Details Pane",
+              "shortcut": "F4",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.statusColors",
+              "label": "Status Colors…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "colors and patterns for each status; patterns are on by default so color is not the only signal",
+              "inTabs": true
+            },
+            {
+              "id": "view.zoomIn",
+              "label": "Zoom In",
+              "shortcut": "Ctrl+=",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.zoomOut",
+              "label": "Zoom Out",
+              "shortcut": "Ctrl+-",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.fitPage",
+              "label": "Fit Page",
+              "shortcut": "Ctrl+0",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.fullScreen",
+              "label": "Full Screen",
+              "shortcut": "F11",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Shell",
+          "commands": [
+            {
+              "id": "view.menus",
+              "label": "Menus",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "ribbon, classic menu bar, or both",
+              "inTabs": true
+            },
+            {
+              "id": "view.customizeQat",
+              "label": "Customize Quick Access Bar…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.qatAddAll",
+              "label": "Add All Choices to Quick Access Bar",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.customizeRibbon",
+              "label": "Customize Ribbon…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.customizeKeyboard",
+              "label": "Customize Keyboard…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.commandSearch",
+              "label": "Search Commands",
+              "shortcut": "Alt+Q",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "view.theme",
+              "label": "Theme",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "light, dark, high contrast, system",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "tools",
+      "name": "Tools",
+      "description": "Macros, batch work and connections to the other apps",
+      "groups": [
+        {
+          "name": "Automate",
+          "commands": [
+            {
+              "id": "tools.recordMacro",
+              "label": "Record Macro…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "tools.macros",
+              "label": "Macros…",
+              "shortcut": "Alt+F8",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "tools.batchOcr",
+              "label": "Batch Add and OCR…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "tools.rules",
+              "label": "Rules…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "your own checks: a pattern, a comparison and a message (for example, every dollar figure over a threshold needs two ties)",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Suite",
+          "commands": [
+            {
+              "id": "tools.openInApp",
+              "label": "Open Claim in Its App",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "jumps to the sentence, cell, record or person in Pen, Grid, Base or Chart",
+              "inTabs": true
+            },
+            {
+              "id": "tools.openSourceInApp",
+              "label": "Open Source in Its App",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "tools.toGrid",
+              "label": "Send Table to Anne's Grid",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "tools.toBase",
+              "label": "Send Case Data to Anne's Base",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "tools.gedcomCitations",
+              "label": "Citations from GEDCOM…",
+              "shortcut": "",
+              "origins": [
+                "GPS"
+              ],
+              "notes": "reads the source citations in a family tree file as claims and sources; writes them back on export",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Data",
+          "commands": [
+            {
+              "id": "tools.import",
+              "label": "Import…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "see FORMATS-PLAN.md",
+              "inTabs": true
+            },
+            {
+              "id": "tools.spelling",
+              "label": "Spelling…",
+              "shortcut": "F7",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "in claims, notes and transcriptions",
+              "inTabs": true
+            },
+            {
+              "id": "tools.language",
+              "label": "Language…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "ai",
+      "name": "AI",
+      "description": "Optional helpers that find, read and draft. They propose; they never decide. See AI-PLAN.md",
+      "groups": [
+        {
+          "name": "Ask",
+          "commands": [
+            {
+              "id": "ai.ask",
+              "label": "Ask the Case…",
+              "shortcut": "Ctrl+Alt+A",
+              "origins": [
+                "GENAI",
+                "NEW"
+              ],
+              "notes": "answers only from the case's sources; every sentence of the answer carries its anchors, and \"not in the sources\" is a normal answer",
+              "inTabs": true
+            },
+            {
+              "id": "ai.explainSource",
+              "label": "Explain This Source",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "what kind of record this appears to be, who usually made such records and why; labeled as opinion",
+              "inTabs": true
+            },
+            {
+              "id": "ai.explainConflict",
+              "label": "Explain Disagreement",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "possible reasons two sources differ (copying error, calendar, different person, later correction); labeled as possibilities",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Find",
+          "commands": [
+            {
+              "id": "ai.extractClaims",
+              "label": "Extract Claims from Document",
+              "shortcut": "",
+              "origins": [
+                "GENAI",
+                "NEW"
+              ],
+              "notes": "proposes the checkable statements in the linked document, including ones the pattern rules miss",
+              "inTabs": true
+            },
+            {
+              "id": "ai.findSupport",
+              "label": "Find Support for Claim",
+              "shortcut": "Ctrl+Alt+F",
+              "origins": [
+                "GENAI",
+                "NEW"
+              ],
+              "notes": "proposes anchors in the case's sources; the app confirms each quoted passage really is at that spot before showing it",
+              "inTabs": true
+            },
+            {
+              "id": "ai.findContradictions",
+              "label": "Find Contradictions",
+              "shortcut": "",
+              "origins": [
+                "GENAI",
+                "NEW"
+              ],
+              "notes": "proposes passages that say otherwise",
+              "inTabs": true
+            },
+            {
+              "id": "ai.suggestSources",
+              "label": "Suggest Where to Look",
+              "shortcut": "",
+              "origins": [
+                "GENAI",
+                "GPS"
+              ],
+              "notes": "the kinds of records that could settle an Open claim, as a to-do list; it suggests searches, not facts",
+              "inTabs": true
+            },
+            {
+              "id": "ai.checkCitations",
+              "label": "Check That Citations Exist",
+              "shortcut": "",
+              "origins": [
+                "GENAI",
+                "NEW"
+              ],
+              "notes": "lists cited works that are not in the case or cannot be found in a public catalog; catches invented references",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Read",
+          "commands": [
+            {
+              "id": "ai.transcribe",
+              "label": "Transcribe Source",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "handwriting and faded or damaged pages; uncertain words are marked and the result is labeled as an AI reading",
+              "inTabs": true
+            },
+            {
+              "id": "ai.translate",
+              "label": "Translate Passage",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "labeled as an AI translation and kept beside the original",
+              "inTabs": true
+            },
+            {
+              "id": "ai.extractFields",
+              "label": "Extract Fields from Record",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "names, dates, places and amounts from a form, certificate, register or statement, as proposed claims with anchors",
+              "inTabs": true
+            },
+            {
+              "id": "ai.summarize",
+              "label": "Summarize Source",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "for finding your way; a summary can never be tied to a claim",
+              "inTabs": true
+            },
+            {
+              "id": "ai.describeImage",
+              "label": "Describe Picture",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "what is visible in a photograph or drawing; labeled as description",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Check",
+          "commands": [
+            {
+              "id": "ai.checkParaphrase",
+              "label": "Check Paraphrase",
+              "shortcut": "",
+              "origins": [
+                "GENAI",
+                "FACT"
+              ],
+              "notes": "does the claim say more than the tied passage does?",
+              "inTabs": true
+            },
+            {
+              "id": "ai.classifyTie",
+              "label": "Suggest Tie Kind",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "support, contradiction or mention; direct or indirect",
+              "inTabs": true
+            },
+            {
+              "id": "ai.assessIndependence",
+              "label": "Assess Independence",
+              "shortcut": "",
+              "origins": [
+                "GENAI",
+                "TXT"
+              ],
+              "notes": "shared wording and shared errors that suggest one source was copied from another; proposals for Derived From",
+              "inTabs": true
+            },
+            {
+              "id": "ai.screenPrivacy",
+              "label": "Screen for Private Information",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "runs on the device only; finds details of living people, account numbers and health information before sharing",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Write",
+          "commands": [
+            {
+              "id": "ai.draftProof",
+              "label": "Draft Proof Summary",
+              "shortcut": "",
+              "origins": [
+                "GENAI",
+                "GPS"
+              ],
+              "notes": "from confirmed ties and written conclusions only; each paragraph cites its claims",
+              "inTabs": true
+            },
+            {
+              "id": "ai.draftCitation",
+              "label": "Draft Citation",
+              "shortcut": "",
+              "origins": [
+                "GENAI",
+                "REF"
+              ],
+              "notes": "fills the citation fields from the source's title page or heading, for your correction",
+              "inTabs": true
+            },
+            {
+              "id": "ai.draftConclusion",
+              "label": "Draft Conclusion",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "a first wording of the reasoning in a Reckoning, from the table you filled in",
+              "inTabs": true
+            },
+            {
+              "id": "ai.draftPlan",
+              "label": "Draft Research Plan",
+              "shortcut": "",
+              "origins": [
+                "GENAI",
+                "GPS"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "ai.runOnSelection",
+              "label": "Run on Selection…",
+              "shortcut": "",
+              "origins": [
+                "GENAI"
+              ],
+              "notes": "your own instruction over the selected claims or sources; results are proposals",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Providers",
+          "commands": [
+            {
+              "id": "ai.setup",
+              "label": "Set Up AI…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "the suite wizard: on-device, your own computer, free tiers and paid services",
+              "inTabs": true
+            },
+            {
+              "id": "ai.providers",
+              "label": "Providers and Models…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "ai.active",
+              "label": "Active AI",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "ai.privacy",
+              "label": "AI and Privacy…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "what each command may send; per case and per source",
+              "inTabs": true
+            },
+            {
+              "id": "ai.ensembleMode",
+              "label": "Several AIs",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "single, master combines answers, or Quaker consensus",
+              "inTabs": true
+            },
+            {
+              "id": "ai.ensembleMembers",
+              "label": "Choose AIs…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "ai.showDeliberation",
+              "label": "Show AI Discussion",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "ai.history",
+              "label": "AI History",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "what was sent, where, and what came back",
+              "inTabs": true
+            },
+            {
+              "id": "ai.stop",
+              "label": "Stop AI",
+              "shortcut": "Ctrl+Alt+.",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "ai.deleteModels",
+              "label": "Delete Downloaded Models",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "dev",
+      "name": "Developer",
+      "description": "Scripting and the case's data, for people who want to build on it",
+      "groups": [
+        {
+          "name": "Script",
+          "commands": [
+            {
+              "id": "dev.scriptEditor",
+              "label": "Script Editor",
+              "shortcut": "Alt+F11",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "JavaScript macros against the case object model",
+              "inTabs": true
+            },
+            {
+              "id": "dev.runScript",
+              "label": "Run Script…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "dev.commandLine",
+              "label": "Command Line Options",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "check a case and exit with a result code, for build pipelines",
+              "inTabs": true
+            }
+          ]
+        },
+        {
+          "name": "Data",
+          "commands": [
+            {
+              "id": "dev.query",
+              "label": "Query Case…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "read-only SQL over sources, anchors, claims and ties",
+              "inTabs": true
+            },
+            {
+              "id": "dev.exportText",
+              "label": "Export Case as Text Folder…",
+              "shortcut": "",
+              "origins": [
+                "SUITE",
+                "NEW"
+              ],
+              "notes": "JSON and Markdown files that read well in version control",
+              "inTabs": true
+            },
+            {
+              "id": "dev.anchorData",
+              "label": "Show Anchor Data",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "the stored selector and fingerprint of the selected anchor",
+              "inTabs": true
+            },
+            {
+              "id": "dev.validate",
+              "label": "Validate Case File",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "help",
+      "name": "Help",
+      "description": "Help, examples and about",
+      "groups": [
+        {
+          "name": "Help",
+          "commands": [
+            {
+              "id": "help.contents",
+              "label": "Help",
+              "shortcut": "F1",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "help.tutorial",
+              "label": "Guided Example…",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "a small made-up case: three sources that disagree about a birth year",
+              "inTabs": true
+            },
+            {
+              "id": "help.shortcuts",
+              "label": "Keyboard Shortcuts",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "help.statuses",
+              "label": "What Each Status Means",
+              "shortcut": "",
+              "origins": [
+                "NEW"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "help.standards",
+              "label": "Standards of Proof…",
+              "shortcut": "",
+              "origins": [
+                "GPS",
+                "AUD",
+                "FACT"
+              ],
+              "notes": "plain descriptions of the practices the templates follow",
+              "inTabs": true
+            },
+            {
+              "id": "help.report",
+              "label": "Report a Problem…",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "help.updates",
+              "label": "Check for Updates",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "help.notices",
+              "label": "Third-Party Notices",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            },
+            {
+              "id": "help.about",
+              "label": "About Anne's Witness",
+              "shortcut": "",
+              "origins": [
+                "SUITE"
+              ],
+              "notes": "",
+              "inTabs": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

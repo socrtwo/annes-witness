@@ -1,0 +1,44 @@
+{
+  "name": "annes-witness",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Anne's Witness: an original open-source evidence workbench that ties every claim in your work to the exact spot in a source that backs it, checks that they still agree, and prints the proof. Part of the Anne's Office suite. Planning stage.",
+  "keywords": [
+    "annes-witness",
+    "annes-office-suite",
+    "evidence",
+    "evidence-analysis",
+    "fact-checking",
+    "claim-verification",
+    "source-verification",
+    "provenance",
+    "audit-trail",
+    "tie-out",
+    "citations",
+    "genealogy",
+    "transcription",
+    "collation",
+    "ocr",
+    "grounded-ai",
+    "ai-assistant",
+    "office-suite",
+    "offline",
+    "clean-room"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Paul D Pruitt"
+  },
+  "homepage": "https://github.com/socrtwo/annes-witness",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/socrtwo/annes-witness.git"
+  },
+  "bugs": {
+    "url": "https://github.com/socrtwo/annes-witness/issues"
+  },
+  "scripts": {
+    "plan": "python3 scripts/gen-plan.py",
+    "validate": "python3 scripts/gen-plan.py --check"
+  }
+}

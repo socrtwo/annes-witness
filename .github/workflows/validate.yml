@@ -1,0 +1,29 @@
+name: Validate plan and metadata
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.10', '3.13']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Validate command plan and metadata
+        run: python scripts/gen-plan.py --check
+      - name: Validate JSON files
+        run: |
+          python -m json.tool AnnesWitness.meta.json
+          python -m json.tool package.json
+          python -m json.tool docs/commands-plan.json
