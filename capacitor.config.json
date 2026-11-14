@@ -1,0 +1,7 @@
+{
+  "appId": "io.github.socrtwo.anneswitness",
+  "appName": "Anne's Witness",
+  "webDir": "dist",
+  "android": { "allowMixedContent": false },
+  "server": { "androidScheme": "https" }
+}

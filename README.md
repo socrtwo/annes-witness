@@ -6,7 +6,15 @@
 
 You give it your work and the records behind it. It lists what your work claims (each statement, number, date, name and quotation), lets you tie each claim to the exact spot in a source that backs it or contradicts it, checks by itself that the words and numbers still agree, helps you settle the cases where sources disagree, and prints the proof. It shares the suite's goal, **no missing commands**: every feature is a command that can go on the Quick Access Bar, on your own tab, in the classic menu bar, on a keyboard shortcut or in a macro, and is found by command search. It has an **AI** tab and an **AI** menu, with one rule: the AI may point at evidence, but only a real passage in a real source counts, and only a person confirms it.
 
-> **Status: planning. There is no code yet.** This repository holds the plan: the concept, the command inventory (257 commands on 14 tabs), the AI plan, the file and architecture plans, and the roadmap. Issues and discussion are welcome.
+> **Status: first working version (0.1.0).** A web app that also installs as a PWA, with configuration for desktop (Electron) and mobile (Capacitor) builds. **297 of the 307 planned commands** are implemented ([docs/COMMANDS.md](docs/COMMANDS.md)); 86 unit tests and a browser end-to-end test pass. What works:
+>
+> - **Sources** from PDF (pages drawn, regions marked), pictures (regions, picture metadata, OCR), Word, Excel, PowerPoint, OpenDocument, text, CSV, HTML and saved web pages, e-mail, GEDCOM, EPUB, audio and video with VTT/SRT transcripts; references by DOI, ISBN or PubMed id; BibTeX, RIS and CSL-JSON import.
+> - **Claims** typed, captured from a linked document (one sentence, or all numbers, quotations, dates and names), split into facts, checked for staleness when the document changes.
+> - **Ties** to text passages and page regions, with supports, contradicts, mentions, absence, sum-of and claim-to-claim kinds, tick marks, confidence, and **status computed from confirmed ties**.
+> - **24 checks without AI**, Reckonings for conflicts, lineage and independence, reports (proof summary, claim table, coverage, chronology, reader verification kit, ClaimReview markup, exhibit bundle PDF with Bates numbers), notes written into .docx, tick sheets into .xlsx, sealed cases, review sign-offs and Second Reader Mode.
+> - **AI tab and AI menu** (35 commands) with the **Source Attribution Wizard** (*Draft Sources for Every Fact*): Claude drafts, with citations, where each fact in each sentence comes from; the app checks every cited passage word for word; a person verifies each draft in **Verify Drafts**.
+>
+> Not yet: the built-in public-domain text shelf, Repair Source File through the sister apps' recovery engines, on-device AI models, spelling, and native Android/iOS/desktop builds produced by CI (the configuration is in place; see [docs/BUILD.md](docs/BUILD.md)). See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Why this app exists
 
@@ -43,7 +51,8 @@ Each claim has a status that the app can justify at any time: **Open** (nothing 
 - **Reports a reader can check.** Footnotes or endnotes written into the linked document, tick marks and a legend written into a workbook, a Proof Summary, a Claim Table, an Open Items list, an Evidence Map (through Anne's Chart) and an **Exhibit Bundle** (through Anne's Folio): each anchored page with its region outlined, numbered and indexed to the claims.
 - **Sealed cases.** A read-only copy with a hash of every source and every tie, so a reader can verify that nothing changed afterward.
 - **Review by a second person.** Prepared and Reviewed sign-offs that clear themselves if the evidence changes, and a Second Reader Mode that hides the first person's ties so the reviewer finds the support independently.
-- **AI tab and AI menu** with 32 commands: Ask the Case (answers only from your sources, each sentence with its anchors), Extract Claims, Find Support, Find Contradictions, Check That Citations Exist, Transcribe, Translate, Extract Fields from Record, Draft Proof Summary and the suite's provider setup, privacy settings, history and several-AIs modes. AI results are proposals; the app itself verifies that each proposed passage really is at the spot named before showing it. See [docs/AI-PLAN.md](docs/AI-PLAN.md).
+- **The Source Attribution Wizard** (AI ▸ Draft Sources for Every Fact): splits every sentence of a document into separate facts and drafts, for each fact, the passages in your sources that support or contradict it. It uses Claude's citations, so every draft points at an exact passage; the app re-checks each passage word for word and discards any it cannot find; the drafts arrive as proposed ties, and **Review ▸ Verify Drafts** steps through them one at a time (Y confirm, N reject, S/C/M change the kind). Nothing counts as evidence until a person confirms it.
+- **AI tab and AI menu** with 35 commands: Ask the Case (answers only from your sources, each sentence with its anchors), Extract Claims, Find Support, Find Contradictions, Check That Citations Exist, Transcribe, Translate, Extract Fields from Record, Draft Proof Summary and the suite's provider setup, privacy settings, history and several-AIs modes. AI results are proposals; the app itself verifies that each proposed passage really is at the spot named before showing it. See [docs/AI-PLAN.md](docs/AI-PLAN.md).
 - **Damaged files.** A damaged source goes to the suite recovery engine of its type; a damaged case is rebuilt from its journal. Broken anchors are re-found by their text. See [docs/ARCHITECTURE-PLAN.md](docs/ARCHITECTURE-PLAN.md).
 - **Private by default.** Everything works offline. Sources can be marked confidential, which keeps them out of exports, exhibits and every AI request. Details of living people can be removed from anything you share.
 
@@ -84,16 +93,29 @@ As for the sister apps, each release will have builds for **Android** (APK and A
 | File | Contents |
 |---|---|
 | [docs/ORIGINALITY.md](docs/ORIGINALITY.md) | The survey of the Anne's Office apps and Adobe's apps, why this is not a copy of any of them, its nearest relatives elsewhere, and where its ideas come from |
+| [docs/COMMANDS.md](docs/COMMANDS.md) | Which planned commands are implemented (generated by `npm run catalog`) |
 | [docs/COMMANDS-PLAN.md](docs/COMMANDS-PLAN.md) | The planned command inventory, tab by tab, with ids, shortcuts and origins (generated) |
 | [docs/commands-plan.json](docs/commands-plan.json) | The same data as JSON, for the future catalog test (generated) |
 | [docs/AI-PLAN.md](docs/AI-PLAN.md) | The AI tab and AI menu: what each command does and sends, the rules, privacy |
 | [docs/ARCHITECTURE-PLAN.md](docs/ARCHITECTURE-PLAN.md) | The case file, anchors and fingerprints, the status rules, the journal, repair |
 | [docs/FORMATS-PLAN.md](docs/FORMATS-PLAN.md) | What can be a source, what can be a linked document, what is exported |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Milestones |
+| [docs/BUILD.md](docs/BUILD.md) | Building, testing, the command line, desktop and mobile builds |
 | [docs/LEGAL.md](docs/LEGAL.md) | Clean-room, trademark, privacy and licensing notes |
 | [AnnesWitness.meta.json](AnnesWitness.meta.json) | Repository description, topics, keywords, app id and icon color |
 
-The command plan is generated: edit [docs/commands-plan.src.txt](docs/commands-plan.src.txt) and run `python3 scripts/gen-plan.py` (it also checks ids, origins, shortcut conflicts and the metadata file). It needs only Python 3.10 or later.
+## Develop
+
+```bash
+npm ci
+npm run dev        # web app at http://localhost:5173
+npm test           # unit tests
+npm run typecheck
+npm run build      # dist/: static files, installable and offline-capable
+npm run e2e        # browser test (needs Playwright with Chromium)
+```
+
+The command plan is generated: edit [docs/commands-plan.src.txt](docs/commands-plan.src.txt) and run `python3 scripts/gen-plan.py` (it also checks ids, origins, shortcut conflicts and the metadata file). Then `npm run catalog` updates [docs/COMMANDS.md](docs/COMMANDS.md).
 
 ## Project language
 

@@ -1,6 +1,6 @@
 # AI plan
 
-> **Plan. There is no code yet.** This document fixes what the **AI** tab and the **AI** menu will do, which services they use, and the rules for accuracy, privacy and cost. The AI menu is the same list of commands in the classic menu bar; anything said here about the tab applies to the menu. Command ids are in [COMMANDS-PLAN.md](COMMANDS-PLAN.md#ai).
+> **Implemented in 0.1.0, except where marked *not yet*.** This document fixes what the **AI** tab and the **AI** menu will do, which services they use, and the rules for accuracy, privacy and cost. The AI menu is the same list of commands in the classic menu bar; anything said here about the tab applies to the menu. Command ids are in [COMMANDS-PLAN.md](COMMANDS-PLAN.md#ai).
 
 The AI tab is optional. Anne's Witness is complete without it, and nothing is sent anywhere until you run an AI command. Every AI command is an ordinary command: it can go on the Quick Access Bar, on a custom tab, in the menu bar, on a shortcut or in a macro.
 
@@ -19,17 +19,34 @@ This app exists to answer "how do you know?". A language model is fluent and can
 
 | Group | Commands | What is sent (default) |
 |---|---|---|
-| **Ask** | Ask the Case, Explain This Source, Explain Disagreement | the question and the passages the on-device search selected; for Explain, the source's details and the anchored passages |
-| **Find** | Extract Claims from Document, Find Support for Claim, Find Contradictions, Suggest Where to Look, Check That Citations Exist | the document text (Extract); the claim and candidate passages chosen on the device (Find Support, Find Contradictions); the claim and the list of source titles (Suggest); the citation list (Check) |
+| **Ask** | Ask the Case, Explain This Source, Explain Disagreement, Suggest Questions | the question and the passages the on-device search selected; for Explain, the source's details and the anchored passages |
+| **Find** | **Draft Sources for Every Fact (Source Attribution Wizard)**, Split into Facts with AI, Extract Claims from Document, Find Support for Claim, Find Contradictions, Suggest Where to Look, Check That Citations Exist | the document's sentences and the text of the chosen sources (Wizard, Find Support, Find Contradictions — today whole source texts, see below); the document text (Extract); the claim and the list of source titles (Suggest); the reference lines (Check) |
 | **Read** | Transcribe Source, Translate Passage, Extract Fields from Record, Summarize Source, Describe Picture | the page image or passage you chose |
 | **Check** | Check Paraphrase, Suggest Tie Kind, Assess Independence, Screen for Private Information | the claim and its tied passage; for Independence, the passages of the two sources; Screen for Private Information runs on the device only and sends nothing |
 | **Write** | Draft Proof Summary, Draft Citation, Draft Conclusion, Draft Research Plan, Run on Selection | claims, confirmed ties and conclusions; for Draft Citation, the title page or heading |
 | **Providers** | Set Up AI, Providers and Models, Active AI, AI and Privacy, Several AIs, Choose AIs, Show AI Discussion, AI History, Stop AI, Delete Downloaded Models | nothing |
 
+## The Source Attribution Wizard
+
+**AI ▸ Draft Sources for Every Fact** (`ai.attributionWizard`, Ctrl+Alt+W) drafts, for a whole document, where every fact comes from. It is the second wizard on the AI tab, after Set Up AI.
+
+1. **Choose.** The document to check, the sources to search (confidential sources and sources without text are left out and listed), whether to split sentences into separate facts, whether to keep "mentions", and whether to ask for leads when nothing in the case bears on a fact. The dialog states what will be sent, to which service and model, and roughly how much.
+2. **Facts.** The document is split into sentences by the app. In *separate facts* mode, Claude splits each batch of 40 sentences into checkable facts with structured output (JSON Schema); each fact must quote the exact words of its sentence, or it is anchored to the whole sentence. Sentences with nothing checkable are kept aside as "not checkable".
+3. **Sources.** Facts go in batches of 12, with the sources as plain-text documents with **Claude's citations enabled** (the sources are cached between batches). Claude answers per fact with SUPPORTS, CONTRADICTS, MENTIONS or NOT FOUND, citing exact passages. Large source sets are split into groups that fit a request.
+4. **The gate.** For every citation, the app checks that the cited words are in the source at the cited character positions, or exactly elsewhere in it (whitespace and quotation marks normalized; no fuzzy matching). A citation that fails is discarded and listed.
+5. **Leads.** For facts with nothing in the case, Claude may suggest kinds of records to search. These become to-dos labeled as AI suggestions; they are never ties.
+6. **Summary.** Before anything is written into the case, a table shows each fact, its drafts, the discarded citations, the requests made and the tokens used. *Discard* leaves the case unchanged.
+7. **Proposals.** *Add as proposals* creates the claims (a sentence claim with its facts beneath it), anchors and **proposed** ties in one undoable step, and records the run in AI History. No status changes.
+8. **Verify Drafts.** **Review ▸ Verify Drafts** (Ctrl+Shift+V) steps through every proposed tie: the claim, its sentence, the proposed kind and who proposed it, and the passage in its context. **Y** confirms, **N** rejects, **S / C / M** confirm with another kind, arrows skip. Each confirmation records who confirmed it, the claim's wording and the source's fingerprint at that moment, so later changes make the claim Stale.
+
+With *Several AIs*, each chosen service runs the same steps; every proposal passes the gate separately, and identical proposals are merged with the names of all models that made them.
+
+Services without citations (local servers) can run the wizard too: they return exact quotations as JSON, and the gate searches the source for them. Claude is recommended because its citations come with positions.
+
 ### Find Support for Claim in detail
 
-1. On the device, the claim is compared with every passage of the case's sources (embeddings plus exact matching of numbers, dates and names) and the best candidates are chosen. Confidential sources are skipped.
-2. The claim and those candidate passages, each with its source and location, go to the text model with instructions to return, as structured output, the passages that support the claim, the exact words relied on, and whether the support is direct or indirect.
+1. *Not yet:* choosing candidate passages on the device with embeddings, so that only a few passages leave the device. **Today the claim and the full text of every non-confidential source are sent**, which needs the *Whole documents* privacy level.
+2. With Claude, the sources go as documents with citations enabled and the answer cites exact passages; with other services, the model returns exact quotations as JSON.
 3. **The verification gate:** for each returned item, the app looks up the location and checks that the exact words are there. Numbers are compared as numbers under the case's rounding rules. Anything that does not match is dropped.
 4. Survivors appear as proposed ties next to the claim, each opening the source at the passage. Nothing is tied until the person confirms.
 5. If nothing survives, the pane says that no support was found in the case, and offers *Suggest Where to Look*.
@@ -59,17 +76,17 @@ The suite's shared adapters: Anthropic, OpenAI, Google Gemini, Mistral, Groq, Op
 
 ## On the device
 
-Small models run in the app (ONNX Runtime Web or Transformers.js; WebGPU where available, WASM otherwise) for:
+*Not yet implemented.* Small models will run in the app (ONNX Runtime Web or Transformers.js; WebGPU where available, WASM otherwise) for:
 
 - **passage embeddings**, so candidates are chosen locally and only a few passages leave the device;
-- **Screen for Private Information**, which must work with no service at all;
+- **Screen for Private Information** — implemented today with on-device pattern rules (e-mail, phone, account and identity numbers, street addresses, health words, birth dates of possibly living people); a model would add names and context;
 - an optional small text model for simple questions when no service is set up.
 
 Each model's license is shown before download, and only permissively licensed weights are offered (see [LEGAL.md](LEGAL.md)). *Delete Downloaded Models* removes them.
 
 ## Several AIs
 
-The text commands can use the suite's ensemble modes (one AI combines the others' answers, or the AIs deliberate until they agree), as specified for the suite in [Anne's Base's ENSEMBLE.md](https://github.com/socrtwo/annes-base/blob/main/docs/ENSEMBLE.md). In Anne's Witness, each member proposes ties separately and every proposal from every member passes the verification gate. The pane then shows, for each passage, which members proposed it. Agreement among models is shown as information; it is not corroboration, and it never changes a claim's status.
+The Find commands and the wizard can use several AIs (implemented: each AI's proposals are checked separately and merged; *not yet*: one AI combining answers, or Quaker-consensus deliberation), as specified for the suite in [Anne's Base's ENSEMBLE.md](https://github.com/socrtwo/annes-base/blob/main/docs/ENSEMBLE.md). In Anne's Witness, each member proposes ties separately and every proposal from every member passes the verification gate. The pane then shows, for each passage, which members proposed it. Agreement among models is shown as information; it is not corroboration, and it never changes a claim's status.
 
 ## What the app will not do
 
@@ -83,9 +100,9 @@ The text commands can use the suite's ensemble modes (one AI combines the others
 
 ## Privacy and keys
 
-*AI and Privacy* (`ai.privacy`) is set per case, with **Passages only** as the default: commands send the few passages they need, never whole sources. **Whole pages** (needed for Transcribe and Extract Fields) and **Whole documents** (needed for Extract Claims) are asked for when a command needs them. Each source can also be set to *never send*.
+*AI and Privacy* (`ai.privacy`) is set per case, with **Passages only** as the default. Commands that need more refuse to run and say which level they need: **Whole pages** for Transcribe, Extract Fields and Describe Picture; **Whole documents** for the Attribution Wizard, Ask the Case, Find Support, Find Contradictions, Extract Claims and Summarize (until on-device passage selection exists). Sources marked **confidential** are never sent at any level.
 
-Keys are stored in the platform keychain (Android Keystore, iOS Keychain, Windows Credential Manager, macOS Keychain, libsecret on Linux; on the web, encrypted in the browser with a passphrase), never in the case file or in exported settings. **AI History** (`ai.history`) records, per case, what was sent, to which service, what came back, and how many proposals the verification gate discarded; it can be cleared.
+Keys are kept for the browser session only, or, if the user chooses, stored encrypted (AES-256-GCM, key derived from a passphrase with PBKDF2) in browser storage. They are never written into the case file or exported settings. *Not yet:* the platform keychains of the desktop and mobile builds. Requests go from the device straight to the service (the Anthropic SDK's browser mode); no other server is involved. **AI History** (`ai.history`) records, per case, what was sent, to which service, what came back, and how many proposals the verification gate discarded; it can be cleared.
 
 ## Cost
 

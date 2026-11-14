@@ -1,6 +1,6 @@
 # Contributing to Anne's Witness
 
-Thank you for your interest. Anne's Witness is at the **planning** stage: there is no code yet. The most useful contributions now are:
+Thank you for your interest. Anne's Witness 0.1.0 is a first working version (web app; desktop and mobile builds configured). Useful contributions:
 
 - **Feedback on the concept and the plan:** missing commands, commands in the wrong place, status rules that give a wrong answer in a situation you know, and corrections to [docs/ORIGINALITY.md](docs/ORIGINALITY.md), [docs/AI-PLAN.md](docs/AI-PLAN.md), [docs/ARCHITECTURE-PLAN.md](docs/ARCHITECTURE-PLAN.md) or [docs/FORMATS-PLAN.md](docs/FORMATS-PLAN.md). To change commands, edit [docs/commands-plan.src.txt](docs/commands-plan.src.txt) and run `python3 scripts/gen-plan.py`; it fails on duplicate ids, unknown origin codes and shortcut conflicts. Open an issue with the *Feature request* template.
 - **Knowledge of the trades:** if you prove family relationships, tie out financial statements, check facts for a publisher or edit texts from manuscripts, tell us how you do it and what the plan gets wrong. Describe practices in your own words; do not paste text from standards, manuals or textbooks.
@@ -20,8 +20,12 @@ Thank you for your interest. Anne's Witness is at the **planning** stage: there 
 ## Checks
 
 ```bash
-python3 scripts/gen-plan.py          # regenerate docs/COMMANDS-PLAN.md and docs/commands-plan.json
-python3 scripts/gen-plan.py --check  # validate the plan and AnnesWitness.meta.json
+npm ci
+npm run typecheck
+npm test                             # unit tests
+npm run build && npm run e2e         # browser test (Playwright + Chromium)
+python3 scripts/gen-plan.py --check  # command plan and metadata
+npm run catalog                      # regenerate docs/COMMANDS.md after adding commands
 ```
 
-Python 3.10 or later, standard library only. When the application scaffold arrives (milestone M1), it will use Node.js and the same `npm run dev`, `npm test`, `npm run typecheck` and `npm run build` commands as the sister apps.
+Include tests for changes to status rules, the verification gate, readers, checks and reports. See [docs/BUILD.md](docs/BUILD.md).

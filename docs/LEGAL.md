@@ -43,19 +43,21 @@ Evidence files often hold other people's information: family records, financial 
 
 The documentation names other products (Adobe Acrobat, Photoshop, Illustrator, InDesign, Premiere, After Effects, Lightroom, Firefly, Express, Bridge, FrameMaker, RoboHelp, Workfront, Content Authenticity and Adobe's other products; Microsoft Word, Excel and PowerPoint; Zotero, EndNote, Mendeley, Evidentia, Clooz, CaseWare, NVivo, ATLAS.ti, MAXQDA, CollateX, Juxta, CaseMap, Hypothes.is, NotebookLM and others) only to identify file formats, to say what Anne's Witness is *not*, or to let readers compare. This is nominative use; it implies no affiliation, sponsorship or endorsement. The names are trademarks of their respective owners; Adobe and the Adobe product names are trademarks of Adobe Inc., and Microsoft, Word, Excel and PowerPoint are trademarks of Microsoft Corporation.
 
-## Third-party components (planned)
+## Third-party components
 
-The final list will be generated from `package.json` into a third-party notices file at build time, as in the sister apps. Only permissive licenses are accepted in the base app (MIT, BSD, Apache 2.0, ISC, public domain, SIL OFL for fonts):
+`scripts/gen-notices.mjs` writes the license texts of all runtime dependencies into `third-party-notices.txt` at every build (Help ▸ Third-Party Notices). Only permissive licenses are accepted in the base app (MIT, BSD, Apache 2.0, ISC, public domain, SIL OFL for fonts):
 
 | Component | License |
 |---|---|
-| SQLite (WASM build, with FTS5) | public domain |
+| Anthropic TypeScript SDK (`@anthropic-ai/sdk`) | MIT |
+| SQLite via sql.js (Query Case) | public domain / MIT |
 | pdf.js (page rendering, as in Anne's Folio) | Apache 2.0 |
+| pdf-lib (exhibit bundles) | MIT |
 | Tesseract.js (OCR, as in Anne's Folio) | Apache 2.0 |
-| JSZip | MIT |
-| citeproc-js or another CSL processor, if its license is compatible; otherwise a clean-room CSL processor | to be confirmed in M0 |
+| JSZip | MIT (dual-licensed MIT or GPLv3; used under MIT) |
+| Citation formatting | the app's own code (two built-in styles); a CSL processor is still to be chosen |
 | CSL style files | each style's own license (most are CC BY-SA; styles are data loaded by the user, and a small permissively licensed set is bundled) |
-| ONNX Runtime Web, Transformers.js | MIT, Apache 2.0 |
+| ONNX Runtime Web, Transformers.js (not yet used) | MIT, Apache 2.0 |
 | Material Symbols | Apache 2.0 |
 | Capacitor, Electron, electron-builder | MIT |
 | On-device models | each model's own license, shown before download; permissive only |

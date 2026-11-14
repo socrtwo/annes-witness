@@ -1,4 +1,4 @@
-name: Validate plan and metadata
+name: Validate
 
 on:
   push:
@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  validate:
+  plan:
     strategy:
       fail-fast: false
       matrix:
@@ -27,3 +27,25 @@ jobs:
           python -m json.tool AnnesWitness.meta.json
           python -m json.tool package.json
           python -m json.tool docs/commands-plan.json
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: End-to-end test in Chromium (Claude API mocked)
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+          npm run e2e
+      - uses: actions/upload-artifact@v4
+        with:
+          name: annes-witness-web
+          path: dist

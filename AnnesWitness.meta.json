@@ -88,6 +88,6 @@
   "appId": "io.github.socrtwo.anneswitness",
   "fileExtension": ".witness",
   "iconColor": "#9C6B0E",
-  "status": "planning",
-  "version": "0.0.0"
+  "status": "working",
+  "version": "0.1.0"
 }

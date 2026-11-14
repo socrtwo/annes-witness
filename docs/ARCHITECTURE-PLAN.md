@@ -1,6 +1,6 @@
 # Architecture plan
 
-> **Plan. There is no code yet.** This is the intended design. It follows the sister apps wherever the job is the same (shell, platform layer, AI providers, recovery) and describes in detail only what is particular to Anne's Witness.
+> **Implemented in 0.1.0 as described, with the differences marked *in 0.1.0*.** This is the design. It follows the sister apps wherever the job is the same (shell, platform layer, AI providers, recovery) and describes in detail only what is particular to Anne's Witness.
 
 ## Layers
 
@@ -21,15 +21,16 @@ Everything runs on the device. There is no server component; the optional suite 
 A ZIP container, so a case can be inspected and repaired with ordinary tools:
 
 ```
-case.sqlite          sources, anchors, claims, ties, notes, conclusions, checks, sign-offs
-journal/             append-only change log, one small file per session
+case.json            sources, anchors, claims, ties, notes, conclusions, sign-offs (in 0.1.0: JSON, not SQLite;
+                     Query Case loads it into an in-memory SQLite database for read-only SQL)
+journal.jsonl        append-only change log, one entry per line
 sources/             copies of source files (always for web captures and clipboard items;
                      for other files only in a portable case)
 derived/             OCR text, transcriptions, thumbnails; can be rebuilt
 manifest.json        format version, hash list, seal (if sealed)
 ```
 
-A case normally *references* source files where they are and stores each one's fingerprint. *Save Portable Case* copies them in.
+*In 0.1.0* every source file is stored inside the case (the web app cannot keep references to files on disk). Referencing files in place, with fingerprints, is planned for the desktop build.
 
 ## Data model
 
@@ -95,7 +96,7 @@ Each check is a pure function from case data to a list of findings (claim or tie
 ## Repair
 
 - **A damaged source** is handed to the recovery engine of the sister app for its type. The repaired copy is added as a new, derivative source; the damaged original stays.
-- **A damaged case:** the ZIP is salvaged entry by entry (the suite's ZIP salvage); if `case.sqlite` is unreadable it is rebuilt by replaying `journal/`; `derived/` is regenerated. *Open and Repair* writes a new file and a repair report.
+- **A damaged case:** the ZIP is salvaged entry by entry from its local headers; if `case.json` is unreadable it is rebuilt by replaying `journal.jsonl`; `derived/` is regenerated. *Open and Repair* writes a new file and a repair report.
 - **A sealed case** that fails *Verify Seal* is opened read-only with the differences listed.
 
 ## The AI verification gate

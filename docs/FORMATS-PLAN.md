@@ -1,12 +1,12 @@
 # Formats plan
 
-> **Plan. There is no code yet.** Anne's Witness reads many formats and edits none of them. A file is either a **source** (evidence), a **linked document** (the work being checked), or both. Readers come from the sister apps wherever one exists. Formats are recognized by content, not by extension.
+> **Implemented in 0.1.0 except where the Milestone column says otherwise** (see ROADMAP.md for what is still open: old binary .doc/.xls, the public-domain shelf, CSL style files, native formats of the sister apps). Anne's Witness reads many formats and edits none of them. A file is either a **source** (evidence), a **linked document** (the work being checked), or both. Readers come from the sister apps wherever one exists. Formats are recognized by content, not by extension.
 
 ## The case
 
 | Format | Use |
 |---|---|
-| `.witness` | The case: a ZIP container with a SQLite database, a journal, derived text and, in a portable case, copies of the sources. See [ARCHITECTURE-PLAN.md](ARCHITECTURE-PLAN.md). |
+| `.witness` | The case: a ZIP container with the case data (JSON), a journal, derived text and, in a portable case, copies of the sources. See [ARCHITECTURE-PLAN.md](ARCHITECTURE-PLAN.md). |
 | `.witness` (sealed) | The same container, read-only, with a hash list of every source and tie in its manifest |
 | Text folder | The case as JSON and Markdown files, for version control (`dev.exportText`); can be imported back |
 
